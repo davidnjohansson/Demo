@@ -1,0 +1,22 @@
+:host {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+form {
+    height: 100%;
+}
+
+input {
+    font-family: inherit;
+    font-size: 16px;
+    color: #000000DE;
+    height: 100%;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    box-sizing: border-box;
+    padding-left: 16px;
+    padding-right: 16px;
+}

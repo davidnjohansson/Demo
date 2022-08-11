@@ -1,0 +1,90 @@
+.login {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 32px;
+    background-color: var(--gray-50);
+}
+
+.login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 32px;
+    background-color: white;
+}
+
+.login-container-logo {
+    margin-bottom: calc(16px + 8px);
+    height: calc(32px + 4px);
+    font-size: calc(32px + 4px);
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(var(--orange-500), var(--pink-500), var(--magenta-500), var(--purple-500));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.login-container-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container-form-checkbox {
+    margin-bottom: calc(16px + 8px);
+}
+
+.login-container-form-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 16px;
+}
+
+.login-container-form-buttons-submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+}
+
+.login-container-form-buttons-submit-spinner ::ng-deep > svg > circle {
+    stroke: white;
+}
+
+// XSmall
+@media only screen and (min-width: 0px) and (max-width: 599px) {
+
+}
+
+// Small
+@media only screen and (min-width: 600px) and (max-width: 959px) {
+    .login-container {
+        max-width: calc(256px + 128px);
+    }
+}
+
+// Medium
+@media only screen and (min-width: 960px) and (max-width: 1439px) {
+    .login-container {
+        max-width: calc(256px + 128px);
+    }
+}
+
+// Large
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {
+    .login-container {
+        max-width: calc(256px + 128px);
+    }
+}
+
+// XLarge
+@media only screen and (min-width: 1920px) {
+    .login-container {
+        max-width: calc(256px + 128px);
+    }
+}

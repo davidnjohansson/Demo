@@ -1,0 +1,121 @@
+.workplaces {
+    min-height: 100%;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.workplaces-left {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    box-sizing: border-box;
+    padding: 32px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.workplaces-right {
+    width: 25%;
+    height: 100%;
+    position: absolute;
+    left: 100%;
+}
+
+.workplaces-left-header {
+    display: grid;
+    grid-template-columns: min-content min-content;
+    column-gap: 16px;
+    margin-bottom: 16px;
+}
+
+.workplaces-left-header-title {
+    margin: 0;
+}
+
+.workplaces-left-divider {
+    margin-bottom: 16px;
+}
+
+.workplaces-left-accordion {
+    margin-bottom: 16px;
+}
+
+::ng-deep .workplaces-right > .map-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.row {
+    user-select: none;
+    cursor: pointer;
+}
+
+.row:hover {
+    background-color: var(--gray-50);
+}
+
+.row-empty {
+    background-color: var(--gray-100);
+}
+
+// XSmall
+@media only screen and (min-width: 0px) and (max-width: 599px) {
+    .workplaces-left {
+        padding: 16px;
+    }
+
+    .mat-column-select {
+        flex: 0 0 7%;
+    }
+
+    .mat-column-aktiv {
+        flex: 0 0 7%;
+    }
+}
+
+// Small
+@media only screen and (min-width: 600px) and (max-width: 959px) {
+    .mat-column-select {
+        flex: 0 0 7%;
+    }
+
+    .mat-column-aktiv {
+        flex: 0 0 6%;
+    }
+}
+
+// Medium
+@media only screen and (min-width: 960px) and (max-width: 1439px) {
+    .mat-column-select {
+        flex: 0 0 7%;
+    }
+
+    .mat-column-aktiv {
+        flex: 0 0 6%;
+    }
+}
+
+// Large
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {
+    .mat-column-select {
+        flex: 0 0 5%;
+    }
+
+    .mat-column-aktiv {
+        flex: 0 0 5%;
+    }
+}
+
+// XLarge
+@media only screen and (min-width: 1920px) {
+    .mat-column-select {
+        flex: 0 0 4%;
+    }
+
+    .mat-column-aktiv {
+        flex: 0 0 4%;
+    }
+}

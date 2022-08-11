@@ -1,0 +1,27 @@
+<div class="login">
+	<div class="login-container mat-elevation-z3">
+		<div class="login-container-logo">T5Web</div>
+		<form class="login-container-form" [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()">
+			<mat-form-field>
+				<mat-label>Användarnamn</mat-label>
+				<input type="text" matInput formControlName="anvandarnamn" autocomplete="off" />
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>Lösenord</mat-label>
+				<input type="password" matInput formControlName="losenord" />
+			</mat-form-field>
+			<mat-checkbox class="login-container-form-checkbox" checked="true">Kom ihåg mig</mat-checkbox>
+			<div class="login-container-form-buttons">
+				<button class="login-container-form-buttons-submit" type="submit" mat-flat-button color="primary" [disabled]="loginFormGroup.invalid || submitting">
+					<ng-container *ngIf="!submitting; else spinner">
+						Logga in
+					</ng-container>
+					<ng-template #spinner>
+						<mat-spinner class="login-container-form-buttons-submit-spinner" diameter="24"></mat-spinner>
+					</ng-template>
+				</button>
+				<button type="button" mat-flat-button>Glömt lösenord</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,77 @@
+.bar {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    height: var(--bar-height);
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, var(--orange-600), var(--pink-600), var(--magenta-600), var(--purple-600));
+    color: white;
+}
+
+.bar-left {
+    width: 56px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bar-center {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.bar-center-button {
+    font-size: calc(16px + 2px);
+    font-weight: 600;
+}
+
+.bar-right {
+    width: 56px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// XSmall
+@media only screen and (min-width: 0px) and (max-width: 599px) {
+    .bar-center {
+        justify-content: center;
+    }
+}
+
+// Small
+@media only screen and (min-width: 600px) and (max-width: 959px) {
+    .bar-center {
+        justify-content: center;
+    }
+}
+
+// Medium
+@media only screen and (min-width: 960px) and (max-width: 1439px) {
+    .bar-center {
+        justify-content: space-between;
+    }
+}
+
+// Large
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {
+    .bar-center {
+        justify-content: space-between;
+    }
+}
+
+// XLarge
+@media only screen and (min-width: 1920px) {
+    .bar-center {
+        justify-content: space-between;
+    }
+}

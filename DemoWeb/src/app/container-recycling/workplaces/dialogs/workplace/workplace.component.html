@@ -1,0 +1,79 @@
+<form class="workplace" [formGroup]="arbetsplatsFormGroup" (ngSubmit)="save()">
+	<h2 mat-dialog-title>Arbetsplats - {{ arbetsplats?.arbetsplatsNamn ?? 'Ny' }}</h2>
+	<mat-tab-group mat-stretch-tabs>
+		<mat-tab label="Grunddata">
+			<mat-dialog-content class="workplace-basic-data">
+				<div class="workplace-basic-data-form">
+					<mat-checkbox class="workplace-basic-data-form-checkbox" [checked]="true" formControlName="aktiv">Aktiv</mat-checkbox>
+					<mat-form-field>
+						<mat-label>Arbetsplats</mat-label>
+						<input type="text" matInput formControlName="arbetsplatsNamn" autocomplete="off" spellcheck="false">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.arbetsplatsNamn.invalid">
+							{{ arbetsplatsFormGroup.controls.arbetsplatsNamn.errors?.arbetsplatsNamn }}
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Kund</mat-label>
+						<input type="text" matInput placeholder="Sök ..." formControlName="fkKunder" [matAutocomplete]="auto" spellcheck="false">
+						<mat-autocomplete #auto="matAutocomplete" [displayWith]="getKunderText">
+							<mat-option *ngFor="let kund of kunder" [value]="kund">
+								{{ kund.kundNamn }}
+							</mat-option>
+						</mat-autocomplete>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Adress</mat-label>
+						<input type="text" matInput formControlName="adress1" autocomplete="off" spellcheck="false">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.adress1.invalid">
+							{{ arbetsplatsFormGroup.controls.adress1.errors?.adress1 }}
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Ort</mat-label>
+						<input type="text" matInput formControlName="ort" autocomplete="off" spellcheck="false">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.ort.invalid">
+							{{ arbetsplatsFormGroup.controls.ort.errors?.ort }}
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Postnummer</mat-label>
+						<input type="text" matInput formControlName="postnr" autocomplete="off" spellcheck="false">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.postnr.invalid">
+							{{ arbetsplatsFormGroup.controls.postnr.errors?.postnr }}
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Latitud</mat-label>
+						<input type="number" matInput step="any" formControlName="latitude">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.latitude.invalid">
+							{{ arbetsplatsFormGroup.controls.latitude.errors?.latitude }}
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Longitud</mat-label>
+						<input type="number" matInput step="any" formControlName="longitude">
+						<mat-error *ngIf="arbetsplatsFormGroup.controls.longitude.invalid">
+							{{ arbetsplatsFormGroup.controls.longitude.errors?.longitude }}
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<google-map class="workplace-basic-data-map" [options]="mapOptions" [center]="mapCenter" (mapDblclick)="onMapDblclick($event)">
+					<map-marker [position]="(mapPosition$ | async)!"></map-marker>
+				</google-map>
+			</mat-dialog-content>
+		</mat-tab>
+		<mat-tab label="Orderhistorik">
+			<mat-dialog-content>
+				<p>order history content here!</p>
+			</mat-dialog-content>
+		</mat-tab>
+	</mat-tab-group>
+	<mat-dialog-actions align="end">
+		<button mat-button type="submit" [disabled]="arbetsplatsFormGroup.pristine || arbetsplatsFormGroup.invalid || submitting">
+			Spara
+		</button>
+		<button mat-button type="button" cdkFocusInitial (click)="cancel()">
+			Avbryt
+		</button>
+	</mat-dialog-actions>
+</form>

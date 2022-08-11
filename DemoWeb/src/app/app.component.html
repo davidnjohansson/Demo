@@ -1,0 +1,16 @@
+<div class="app">
+	<ng-container *ngIf="authService.isAuth | async; else noauth">
+		<app-bar></app-bar>
+		<mat-drawer-container class="app-drawer-container" [autosize]="true" [hasBackdrop]="breakpointService.Handset$ | async">
+			<mat-drawer class="app-drawer mat-elevation-z3" #drawer [mode]="(breakpointService.Handset$ | async) ? 'over' : 'side'" [opened]="(breakpointService.Handset$ | async) === false" [autoFocus]="false">
+				<app-menu></app-menu>
+			</mat-drawer>
+			<mat-drawer-content>
+				<router-outlet></router-outlet>
+			</mat-drawer-content>
+		</mat-drawer-container>
+	</ng-container>
+	<ng-template #noauth>
+		<router-outlet></router-outlet>
+	</ng-template>
+</div>

@@ -1,0 +1,100 @@
+.workplace {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.workplace> ::ng-deep .mat-tab-group {
+	height: 100%;
+}
+
+.workplace> ::ng-deep .mat-tab-group>.mat-tab-body-wrapper {
+	height: 100%;
+}
+
+.workplace> ::ng-deep .mat-tab-group>.mat-tab-body-wrapper>.mat-tab-body>.mat-tab-body-content {
+	overflow: unset;
+}
+
+.workplace> ::ng-deep .mat-tab-group>.mat-tab-body-wrapper>.mat-tab-body>.mat-tab-body-content>.mat-dialog-content {
+	height: 100%;
+	overflow: unset;
+}
+
+.workplace-basic-data {
+	height: 100%;
+	display: grid;
+	overflow-y: auto;
+}
+
+.workplace-basic-data-form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 8px;
+	box-sizing: border-box;
+	padding: 16px;
+}
+
+.workplace-basic-data-form-checkbox {
+	margin-bottom: 16px;
+}
+
+::ng-deep .workplace-basic-data-map > .map-container {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+// XSmall
+@media only screen and (min-width: 0px) and (max-width: 599px) {
+	.workplace-basic-data {
+		grid-template-columns: 1fr;
+	}
+
+	.workplace-basic-data-map {
+		height: 512px;
+	}
+}
+
+// Small
+@media only screen and (min-width: 600px) and (max-width: 959px) {
+	.workplace-basic-data {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.workplace-basic-data-map {
+		height: 100%;
+	}
+}
+
+// Medium
+@media only screen and (min-width: 960px) and (max-width: 1439px) {
+	.workplace-basic-data {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.workplace-basic-data-map {
+		height: 100%;
+	}
+}
+
+// Large
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {
+	.workplace-basic-data {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.workplace-basic-data-map {
+		height: 100%;
+	}
+}
+
+// XLarge
+@media only screen and (min-width: 1920px) {
+	.workplace-basic-data {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.workplace-basic-data-map {
+		height: 100%;
+	}
+}

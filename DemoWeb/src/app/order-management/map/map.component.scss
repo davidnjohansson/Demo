@@ -1,0 +1,30 @@
+.map-drawer-container {
+    height: 100%;
+}
+
+.map-drawer {
+    width: 256px;
+    box-sizing: border-box;
+    padding: 8px;
+    opacity: 0.95;
+}
+
+::ng-deep .map-drawer > .mat-drawer-inner-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.map-fab {
+    position: absolute;
+    top: 8px;
+    left: calc(100% - (40px + 8px));
+    right: 0px;
+    bottom: 0px;
+    z-index: 500;
+    background-color: var(--purple-500);
+}
+
+::ng-deep .map-google-map > .map-container {
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -1,0 +1,12 @@
+<div class="sub-menu">
+    <div class="sub-menu-container mat-elevation-z3">
+        <h1>{{ title }}</h1>
+        <mat-divider class="sub-menu-container-divider"></mat-divider>
+        <div class="sub-menu-container-grid">
+            <a *ngFor="let route of routes" class="sub-menu-container-grid-item mat-elevation-z3" [routerLink]="route.path" matRipple>
+                <mat-icon class="sub-menu-container-grid-item-icon">{{ route.data!.icon }}</mat-icon>
+                <span class="sub-menu-container-grid-item-text">{{ route.title }}</span>
+            </a>
+        </div>
+    </div>
+</div>

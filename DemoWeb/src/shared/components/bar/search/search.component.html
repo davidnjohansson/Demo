@@ -1,0 +1,10 @@
+<form>
+	<input #searchInput type="text" placeholder="Sök ..." spellcheck="false" [formControl]="searchFormControl" [matAutocomplete]="auto">
+	<mat-autocomplete #auto="matAutocomplete" (opened)="onAutocompleteOpened()" (closed)="onAutocompleteClosed()" (optionSelected)="onOptionSelected($event)">
+		<mat-optgroup *ngFor="let routeOptgroup of filteredRouteOptgroups" [label]="routeOptgroup.title">
+			<mat-option *ngFor="let routeOption of routeOptgroup.routeOptions" [value]="routeOption.title">
+				{{ routeOption.title }}
+			</mat-option>
+		</mat-optgroup>
+	</mat-autocomplete>
+</form>

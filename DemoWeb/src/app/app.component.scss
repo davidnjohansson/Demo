@@ -1,0 +1,43 @@
+.app {
+    height: 100%;
+}
+
+.app-drawer-container {
+    position: absolute;
+    top: var(--bar-height);
+    z-index: 0 !important;
+    width: 100%;
+    height: calc(100% - var(--bar-height));
+    min-height: calc(100% - var(--bar-height));
+    background-color: white;
+}
+
+.app-drawer {
+    width: var(--drawer-width);
+    border: none;
+}
+
+// XSmall
+@media only screen and (min-width: 0px) and (max-width: 599px) {
+    
+}
+
+// Small
+@media only screen and (min-width: 600px) and (max-width: 959px) {
+
+}
+
+// Medium
+@media only screen and (min-width: 960px) and (max-width: 1439px) {
+
+}
+
+// Large
+@media only screen and (min-width: 1440px) and (max-width: 1919px) {
+
+}
+
+// XLarge
+@media only screen and (min-width: 1920px) {
+
+}

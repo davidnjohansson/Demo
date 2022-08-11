@@ -1,0 +1,83 @@
+<div class="workplaces">
+	<div id="workplaces-left-id" class="workplaces-left">
+		<div class="workplaces-left-header">
+			<h1 class="workplaces-left-header-title">{{ title }}</h1>
+			<button mat-flat-button color="primary" (click)="addWorkplace()">Lägg till</button>
+		</div>
+		<mat-divider class="workplaces-left-divider"></mat-divider>
+		<mat-form-field>
+			<mat-label>Sökfilter</mat-label>
+			<input type="text" matInput autocomplete="off" spellcheck="false" [formControl]="filterFormControl">
+		</mat-form-field>
+		<mat-accordion class="workplaces-left-accordion">
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+					<mat-panel-title>Avancerade filter</mat-panel-title>
+				</mat-expansion-panel-header>
+				<p>I'm visible because I am open</p>
+			</mat-expansion-panel>
+		</mat-accordion>
+		<mat-table [dataSource]="arbetsplatser" matSort (matSortChange)="onSortChanged($event)">
+			<ng-container matColumnDef="select">
+				<mat-header-cell *matHeaderCellDef>Position</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<mat-checkbox *ngIf="arbetsplats" (click)="$event.stopPropagation()" (change)="onSelectionChanged(arbetsplats)" [checked]="selection.isSelected(arbetsplats)" [disabled]="!arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="arbetsplatsNamn">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Arbetsplats</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.arbetsplatsNamn }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="aktiv">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Aktiv</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.aktiv ? 'Ja' : 'Nej' }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="fkKunderNavigation.kundNamn">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Kundnamn</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.fkKunderNavigation?.kundNamn }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="fkAdresserNavigation.adress1">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Adress</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.fkAdresserNavigation?.adress1 }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="fkAdresserNavigation.ort">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Ort</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.fkAdresserNavigation?.ort }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="fkAdresserNavigation.postnr">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Postnummer</mat-header-cell>
+				<mat-cell *matCellDef="let arbetsplats">
+					<ng-container *ngIf="arbetsplats">
+						{{ arbetsplats.fkAdresserNavigation?.postnr }}
+					</ng-container>
+				</mat-cell>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+			<mat-row matRipple *matRowDef="let row; columns: displayedColumns; let i = index" [class]="getRowClass(row)" (click)="rowClicked(row)"></mat-row>
+		</mat-table>
+		<mat-paginator #paginator [length]="totalCount" [pageSize]="take" showFirstLastButtons></mat-paginator>
+	</div>
+	<google-map id="workplaces-right-id" class="workplaces-right" [center]="mapCenter">
+		<map-marker *ngIf="selectedArbetsplatsLatLng" [position]="selectedArbetsplatsLatLng"></map-marker>
+	</google-map>
+</div>

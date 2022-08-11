@@ -1,0 +1,42 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { createClient } from 'graphql-client/createClient';
+import { Mutation } from 'graphql-client/schema';
+import { lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
+@Injectable({
+	providedIn: 'root'
+})
+export class GraphQLService {
+
+	constructor(private http: HttpClient) { }
+
+	public get client() {
+		return createClient({
+			fetcher: ({ query, variables }) => {
+				return lastValueFrom(this.http.post(environment.BASE_URL_GRAPHQL, { query: query, variables: variables }));
+			}
+		});
+	}
+
+	public validate(data: Mutation | null | undefined, formGroup: FormGroup) {
+		if (data === null || data === undefined) return;
+		for (let key in data) {
+			if ((<any>data)[key]?.validationErrors?.length) {
+				for (let validationError of (<any>data)[key]?.validationErrors) {
+					for (let control in formGroup.controls) {
+						if (validationError.property === control) {
+							if (formGroup.get(control)!.errors) {
+								break;
+							} else {
+								formGroup.get(control)!.setErrors({ [control]: validationError.message });
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,32 @@
+<div class="bar mat-elevation-z3">
+	<button mat-button class="bar-left" (click)="toggleDrawer()">
+		<mat-icon>menu</mat-icon>
+	</button>
+	<div class="bar-center">
+		<a mat-button routerLink="" class="bar-center-button">T5Web</a>
+		<app-search *ngIf="(breakpointService.Handset$ | async) === false"></app-search>
+	</div>
+	<ng-container *ngIf="breakpointService.Handset$ | async; else desktop">
+		<button mat-button class="bar-right" [matMenuTriggerFor]="barMenu" (click)="onBarMenuOpened()">
+			<mat-icon>account_box</mat-icon>
+		</button>
+		<mat-menu #barMenu="matMenu">
+			<button mat-menu-item routerLink="settings">
+				<mat-icon>settings</mat-icon>
+				<span>Inställningar</span>
+			</button>
+			<button mat-menu-item (click)="logout()">
+				<mat-icon>logout</mat-icon>
+				<span>Logga ut</span>
+			</button>
+		</mat-menu>
+	</ng-container>
+	<ng-template #desktop>
+		<button mat-button class="bar-right" matTooltip="Inställningar" routerLink="settings">
+			<mat-icon>settings</mat-icon>
+		</button>
+		<button mat-button class="bar-right" matTooltip="Logga ut" (click)="logout()">
+			<mat-icon>logout</mat-icon>
+		</button>
+	</ng-template>
+</div>

@@ -1,0 +1,152 @@
+@import '@angular/material/theming';
+$custom-typography: mat-typography-config($font-family: '"Poppins", sans-serif;');
+@include mat-core($custom-typography);
+
+:root {
+    // Barkfors Orange
+    --orange-50: #FDEBE5;
+    --orange-100: #FACDBD;
+    --orange-200: #F7AC91;
+    --orange-300: #F48B65;
+    --orange-400: #F17244;
+    --orange-500: #EF5923;
+    --orange-600: #ED511F;
+    --orange-700: #EB481A;
+    --orange-800: #E83E15;
+    --orange-900: #E42E0C;
+    --orange-A100: #FFFFFF;
+    --orange-A200: #FFE0DB;
+    --orange-A400: #FFB3A8;
+    --orange-A700: #FF9D8F;
+
+    // Barkfors Pink
+    --pink-50: #FBE8EC;
+    --pink-100: #F6C5D0;
+    --pink-200: #F09EB1;
+    --pink-300: #EA7791;
+    --pink-400: #E65A7A;
+    --pink-500: #E13D62;
+    --pink-600: #DD375A;
+    --pink-700: #D92F50;
+    --pink-800: #D52746;
+    --pink-900: #CD1A34;
+    --pink-A100: #FFFFFF;
+    --pink-A200: #FFCED4;
+    --pink-A400: #FF9BA7;
+    --pink-A700: #FF8191;
+
+    // Barkfors Magenta
+    --magenta-50: #F6E9F1;
+    --magenta-100: #E8C7DB;
+    --magenta-200: #D9A2C4;
+    --magenta-300: #C97DAC;
+    --magenta-400: #BE619A;
+    --magenta-500: #B24588;
+    --magenta-600: #AB3E80;
+    --magenta-700: #A23675;
+    --magenta-800: #992E6B;
+    --magenta-900: #8A1F58;
+    --magenta-A100: #FFC5E3;
+    --magenta-A200: #FF92CA;
+    --magenta-A400: #FF5FB1;
+    --magenta-A700: #FF46A4;
+
+    // Barkfors Purple
+    --purple-50: #EEEAF2;
+    --purple-100: #D5CBDE;
+    --purple-200: #B9A8C8;
+    --purple-300: #9D85B2;
+    --purple-400: #886BA2;
+    --purple-500: #735191;
+    --purple-600: #6B4A89;
+    --purple-700: #60407E;
+    --purple-800: #563774;
+    --purple-900: #432762;
+    --purple-A100: #CFA7FF;
+    --purple-A200: #B474FF;
+    --purple-A400: #9841FF;
+    --purple-A700: #8A28FF;
+
+    // Material Gray
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #EEEEEE;
+    --gray-300: #E0E0E0;
+    --gray-400: #BDBDBD;
+    --gray-500: #9E9E9E;
+    --gray-600: #757575;
+    --gray-700: #616161;
+    --gray-800: #424242;
+    --gray-900: #212121;
+}
+
+$primary: (
+    50 : var(--orange-50),
+    100 : var(--orange-100),
+    200 : var(--orange-200),
+    300 : var(--orange-300),
+    400 : var(--orange-400),
+    500 : var(--orange-500),
+    600 : var(--orange-600),
+    700 : var(--orange-700),
+    800 : var(--orange-800),
+    900 : var(--orange-900),
+    A100 : var(--orange-A100),
+    A200 : var(--orange-A200),
+    A400 : var(--orange-A400),
+    A700 : var(--orange-A700),
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$accent: (
+    50 : var(--pink-50),
+    100 : var(--pink-100),
+    200 : var(--pink-200),
+    300 : var(--pink-300),
+    400 : var(--pink-400),
+    500 : var(--pink-500),
+    600 : var(--pink-600),
+    700 : var(--pink-700),
+    800 : var(--pink-800),
+    900 : var(--pink-900),
+    A100 : var(--pink-A100),
+    A200 : var(--pink-A200),
+    A400 : var(--pink-A400),
+    A700 : var(--pink-A700),
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$palette-primary: mat-palette($primary);
+$palette-accent:  mat-palette($accent);
+$theme: mat-light-theme($palette-primary, $palette-accent);
+@include angular-material-theme($theme);

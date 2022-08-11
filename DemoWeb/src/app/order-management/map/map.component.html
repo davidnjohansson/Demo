@@ -1,0 +1,13 @@
+<mat-drawer-container class="map-drawer-container" [hasBackdrop]="breakpointService.Handset$ | async">
+    <mat-drawer class="map-drawer mat-elevation-z3" position="end" mode="over" [opened]="(breakpointService.Handset$ | async) === false">
+        <button mat-icon-button (click)="closeDrawer()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-drawer>
+    <mat-drawer-content>
+        <button class="map-fab" mat-mini-fab (click)="openDrawer()">
+            <mat-icon>menu_open</mat-icon>
+        </button>
+        <google-map class="map-google-map" [options]="mapOptions"></google-map>
+    </mat-drawer-content>
+</mat-drawer-container>
