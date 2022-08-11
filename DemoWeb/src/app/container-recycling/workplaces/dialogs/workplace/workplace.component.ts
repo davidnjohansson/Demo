@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormControlStatus, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -44,8 +44,7 @@ export class WorkplaceComponent implements OnInit {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public arbetsplatsPk: number | undefined,
 		private dialogRef: MatDialogRef<WorkplaceComponent>,
-		private graphqlService: GraphQLService,
-		private snackBar: MatSnackBar
+		private graphqlService: GraphQLService
 	) { }
 
 	ngOnInit() {
@@ -251,7 +250,7 @@ export class WorkplaceComponent implements OnInit {
 		return kund === null ? '' : kund.kundNamn;
 	}
 
-	public async save() {
+	public async save(closeAfterSave?: boolean) {
 		this.submitting = true;
 
 		const { aktiv, arbetsplatsNamn, fkKunder, adress1, ort, postnr, latitude, longitude } = this.arbetsplatsFormGroup.controls;
@@ -284,7 +283,10 @@ export class WorkplaceComponent implements OnInit {
 		this.graphqlService.validate(result.data, this.arbetsplatsFormGroup);
 
 		if (this.arbetsplatsFormGroup.valid) {
-			this.snackBar.open('Sparad');
+			this.arbetsplatsFormGroup.markAsPristine();
+			if (closeAfterSave === true) {
+				this.dialogRef.close();
+			}
 		}
 
 		this.submitting = false;
