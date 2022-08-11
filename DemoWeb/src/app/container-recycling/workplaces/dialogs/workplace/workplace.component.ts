@@ -3,7 +3,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Arbetsplatser, Kunder, SortEnumType } from 'graphql-client/schema';
 import { BehaviorSubject, debounceTime } from 'rxjs';
