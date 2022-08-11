@@ -1,0 +1,55 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "T6DbContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Entities",
+   "ProjectRootNamespace": "API",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[ADRESSER]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ADRESSTYP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ARBETSPLATSER]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[KUNDER]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[POSITIONER]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "DESKTOP-G4INRF2.T5_FLEXILAST",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": true,
+   "UseNoDefaultConstructor": true,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": true,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
