@@ -4,7 +4,7 @@ import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { PreloadAllModules, RouterModule } from '@angular/router';
 import { routes } from './routes';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { CamelCaseInterceptor } from './shared/interceptors/camel-case/camel-case.interceptor';
@@ -18,7 +18,9 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom([
       BrowserAnimationsModule,
       HttpClientModule,
-      RouterModule.forRoot(routes)
+      RouterModule.forRoot(routes, {
+				preloadingStrategy: PreloadAllModules
+			})
     ]),
     {
       provide: HTTP_INTERCEPTORS,
