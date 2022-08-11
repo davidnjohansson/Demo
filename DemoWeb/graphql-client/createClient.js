@@ -14,7 +14,7 @@ var __assign =
     return __assign.apply(this, arguments)
   }
 Object.defineProperty(exports, '__esModule', { value: true })
-var __1 = require('graphql-typed-client')
+var __1 = require('bf-graphql-typed-client')
 
 exports.createClient = function(options) {
   var typeMap = __1.linkTypeMap(require('./typeMap.json'))
@@ -22,6 +22,7 @@ exports.createClient = function(options) {
     __assign({}, options, {
       queryRoot: typeMap.Query,
       mutationRoot: typeMap.Mutation,
+      subscriptionRoot: typeMap.Subscription,
     }),
   )
 }

@@ -8,6 +8,7 @@ import { DrawerService } from 'src/shared/services/drawer/drawer.service';
 import { MenuComponent } from 'src/shared/components/menu/menu.component';
 import { BreakpointService } from 'src/shared/services/breakpoint/breakpoint.service';
 import { MaterialModule } from 'src/shared/modules/material/material.module';
+import { SubscriptionService } from 'src/shared/services/subscription/subscription.service';
 
 @Component({
   selector: 'app-root',
@@ -30,11 +31,13 @@ export class AppComponent implements OnInit, AfterViewChecked {
     public authService: AuthService,
     public breakpointService: BreakpointService,
     private router: Router,
-    private drawerService: DrawerService
+    private drawerService: DrawerService,
+		private subscriptionService: SubscriptionService
   ) { }
 
   ngOnInit() {
     this.evalAuth();
+		this.subscriptionService.init();
   }
 
   private evalAuth() {

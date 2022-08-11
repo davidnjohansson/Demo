@@ -49,7 +49,7 @@ export class WorkplaceComponent implements OnInit {
 	async ngOnInit() {
 		await this.getArbetsplats();
 		this.searchKunder();
-		this.onSearchKundNamn();
+		this.onFkKunderChanged();
 		this.onLatitudeChanged();
 		this.onLongitudeChanged();
 		this.onMapPositionChanged();
@@ -95,7 +95,7 @@ export class WorkplaceComponent implements OnInit {
 		this.patchArbetsplatsFormGroup();
 	}
 
-	private onSearchKundNamn() {
+	private onFkKunderChanged() {
 		this.arbetsplatsFormGroup.controls.fkKunder
 			.valueChanges
 			.pipe(untilDestroyed(this), debounceTime(50))

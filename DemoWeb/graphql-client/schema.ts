@@ -1,4 +1,4 @@
-import { Observable } from 'graphql-typed-client'
+import { Observable } from 'bf-graphql-typed-client'
 
 export interface Query {
   adresser: AdresserCollectionSegment | null
@@ -384,6 +384,12 @@ export interface ValidationError {
   message: String
   property: String
   __typename: 'ValidationError'
+}
+
+export interface Subscription {
+  arbetsplatsInserted: Arbetsplatser
+  arbetsplatsUpdated: Arbetsplatser
+  __typename: 'Subscription'
 }
 
 export interface QueryRequest {
@@ -1525,6 +1531,13 @@ export interface ValidationErrorRequest {
   __scalar?: boolean | number
 }
 
+export interface SubscriptionRequest {
+  arbetsplatsInserted?: ArbetsplatserRequest
+  arbetsplatsUpdated?: ArbetsplatserRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
 const Query_possibleTypes = ['Query']
 export const isQuery = (obj: { __typename: String }): obj is Query => {
   if (!obj.__typename) throw new Error('__typename is missing')
@@ -1607,6 +1620,12 @@ const ValidationError_possibleTypes = ['ValidationError']
 export const isValidationError = (obj: { __typename: String }): obj is ValidationError => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return ValidationError_possibleTypes.includes(obj.__typename)
+}
+
+const Subscription_possibleTypes = ['Subscription']
+export const isSubscription = (obj: { __typename: String }): obj is Subscription => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Subscription_possibleTypes.includes(obj.__typename)
 }
 
 export interface QueryPromiseChain {
@@ -2545,4 +2564,22 @@ export interface ValidationErrorPromiseChain {
 export interface ValidationErrorObservableChain {
   message: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   property: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+}
+
+export interface SubscriptionPromiseChain {
+  arbetsplatsInserted: ArbetsplatserPromiseChain & {
+    execute: (request: ArbetsplatserRequest, defaultValue?: Arbetsplatser) => Promise<Arbetsplatser>
+  }
+  arbetsplatsUpdated: ArbetsplatserPromiseChain & {
+    execute: (request: ArbetsplatserRequest, defaultValue?: Arbetsplatser) => Promise<Arbetsplatser>
+  }
+}
+
+export interface SubscriptionObservableChain {
+  arbetsplatsInserted: ArbetsplatserObservableChain & {
+    execute: (request: ArbetsplatserRequest, defaultValue?: Arbetsplatser) => Observable<Arbetsplatser>
+  }
+  arbetsplatsUpdated: ArbetsplatserObservableChain & {
+    execute: (request: ArbetsplatserRequest, defaultValue?: Arbetsplatser) => Observable<Arbetsplatser>
+  }
 }

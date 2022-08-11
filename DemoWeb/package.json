@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-		"schema": "generate-graphql-client -e http://localhost:5000/graphql?sdl -p -o graphql-client",
+    "schema": "generate-graphql-client -e http://localhost:5000/graphql?sdl -p -o graphql-client",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
     "@ngneat/until-destroy": "^9.2.1",
-    "graphql-typed-client": "^1.7.4",
+    "bf-graphql-typed-client": "^1.7.4",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

@@ -1163,6 +1163,11 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+type Subscription {
+  arbetsplatsInserted: Arbetsplatser!
+  arbetsplatsUpdated: Arbetsplatser!
+}
+
 """
 The `TimeSpan` scalar represents an ISO-8601 compliant duration type.
 """
