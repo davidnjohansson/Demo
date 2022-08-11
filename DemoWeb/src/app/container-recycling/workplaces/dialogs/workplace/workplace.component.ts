@@ -46,8 +46,9 @@ export class WorkplaceComponent implements OnInit {
 		private graphqlService: GraphQLService
 	) { }
 
-	ngOnInit() {
-		this.getArbetsplats();
+	async ngOnInit() {
+		await this.getArbetsplats();
+		this.searchKunder();
 		this.onSearchKundNamn();
 		this.onLatitudeChanged();
 		this.onLongitudeChanged();
@@ -161,6 +162,7 @@ export class WorkplaceComponent implements OnInit {
 
 	private async searchKunder() {
 		const filter = this.arbetsplatsFormGroup.controls.fkKunder.value as string;
+		if (typeof(filter) !== 'string') return;
 
 		const kunderQuery = await this.graphqlService.client.query({
 			kunder: [
@@ -253,12 +255,12 @@ export class WorkplaceComponent implements OnInit {
 		this.submitting = true;
 
 		const { aktiv, arbetsplatsNamn, fkKunder, adress1, ort, postnr, latitude, longitude } = this.arbetsplatsFormGroup.controls;
-
+		
 		const result = await this.graphqlService.client.mutation({
 			upsertArbetsplats: [
 				{
 					input: {
-						pk: this.arbetsplats?.pk,
+						pk: this.arbetsplatsPk,
 						aktiv: aktiv.value,
 						arbetsplatsNamn: arbetsplatsNamn.value,
 						fkKunder: (fkKunder.value as Kunder).pk,
@@ -281,7 +283,9 @@ export class WorkplaceComponent implements OnInit {
 
 		this.graphqlService.validate(result.data, this.arbetsplatsFormGroup);
 
-		if (this.arbetsplatsFormGroup.valid) {
+		if (result.data?.upsertArbetsplats.pk) {
+			this.arbetsplatsPk = result.data.upsertArbetsplats.pk;
+			this.getArbetsplats();
 			this.arbetsplatsFormGroup.markAsPristine();
 			if (closeAfterSave === true) {
 				this.dialogRef.close();
