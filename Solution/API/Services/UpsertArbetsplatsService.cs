@@ -1,5 +1,7 @@
 ﻿using API.Data;
 using API.Entities;
+using API.GraphQL;
+using HotChocolate.Subscriptions;
 using Microsoft.EntityFrameworkCore;
 using T5.API.Types;
 
@@ -20,10 +22,12 @@ namespace API.Services
     public class UpsertArbetsplatsService
     {
         private readonly T6DbContext _db;
+        private readonly ITopicEventSender _sender;
 
-        public UpsertArbetsplatsService(T6DbContext db)
+        public UpsertArbetsplatsService(T6DbContext db, ITopicEventSender sender)
         {
             _db = db;
+            _sender = sender;
         }
 
         public async Task<MutationOutput> ValidateAsync(UpsertArbetsplatsInput input)
@@ -228,6 +232,7 @@ namespace API.Services
             _db.Arbetsplatser.Add(arbetsplats);
 
             await _db.SaveChangesAsync();
+            await _sender.SendAsync(nameof(Subscription.ArbetsplatsInserted), arbetsplats);
 
             return arbetsplats.Pk;
         }
@@ -256,6 +261,7 @@ namespace API.Services
             _db.Arbetsplatser.Update(arbetsplats);
 
             await _db.SaveChangesAsync();
+            await _sender.SendAsync(nameof(Subscription.ArbetsplatsUpdated), arbetsplats);
 
             return arbetsplats.Pk;
         }

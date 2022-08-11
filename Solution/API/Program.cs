@@ -13,6 +13,8 @@ builder.Services.AddDbContext<T6DbContext>(opt =>
     opt.UseSqlServer("Data Source=./;Initial Catalog=T5_FLEXILAST;User Id=T5-SQL-USER;Password=%3jn__!asdei;Persist Security Info=True");
 });
 
+builder.Services.AddInMemorySubscriptions();
+
 builder.Services.AddScoped<UpsertArbetsplatsService>();
 
 builder.Services
@@ -28,8 +30,9 @@ builder.Services
     .AddProjections()
     .AddFiltering()
     .AddSorting()
+    .AddMutationType<Mutation>()
     .AddQueryType<Query>()
-    .AddMutationType<Mutation>();
+    .AddSubscriptionType<Subscription>();
 
 builder.Services.AddCors(opt =>
 {
@@ -52,8 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseCors("Development");
 }
 
+app.UseWebSockets();
 app.MapControllers();
-
 app.MapGraphQL();
-
 app.Run();
