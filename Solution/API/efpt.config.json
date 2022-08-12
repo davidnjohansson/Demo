@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 2,
-   "ContextClassName": "T6DbContext",
+   "ContextClassName": "DemoDbContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,

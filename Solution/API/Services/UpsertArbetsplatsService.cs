@@ -21,10 +21,10 @@ namespace API.Services
 
     public class UpsertArbetsplatsService
     {
-        private readonly T6DbContext _db;
+        private readonly DemoDbContext _db;
         private readonly ITopicEventSender _sender;
 
-        public UpsertArbetsplatsService(T6DbContext db, ITopicEventSender sender)
+        public UpsertArbetsplatsService(DemoDbContext db, ITopicEventSender sender)
         {
             _db = db;
             _sender = sender;

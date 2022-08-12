@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<T6DbContext>(opt =>
+builder.Services.AddDbContext<DemoDbContext>(opt =>
 {
     opt.UseLazyLoadingProxies();
     opt.UseSqlServer("Data Source=./;Initial Catalog=T5_FLEXILAST;User Id=T5-SQL-USER;Password=%3jn__!asdei;Persist Security Info=True");
@@ -19,7 +19,7 @@ builder.Services.AddScoped<UpsertArbetsplatsService>();
 
 builder.Services
     .AddGraphQLServer()
-    .RegisterDbContext<T6DbContext>()
+    .RegisterDbContext<DemoDbContext>()
     .SetPagingOptions(new PagingOptions
     {
         AllowBackwardPagination = true,

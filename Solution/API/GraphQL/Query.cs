@@ -9,7 +9,7 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Adresser> Adresser([Service] T6DbContext db)
+        public IQueryable<Adresser> Adresser([Service] DemoDbContext db)
         {
             return db.Adresser;
         }
@@ -18,7 +18,7 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Arbetsplatser> Arbetsplatser([Service] T6DbContext db)
+        public IQueryable<Arbetsplatser> Arbetsplatser([Service] DemoDbContext db)
         {
             return db.Arbetsplatser;
         }
@@ -27,7 +27,7 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Kunder> Kunder([Service] T6DbContext db)
+        public IQueryable<Kunder> Kunder([Service] DemoDbContext db)
         {
             return db.Kunder;
         }
@@ -36,7 +36,7 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Positioner> Positioner([Service] T6DbContext db)
+        public IQueryable<Positioner> Positioner([Service] DemoDbContext db)
         {
             return db.Positioner;
         }

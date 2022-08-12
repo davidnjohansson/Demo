@@ -8,9 +8,9 @@ using API.Entities;
 
 namespace API.Data
 {
-    public partial class T6DbContext : DbContext
+    public partial class DemoDbContext : DbContext
     {
-        public T6DbContext(DbContextOptions<T6DbContext> options)
+        public DemoDbContext(DbContextOptions<DemoDbContext> options)
             : base(options)
         {
         }
