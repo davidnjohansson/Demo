@@ -1,0 +1,30 @@
+﻿using API.Services;
+using Microsoft.AspNetCore.Mvc;
+using T5.API.Types;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ArbetsplatsController : ControllerBase
+    {
+        private readonly UpsertArbetsplatsService _upsertArbetsplatsService;
+
+        public ArbetsplatsController(UpsertArbetsplatsService upsertArbetsplatsService)
+        {
+            _upsertArbetsplatsService = upsertArbetsplatsService;
+        }
+
+        [HttpPost(nameof(ArbetsplatsController.UpsertArbetsplats))]
+        public async Task<ActionResult<MutationOutput>> UpsertArbetsplats(UpsertArbetsplatsInput input)
+        {
+            var output = await _upsertArbetsplatsService.ValidateAsync(input);
+
+            if (input.OnlyValidate == true || output.ValidationErrors.Any()) return new BadRequestObjectResult(output);
+
+            var pk = await _upsertArbetsplatsService.ExecuteAsync(input);
+
+            return new OkObjectResult(new MutationOutput(pk));
+        }
+    }
+}
