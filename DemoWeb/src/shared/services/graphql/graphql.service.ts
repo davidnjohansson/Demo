@@ -16,10 +16,10 @@ export class GraphQLService {
 	public get client() {
 		return createClient({
 			fetcher: ({ query, variables }) => {
-				return lastValueFrom(this.http.post(environment.BASE_URL_GRAPHQL, { query: query, variables: variables }));
+				return lastValueFrom(this.http.post(environment.GRAPHQL, { query: query, variables: variables }));
 			},
 			subscriptionCreatorOptions: {
-				uri: 'ws://localhost:5000/graphql'
+				uri: environment.GRAPHQL_SUBSCRIPTION
 			}
 		});
 	}

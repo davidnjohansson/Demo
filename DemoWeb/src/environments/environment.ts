@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  BASE_URL_GRAPHQL: 'http://localhost:5000/graphql',
+  GRAPHQL: 'http://localhost:5000/graphql',
+	GRAPHQL_SUBSCRIPTION: 'ws://localhost:5000/graphql',
   PRODUCTION: false,
 };
 
