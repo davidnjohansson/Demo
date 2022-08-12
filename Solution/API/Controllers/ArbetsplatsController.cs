@@ -20,7 +20,9 @@ namespace API.Controllers
         {
             var output = await _upsertArbetsplatsService.ValidateAsync(input);
 
-            if (input.OnlyValidate == true || output.ValidationErrors.Any()) return new BadRequestObjectResult(output);
+            if (output.ValidationErrors.Any()) return new BadRequestObjectResult(output);
+
+            if (input.OnlyValidate == true) return new OkObjectResult(output);
 
             var pk = await _upsertArbetsplatsService.ExecuteAsync(input);
 
