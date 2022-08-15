@@ -9,45 +9,36 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
+        public IQueryable<Address> Addresses([Service] DemoDbContext db)
+        {
+            return db.Addresses;
+        }
+
+        [UseOffsetPaging]
+        [UseProjection]
+        [UseFiltering]
+        [UseSorting]
+        public IQueryable<Customer> Customers([Service] DemoDbContext db)
+        {
+            return db.Customers;
+        }
+
+        [UseOffsetPaging]
+        [UseProjection]
+        [UseFiltering]
+        [UseSorting]
+        public IQueryable<Position> Positions([Service] DemoDbContext db)
+        {
+            return db.Positions;
+        }
+
+        [UseOffsetPaging]
+        [UseProjection]
+        [UseFiltering]
+        [UseSorting]
         public IQueryable<Workplace> Workplaces([Service] DemoDbContext db)
         {
             return db.Workplaces;
         }
-
-        //[UseOffsetPaging]
-        //[UseProjection]
-        //[UseFiltering]
-        //[UseSorting]
-        //public IQueryable<Adresser> Adresser([Service] DemoDbContext db)
-        //{
-        //    return db.Adresser;
-        //}
-
-        //[UseOffsetPaging]
-        //[UseProjection]
-        //[UseFiltering]
-        //[UseSorting]
-        //public IQueryable<Arbetsplatser> Arbetsplatser([Service] DemoDbContext db)
-        //{
-        //    return db.Arbetsplatser;
-        //}
-
-        //[UseOffsetPaging]
-        //[UseProjection]
-        //[UseFiltering]
-        //[UseSorting]
-        //public IQueryable<Kunder> Kunder([Service] DemoDbContext db)
-        //{
-        //    return db.Kunder;
-        //}
-
-        //[UseOffsetPaging]
-        //[UseProjection]
-        //[UseFiltering]
-        //[UseSorting]
-        //public IQueryable<Positioner> Positioner([Service] DemoDbContext db)
-        //{
-        //    return db.Positioner;
-        //}
     }
 }

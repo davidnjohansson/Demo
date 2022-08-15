@@ -17,58 +17,58 @@
 				<p>I'm visible because I am open</p>
 			</mat-expansion-panel>
 		</mat-accordion>
-		<mat-table [dataSource]="arbetsplatser" matSort (matSortChange)="onSortChanged($event)">
+		<mat-table [dataSource]="workplaces" matSort (matSortChange)="onSortChanged($event)">
 			<ng-container matColumnDef="select">
 				<mat-header-cell *matHeaderCellDef>Position</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<mat-checkbox *ngIf="arbetsplats" (click)="$event.stopPropagation()" (change)="onSelectionChanged(arbetsplats)" [checked]="selection.isSelected(arbetsplats)" [disabled]="!arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation"></mat-checkbox>
+				<mat-cell *matCellDef="let workplace">
+					<mat-checkbox *ngIf="workplace" (click)="$event.stopPropagation()" (change)="onSelectionChanged(workplace)" [checked]="selection.isSelected(workplace)" [disabled]="!workplace?.address?.position"></mat-checkbox>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="arbetsplatsNamn">
+			<ng-container matColumnDef="workplaceName">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Arbetsplats</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.arbetsplatsNamn }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.workplaceName }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="aktiv">
+			<ng-container matColumnDef="active">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Aktiv</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.aktiv ? 'Ja' : 'Nej' }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.active ? 'Ja' : 'Nej' }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="fkKunderNavigation.kundNamn">
+			<ng-container matColumnDef="customer.customerName">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Kundnamn</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.fkKunderNavigation?.kundNamn }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.customer?.customerName }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="fkAdresserNavigation.adress1">
+			<ng-container matColumnDef="address.address1">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Adress</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.fkAdresserNavigation?.adress1 }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.address?.address1 }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="fkAdresserNavigation.ort">
+			<ng-container matColumnDef="address.city">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Ort</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.fkAdresserNavigation?.ort }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.address?.city }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="fkAdresserNavigation.postnr">
+			<ng-container matColumnDef="address.zipCode">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Postnummer</mat-header-cell>
-				<mat-cell *matCellDef="let arbetsplats">
-					<ng-container *ngIf="arbetsplats">
-						{{ arbetsplats.fkAdresserNavigation?.postnr }}
+				<mat-cell *matCellDef="let workplace">
+					<ng-container *ngIf="workplace">
+						{{ workplace.address?.zipCode }}
 					</ng-container>
 				</mat-cell>
 			</ng-container>
@@ -78,6 +78,6 @@
 		<mat-paginator #paginator [length]="totalCount" [pageSize]="take" showFirstLastButtons></mat-paginator>
 	</div>
 	<google-map id="workplaces-right-id" class="workplaces-right" [center]="mapCenter">
-		<map-marker *ngIf="selectedArbetsplatsLatLng" [position]="selectedArbetsplatsLatLng"></map-marker>
+		<map-marker *ngIf="selectedWorkplaceLatLng" [position]="selectedWorkplaceLatLng"></map-marker>
 	</google-map>
 </div>

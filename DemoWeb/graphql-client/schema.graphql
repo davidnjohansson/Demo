@@ -45,61 +45,23 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
-"""
-The `@specifiedBy` directive is used within the type system definition language
-to provide a URL for specifying the behavior of custom scalar definitions.
-"""
-directive @specifiedBy(
-  """
-  The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types.
-  """
-  url: String!
-) on SCALAR
-
-type Adresser {
-  pk: Int!
-  aktiv: Boolean
-  fkAdresstyp: Int!
-  fkPositioner: Int
-  fkLander: Int
-  namn: String
-  co: String
-  adress1: String
-  adress2: String
-  zon: String
-  postnr: String
-  ort: String
-  kontakt: String
-  epost: String
-  telefon1: String
-  telefon2: String
-  telefon3: String
-  mobiltelefon: String
-  fax: String
-  vagbeskrivning: String
-  referens: String
-  id: String
-  fkZon: Int
-  lastinfo: String
-  lossinfo: String
-  pallregNummer: String
-  slottid: DateTime
-  internInformation: String
-  kommunKod: String
-  lagerStalleNr: String
-  slottidSlut: DateTime
-  siloId: String
-  framkomlighet: String
-  cfarNr: String
-  fkAdresstypNavigation: Adresstyp!
-  fkPositionerNavigation: Positioner
-  arbetsplatser: [Arbetsplatser!]!
-  kunderFkAdresserBesoksadressNavigation: [Kunder!]!
-  kunderFkAdresserFakturaadressNavigation: [Kunder!]!
+type Address {
+  id: Int!
+  active: Boolean!
+  address1: String
+  city: String
+  zipCode: String
+  addressTypeId: Int!
+  addressType: AddressType!
+  positionId: Int
+  position: Position
+  workplaces: [Workplace!]!
+  visitingAddressFor: [Customer!]!
+  invoiceAddressFor: [Customer!]!
 }
 
-type AdresserCollectionSegment {
-  items: [Adresser!]
+type AddressCollectionSegment {
+  items: [Address!]
 
   """
   Information to aid in pagination.
@@ -108,230 +70,58 @@ type AdresserCollectionSegment {
   totalCount: Int!
 }
 
-input AdresserFilterInput {
-  and: [AdresserFilterInput!]
-  or: [AdresserFilterInput!]
-  pk: ComparableInt32OperationFilterInput
-  aktiv: BooleanOperationFilterInput
-  fkAdresstyp: ComparableInt32OperationFilterInput
-  fkPositioner: ComparableNullableOfInt32OperationFilterInput
-  fkLander: ComparableNullableOfInt32OperationFilterInput
-  namn: StringOperationFilterInput
-  co: StringOperationFilterInput
-  adress1: StringOperationFilterInput
-  adress2: StringOperationFilterInput
-  zon: StringOperationFilterInput
-  postnr: StringOperationFilterInput
-  ort: StringOperationFilterInput
-  kontakt: StringOperationFilterInput
-  epost: StringOperationFilterInput
-  telefon1: StringOperationFilterInput
-  telefon2: StringOperationFilterInput
-  telefon3: StringOperationFilterInput
-  mobiltelefon: StringOperationFilterInput
-  fax: StringOperationFilterInput
-  vagbeskrivning: StringOperationFilterInput
-  referens: StringOperationFilterInput
-  id: StringOperationFilterInput
-  fkZon: ComparableNullableOfInt32OperationFilterInput
-  lastinfo: StringOperationFilterInput
-  lossinfo: StringOperationFilterInput
-  pallregNummer: StringOperationFilterInput
-  slottid: ComparableNullableOfDateTimeOperationFilterInput
-  internInformation: StringOperationFilterInput
-  kommunKod: StringOperationFilterInput
-  lagerStalleNr: StringOperationFilterInput
-  slottidSlut: ComparableNullableOfDateTimeOperationFilterInput
-  siloId: StringOperationFilterInput
-  framkomlighet: StringOperationFilterInput
-  cfarNr: StringOperationFilterInput
-  fkAdresstypNavigation: AdresstypFilterInput
-  fkPositionerNavigation: PositionerFilterInput
-  arbetsplatser: ListFilterInputTypeOfArbetsplatserFilterInput
-  kunderFkAdresserBesoksadressNavigation: ListFilterInputTypeOfKunderFilterInput
-  kunderFkAdresserFakturaadressNavigation: ListFilterInputTypeOfKunderFilterInput
+input AddressFilterInput {
+  and: [AddressFilterInput!]
+  or: [AddressFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  active: BooleanOperationFilterInput
+  address1: StringOperationFilterInput
+  city: StringOperationFilterInput
+  zipCode: StringOperationFilterInput
+  addressTypeId: ComparableInt32OperationFilterInput
+  addressType: AddressTypeFilterInput
+  positionId: ComparableNullableOfInt32OperationFilterInput
+  position: PositionFilterInput
+  workplaces: ListFilterInputTypeOfWorkplaceFilterInput
+  visitingAddressFor: ListFilterInputTypeOfCustomerFilterInput
+  invoiceAddressFor: ListFilterInputTypeOfCustomerFilterInput
 }
 
-input AdresserSortInput {
-  pk: SortEnumType
-  aktiv: SortEnumType
-  fkAdresstyp: SortEnumType
-  fkPositioner: SortEnumType
-  fkLander: SortEnumType
-  namn: SortEnumType
-  co: SortEnumType
-  adress1: SortEnumType
-  adress2: SortEnumType
-  zon: SortEnumType
-  postnr: SortEnumType
-  ort: SortEnumType
-  kontakt: SortEnumType
-  epost: SortEnumType
-  telefon1: SortEnumType
-  telefon2: SortEnumType
-  telefon3: SortEnumType
-  mobiltelefon: SortEnumType
-  fax: SortEnumType
-  vagbeskrivning: SortEnumType
-  referens: SortEnumType
+input AddressSortInput {
   id: SortEnumType
-  fkZon: SortEnumType
-  lastinfo: SortEnumType
-  lossinfo: SortEnumType
-  pallregNummer: SortEnumType
-  slottid: SortEnumType
-  internInformation: SortEnumType
-  kommunKod: SortEnumType
-  lagerStalleNr: SortEnumType
-  slottidSlut: SortEnumType
-  siloId: SortEnumType
-  framkomlighet: SortEnumType
-  cfarNr: SortEnumType
-  fkAdresstypNavigation: AdresstypSortInput
-  fkPositionerNavigation: PositionerSortInput
+  active: SortEnumType
+  address1: SortEnumType
+  city: SortEnumType
+  zipCode: SortEnumType
+  addressTypeId: SortEnumType
+  addressType: AddressTypeSortInput
+  positionId: SortEnumType
+  position: PositionSortInput
 }
 
-type Adresstyp {
-  pk: Int!
-  adresstypNamn: String
-  visaPaWeb: Boolean
-  adresser: [Adresser!]!
+type AddressType {
+  id: Int!
+  addressTypeName: String!
+  addresses: [Address!]!
 }
 
-input AdresstypFilterInput {
-  and: [AdresstypFilterInput!]
-  or: [AdresstypFilterInput!]
-  pk: ComparableInt32OperationFilterInput
-  adresstypNamn: StringOperationFilterInput
-  visaPaWeb: BooleanOperationFilterInput
-  adresser: ListFilterInputTypeOfAdresserFilterInput
+input AddressTypeFilterInput {
+  and: [AddressTypeFilterInput!]
+  or: [AddressTypeFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  addressTypeName: StringOperationFilterInput
+  addresses: ListFilterInputTypeOfAddressFilterInput
 }
 
-input AdresstypSortInput {
-  pk: SortEnumType
-  adresstypNamn: SortEnumType
-  visaPaWeb: SortEnumType
-}
-
-type Arbetsplatser {
-  pk: Int!
-  aktiv: Boolean
-  fkKunder: Int!
-  fkAdresser: Int!
-  fkPositioner: Int
-  arbetsplatsNamn: String!
-  oppnar: TimeSpan
-  stanger: TimeSpan
-  lunchStart: TimeSpan
-  lunchStopp: TimeSpan
-  nyckelkod: String
-  kartkod: String
-  sekundarKund: String
-  referens1: String
-  referens2: String
-  referens3: String
-  referens4: String
-  referens5: String
-  standardApl: Boolean!
-  fastighetsbeteckning: String
-  anl_ggningsnummer: String
-  fkKontakt: Int
-  fkEwcgrupp: Int
-  fkKundgrupper: Int
-  fkLinjer: Int
-  debiteringsgrundandeAntal: Int
-  rowVersion: [Byte!]!
-  fkAdresserNavigation: Adresser!
-  fkKunderNavigation: Kunder!
-  fkPositionerNavigation: Positioner
-}
-
-type ArbetsplatserCollectionSegment {
-  items: [Arbetsplatser!]
-
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: CollectionSegmentInfo!
-  totalCount: Int!
-}
-
-input ArbetsplatserFilterInput {
-  and: [ArbetsplatserFilterInput!]
-  or: [ArbetsplatserFilterInput!]
-  pk: ComparableInt32OperationFilterInput
-  aktiv: BooleanOperationFilterInput
-  fkKunder: ComparableInt32OperationFilterInput
-  fkAdresser: ComparableInt32OperationFilterInput
-  fkPositioner: ComparableNullableOfInt32OperationFilterInput
-  arbetsplatsNamn: StringOperationFilterInput
-  oppnar: ComparableNullableOfTimeSpanOperationFilterInput
-  stanger: ComparableNullableOfTimeSpanOperationFilterInput
-  lunchStart: ComparableNullableOfTimeSpanOperationFilterInput
-  lunchStopp: ComparableNullableOfTimeSpanOperationFilterInput
-  nyckelkod: StringOperationFilterInput
-  kartkod: StringOperationFilterInput
-  sekundarKund: StringOperationFilterInput
-  referens1: StringOperationFilterInput
-  referens2: StringOperationFilterInput
-  referens3: StringOperationFilterInput
-  referens4: StringOperationFilterInput
-  referens5: StringOperationFilterInput
-  standardApl: BooleanOperationFilterInput
-  fastighetsbeteckning: StringOperationFilterInput
-  anl_ggningsnummer: StringOperationFilterInput
-  fkKontakt: ComparableNullableOfInt32OperationFilterInput
-  fkEwcgrupp: ComparableNullableOfInt32OperationFilterInput
-  fkKundgrupper: ComparableNullableOfInt32OperationFilterInput
-  fkLinjer: ComparableNullableOfInt32OperationFilterInput
-  debiteringsgrundandeAntal: ComparableNullableOfInt32OperationFilterInput
-  rowVersion: ListComparableByteOperationFilterInput
-  fkAdresserNavigation: AdresserFilterInput
-  fkKunderNavigation: KunderFilterInput
-  fkPositionerNavigation: PositionerFilterInput
-}
-
-input ArbetsplatserSortInput {
-  pk: SortEnumType
-  aktiv: SortEnumType
-  fkKunder: SortEnumType
-  fkAdresser: SortEnumType
-  fkPositioner: SortEnumType
-  arbetsplatsNamn: SortEnumType
-  oppnar: SortEnumType
-  stanger: SortEnumType
-  lunchStart: SortEnumType
-  lunchStopp: SortEnumType
-  nyckelkod: SortEnumType
-  kartkod: SortEnumType
-  sekundarKund: SortEnumType
-  referens1: SortEnumType
-  referens2: SortEnumType
-  referens3: SortEnumType
-  referens4: SortEnumType
-  referens5: SortEnumType
-  standardApl: SortEnumType
-  fastighetsbeteckning: SortEnumType
-  anl_ggningsnummer: SortEnumType
-  fkKontakt: SortEnumType
-  fkEwcgrupp: SortEnumType
-  fkKundgrupper: SortEnumType
-  fkLinjer: SortEnumType
-  debiteringsgrundandeAntal: SortEnumType
-  fkAdresserNavigation: AdresserSortInput
-  fkKunderNavigation: KunderSortInput
-  fkPositionerNavigation: PositionerSortInput
+input AddressTypeSortInput {
+  id: SortEnumType
+  addressTypeName: SortEnumType
 }
 
 input BooleanOperationFilterInput {
   eq: Boolean
   neq: Boolean
 }
-
-"""
-The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255.
-"""
-scalar Byte
 
 """
 Information about the offset pagination.
@@ -346,21 +136,6 @@ type CollectionSegmentInfo {
   Indicates whether more items exist prior the set defined by the clients arguments.
   """
   hasPreviousPage: Boolean!
-}
-
-input ComparableByteOperationFilterInput {
-  eq: Byte
-  neq: Byte
-  in: [Byte!]
-  nin: [Byte!]
-  gt: Byte
-  ngt: Byte
-  gte: Byte
-  ngte: Byte
-  lt: Byte
-  nlt: Byte
-  lte: Byte
-  nlte: Byte
 }
 
 input ComparableDoubleOperationFilterInput {
@@ -393,36 +168,6 @@ input ComparableInt32OperationFilterInput {
   nlte: Int
 }
 
-input ComparableNullableOfDateTimeOperationFilterInput {
-  eq: DateTime
-  neq: DateTime
-  in: [DateTime]
-  nin: [DateTime]
-  gt: DateTime
-  ngt: DateTime
-  gte: DateTime
-  ngte: DateTime
-  lt: DateTime
-  nlt: DateTime
-  lte: DateTime
-  nlte: DateTime
-}
-
-input ComparableNullableOfDoubleOperationFilterInput {
-  eq: Float
-  neq: Float
-  in: [Float]
-  nin: [Float]
-  gt: Float
-  ngt: Float
-  gte: Float
-  ngte: Float
-  lt: Float
-  nlt: Float
-  lte: Float
-  nlte: Float
-}
-
 input ComparableNullableOfInt32OperationFilterInput {
   eq: Int
   neq: Int
@@ -438,224 +183,28 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
-input ComparableNullableOfTimeSpanOperationFilterInput {
-  eq: TimeSpan
-  neq: TimeSpan
-  in: [TimeSpan]
-  nin: [TimeSpan]
-  gt: TimeSpan
-  ngt: TimeSpan
-  gte: TimeSpan
-  ngte: TimeSpan
-  lt: TimeSpan
-  nlt: TimeSpan
-  lte: TimeSpan
-  nlte: TimeSpan
+type Customer {
+  id: Int!
+  customerName: String!
+  customerNo: String!
+  visitingAddressId: Int!
+  visitingAddress: Address
+  invoiceAddressId: Int!
+  invoiceAddress: Address
+  payerId: Int!
+  payer: Customer
+  contractorId: Int!
+  contractor: Customer
+  corporationId: Int!
+  corporation: Customer
+  workplaces: [Workplace!]!
+  payerFor: [Customer!]!
+  contractorFor: [Customer!]!
+  corporationFor: [Customer!]!
 }
 
-"""
-The `DateTime` scalar represents an ISO-8601 compliant date time type.
-"""
-scalar DateTime
-
-type Kunder {
-  pk: Int!
-  aktiv: Boolean
-  fkKundkategorier: Int!
-  fkBilder: Int
-  fkBetalvillkor: Int
-  fkLanderMoms: Int!
-  fkBetalare: Int
-  fkLinjer: Int
-  fkValutor: Int!
-  fkSchemaFakturering: Int
-  fkOmvandSkatt: Int
-  fkEntreprenad: Int
-  fkFaktureringsavgifter: Int
-  kund: Boolean
-  leverantor: Boolean!
-  akare: Boolean!
-  abonnent: Boolean!
-  sparr: Boolean!
-  prisSparr: Boolean!
-  varning: Boolean!
-  avrakningskund: Boolean!
-  varningText: String
-  kundNr: String!
-  kundNrEkonomi: String
-  abonnentNr: String
-  kundNamn: String!
-  kundid: String!
-  fkAdresserFakturaadress: Int
-  fkAdresserBesoksadress: Int
-  orgnr: String
-  vat: String
-  bankgiro: String
-  postgiro: String
-  skapadTidpunkt: DateTime
-  skapadAnvandare: String
-  andradTidpunkt: DateTime
-  andradAnvandare: String
-  kreditLimit: Float
-  info: String
-  popupInfo: String
-  fakturamall: Int
-  kravLittera: Boolean!
-  bankClearing: String
-  bankKonto: String
-  betalmetodExternkod: String
-  swift: String
-  iban: String
-  riksbankskod: String
-  fkFakturakoer: Int
-  fkFakturabrytLittera: Int!
-  fkFakturabrytKontakt: Int!
-  fakturabrytAntalOrders: Int
-  fkFakturabrytResurs: Int!
-  fkKontoBonusIntakt: Int
-  fkKontoBonusBalans: Int
-  bonusProcent: Float
-  fkMomskodBonus: Int
-  fkMellanskillnadsmall: Int
-  mall: Boolean!
-  mallNamn: String
-  externkodMallLev: String
-  externkodMallKund: String
-  fkCountersMall: Int
-  kravReferens: Boolean!
-  kravAo: Boolean!
-  kravVagsedel: Boolean!
-  kravTrptsedel: Boolean!
-  fkEnumLitteraMode: Int!
-  litteraMask: String
-  fkEnumFakturaPaslagRedovisning: Int!
-  fkKoncern: Int
-  fkEnumFakturalayout: Int
-  fkFakturabrytReferens: Int!
-  pallregnr: String
-  gannr: String
-  fkSprak: Int
-  fkKundbokforingsmall: Int
-  kravFraktsedel: Boolean!
-  inkluderaVagsedlarIfakturan: Boolean!
-  fkKundgrupper: Int
-  banknamn: String
-  litteraMaskDescription: String
-  fkFakturabrytArbetsordernr: Int!
-  fkEnumAvrakningslayout: Int
-  aktivTerminalScanning: Boolean!
-  fkEnumBrytpunktPeriod: Int!
-  autoprisViaDeliveryBot: Boolean
-  fkAttestflode: Int
-  farg: [Byte!]
-  foregroundFarg: [Byte!]
-  skrymmeBerakning: Boolean
-  aktivMallMobilwebb: Boolean!
-  utforKreditkontroll: Boolean!
-  utforHamtaData: Boolean!
-  kontrollInnanFakturering: Boolean!
-  mallPrivatperson: Boolean!
-  mallForetagskund: Boolean!
-  inkluderaArbetsordersIfakturan: Boolean!
-  externalId: String
-  fkBolagInternkund: Int
-  tm: Boolean!
-  fkEnumKravPaFotoSignatur: Int
-  fkAnvandare: Int
-  avrunda10: Float
-  avrunda100: Float
-  kravInstruktion: String
-  inaktiveraSamtax: Boolean!
-  fakturaReferens: String
-  avrunda1: Float
-  autoFakturering: Boolean
-  transportsedelMask: String
-  fkFakturakoerAvrakning: Int
-  kundrefOnReport: Boolean!
-  fkEwcgrupp: Int
-  fkEntreprenader: Int
-  fkFakturabrytArbetsplats: Int!
-  fakturaOchBilagorSomEnFil: Boolean
-  kravPaPosition: Boolean!
-  globaltPaslag: Float
-  globalRabatt: Float
-  stopAutoPris: Boolean!
-  avrakningEfterKundBetalning: Boolean
-  minimumTotalDebiteringResa: Float
-  minimumTotalAvrakningResa: Float
-  fkMinimumDebiteringsArtikel: Int
-  isKontantKund: Boolean!
-  exkluderaRabattVidDebitering: Boolean
-  fkMomslandkod: Int
-  isKoncern: Boolean!
-  isEntreprenadAgare: Boolean!
-  fkArtikeldialekt: Int
-  kravKundref: Boolean!
-  fkAnvandareKontakt: Int
-  sparrText: String
-  dbcalcHarFilkrav: Boolean
-  fkEnumFgvmodell: Int!
-  ggn: String
-  undantaFranKreditkontroll: Boolean!
-  bomkorningEmailAdresser: String
-  bomkorningTillaten: Boolean
-  bomkorningAction: Boolean
-  fkKommunikationskanal: Int
-  ediId: String
-  faktureraKoncern: Boolean!
-  autogiro: Boolean!
-  forskottsbetalning: Boolean!
-  kreditforsakratBelopp: Int
-  kreditforsakringsdatum: DateTime
-  kreditInfo: String
-  fkKreditforsakratbeloppValuta: Int
-  fkEnumFakturaBrytOmvandMoms: Int!
-  fkEnumFakturaBrytDebetKredit: Int!
-  counterAvr: Int!
-  counterSelfInvoice: Int!
-  sparrSkrymmeMobilt: Boolean
-  fyraOgonGrans: Int
-  hanterasSomInternPaUtskrifter: Boolean!
-  fkAviseringsMetod: Int
-  kravAviseringsInformation: Boolean!
-  fkEdijobbAvisering: Int
-  genereraFvPriser: Boolean!
-  fkEdijobbSms: Int
-  rowVersion: [Byte!]!
-  epostPaminnelse: String
-  fkEnumProcentuelltTillaggPrincip: Int!
-  bransch: String
-  fkEnumBomkorningsMetod: Int
-  rapporteraDataTillNvv: Boolean!
-  fkFakturabrytResa: Int!
-  dimensionskod: String
-  dimensionsbeskrivning: String
-  autoPrisKlarFaktMobil: Boolean!
-  enumRapporteringstypNvv: Int
-  appliceraNyttEdiOrderidVidBomkorning: Boolean!
-  genereraResenoderPerKoordinat: Boolean!
-  fkFakturabrytBetalningsunderlag: Int!
-  fkFakturabrytVerksamhet: Int!
-  fkBetalvillkorSjalvfaktura: Int
-  inaktiveraAvstandsBerakning: Boolean!
-  stopKoncernPris: Boolean!
-  fkFakturabrytKundref: Int!
-  epostNvvbekraftelse: String
-  personNrSwish: String
-  telefonNrSwish: String
-  fkAdresserBesoksadressNavigation: Adresser
-  fkAdresserFakturaadressNavigation: Adresser
-  fkBetalareNavigation: Kunder
-  fkEntreprenadNavigation: Kunder
-  fkKoncernNavigation: Kunder
-  arbetsplatser: [Arbetsplatser!]!
-  inverseFkBetalareNavigation: [Kunder!]!
-  inverseFkEntreprenadNavigation: [Kunder!]!
-  inverseFkKoncernNavigation: [Kunder!]!
-}
-
-type KunderCollectionSegment {
-  items: [Kunder!]
+type CustomerCollectionSegment {
+  items: [Customer!]
 
   """
   Information to aid in pagination.
@@ -664,443 +213,84 @@ type KunderCollectionSegment {
   totalCount: Int!
 }
 
-input KunderFilterInput {
-  and: [KunderFilterInput!]
-  or: [KunderFilterInput!]
-  pk: ComparableInt32OperationFilterInput
-  aktiv: BooleanOperationFilterInput
-  fkKundkategorier: ComparableInt32OperationFilterInput
-  fkBilder: ComparableNullableOfInt32OperationFilterInput
-  fkBetalvillkor: ComparableNullableOfInt32OperationFilterInput
-  fkLanderMoms: ComparableInt32OperationFilterInput
-  fkBetalare: ComparableNullableOfInt32OperationFilterInput
-  fkLinjer: ComparableNullableOfInt32OperationFilterInput
-  fkValutor: ComparableInt32OperationFilterInput
-  fkSchemaFakturering: ComparableNullableOfInt32OperationFilterInput
-  fkOmvandSkatt: ComparableNullableOfInt32OperationFilterInput
-  fkEntreprenad: ComparableNullableOfInt32OperationFilterInput
-  fkFaktureringsavgifter: ComparableNullableOfInt32OperationFilterInput
-  kund: BooleanOperationFilterInput
-  leverantor: BooleanOperationFilterInput
-  akare: BooleanOperationFilterInput
-  abonnent: BooleanOperationFilterInput
-  sparr: BooleanOperationFilterInput
-  prisSparr: BooleanOperationFilterInput
-  varning: BooleanOperationFilterInput
-  avrakningskund: BooleanOperationFilterInput
-  varningText: StringOperationFilterInput
-  kundNr: StringOperationFilterInput
-  kundNrEkonomi: StringOperationFilterInput
-  abonnentNr: StringOperationFilterInput
-  kundNamn: StringOperationFilterInput
-  kundid: StringOperationFilterInput
-  fkAdresserFakturaadress: ComparableNullableOfInt32OperationFilterInput
-  fkAdresserBesoksadress: ComparableNullableOfInt32OperationFilterInput
-  orgnr: StringOperationFilterInput
-  vat: StringOperationFilterInput
-  bankgiro: StringOperationFilterInput
-  postgiro: StringOperationFilterInput
-  skapadTidpunkt: ComparableNullableOfDateTimeOperationFilterInput
-  skapadAnvandare: StringOperationFilterInput
-  andradTidpunkt: ComparableNullableOfDateTimeOperationFilterInput
-  andradAnvandare: StringOperationFilterInput
-  kreditLimit: ComparableNullableOfDoubleOperationFilterInput
-  info: StringOperationFilterInput
-  popupInfo: StringOperationFilterInput
-  fakturamall: ComparableNullableOfInt32OperationFilterInput
-  kravLittera: BooleanOperationFilterInput
-  bankClearing: StringOperationFilterInput
-  bankKonto: StringOperationFilterInput
-  betalmetodExternkod: StringOperationFilterInput
-  swift: StringOperationFilterInput
-  iban: StringOperationFilterInput
-  riksbankskod: StringOperationFilterInput
-  fkFakturakoer: ComparableNullableOfInt32OperationFilterInput
-  fkFakturabrytLittera: ComparableInt32OperationFilterInput
-  fkFakturabrytKontakt: ComparableInt32OperationFilterInput
-  fakturabrytAntalOrders: ComparableNullableOfInt32OperationFilterInput
-  fkFakturabrytResurs: ComparableInt32OperationFilterInput
-  fkKontoBonusIntakt: ComparableNullableOfInt32OperationFilterInput
-  fkKontoBonusBalans: ComparableNullableOfInt32OperationFilterInput
-  bonusProcent: ComparableNullableOfDoubleOperationFilterInput
-  fkMomskodBonus: ComparableNullableOfInt32OperationFilterInput
-  fkMellanskillnadsmall: ComparableNullableOfInt32OperationFilterInput
-  mall: BooleanOperationFilterInput
-  mallNamn: StringOperationFilterInput
-  externkodMallLev: StringOperationFilterInput
-  externkodMallKund: StringOperationFilterInput
-  fkCountersMall: ComparableNullableOfInt32OperationFilterInput
-  kravReferens: BooleanOperationFilterInput
-  kravAo: BooleanOperationFilterInput
-  kravVagsedel: BooleanOperationFilterInput
-  kravTrptsedel: BooleanOperationFilterInput
-  fkEnumLitteraMode: ComparableInt32OperationFilterInput
-  litteraMask: StringOperationFilterInput
-  fkEnumFakturaPaslagRedovisning: ComparableInt32OperationFilterInput
-  fkKoncern: ComparableNullableOfInt32OperationFilterInput
-  fkEnumFakturalayout: ComparableNullableOfInt32OperationFilterInput
-  fkFakturabrytReferens: ComparableInt32OperationFilterInput
-  pallregnr: StringOperationFilterInput
-  gannr: StringOperationFilterInput
-  fkSprak: ComparableNullableOfInt32OperationFilterInput
-  fkKundbokforingsmall: ComparableNullableOfInt32OperationFilterInput
-  kravFraktsedel: BooleanOperationFilterInput
-  inkluderaVagsedlarIfakturan: BooleanOperationFilterInput
-  fkKundgrupper: ComparableNullableOfInt32OperationFilterInput
-  banknamn: StringOperationFilterInput
-  litteraMaskDescription: StringOperationFilterInput
-  fkFakturabrytArbetsordernr: ComparableInt32OperationFilterInput
-  fkEnumAvrakningslayout: ComparableNullableOfInt32OperationFilterInput
-  aktivTerminalScanning: BooleanOperationFilterInput
-  fkEnumBrytpunktPeriod: ComparableInt32OperationFilterInput
-  autoprisViaDeliveryBot: BooleanOperationFilterInput
-  fkAttestflode: ComparableNullableOfInt32OperationFilterInput
-  farg: ListComparableByteOperationFilterInput
-  foregroundFarg: ListComparableByteOperationFilterInput
-  skrymmeBerakning: BooleanOperationFilterInput
-  aktivMallMobilwebb: BooleanOperationFilterInput
-  utforKreditkontroll: BooleanOperationFilterInput
-  utforHamtaData: BooleanOperationFilterInput
-  kontrollInnanFakturering: BooleanOperationFilterInput
-  mallPrivatperson: BooleanOperationFilterInput
-  mallForetagskund: BooleanOperationFilterInput
-  inkluderaArbetsordersIfakturan: BooleanOperationFilterInput
-  externalId: StringOperationFilterInput
-  fkBolagInternkund: ComparableNullableOfInt32OperationFilterInput
-  tm: BooleanOperationFilterInput
-  fkEnumKravPaFotoSignatur: ComparableNullableOfInt32OperationFilterInput
-  fkAnvandare: ComparableNullableOfInt32OperationFilterInput
-  avrunda10: ComparableNullableOfDoubleOperationFilterInput
-  avrunda100: ComparableNullableOfDoubleOperationFilterInput
-  kravInstruktion: StringOperationFilterInput
-  inaktiveraSamtax: BooleanOperationFilterInput
-  fakturaReferens: StringOperationFilterInput
-  avrunda1: ComparableNullableOfDoubleOperationFilterInput
-  autoFakturering: BooleanOperationFilterInput
-  transportsedelMask: StringOperationFilterInput
-  fkFakturakoerAvrakning: ComparableNullableOfInt32OperationFilterInput
-  kundrefOnReport: BooleanOperationFilterInput
-  fkEwcgrupp: ComparableNullableOfInt32OperationFilterInput
-  fkEntreprenader: ComparableNullableOfInt32OperationFilterInput
-  fkFakturabrytArbetsplats: ComparableInt32OperationFilterInput
-  fakturaOchBilagorSomEnFil: BooleanOperationFilterInput
-  kravPaPosition: BooleanOperationFilterInput
-  globaltPaslag: ComparableNullableOfDoubleOperationFilterInput
-  globalRabatt: ComparableNullableOfDoubleOperationFilterInput
-  stopAutoPris: BooleanOperationFilterInput
-  avrakningEfterKundBetalning: BooleanOperationFilterInput
-  minimumTotalDebiteringResa: ComparableNullableOfDoubleOperationFilterInput
-  minimumTotalAvrakningResa: ComparableNullableOfDoubleOperationFilterInput
-  fkMinimumDebiteringsArtikel: ComparableNullableOfInt32OperationFilterInput
-  isKontantKund: BooleanOperationFilterInput
-  exkluderaRabattVidDebitering: BooleanOperationFilterInput
-  fkMomslandkod: ComparableNullableOfInt32OperationFilterInput
-  isKoncern: BooleanOperationFilterInput
-  isEntreprenadAgare: BooleanOperationFilterInput
-  fkArtikeldialekt: ComparableNullableOfInt32OperationFilterInput
-  kravKundref: BooleanOperationFilterInput
-  fkAnvandareKontakt: ComparableNullableOfInt32OperationFilterInput
-  sparrText: StringOperationFilterInput
-  dbcalcHarFilkrav: BooleanOperationFilterInput
-  fkEnumFgvmodell: ComparableInt32OperationFilterInput
-  ggn: StringOperationFilterInput
-  undantaFranKreditkontroll: BooleanOperationFilterInput
-  bomkorningEmailAdresser: StringOperationFilterInput
-  bomkorningTillaten: BooleanOperationFilterInput
-  bomkorningAction: BooleanOperationFilterInput
-  fkKommunikationskanal: ComparableNullableOfInt32OperationFilterInput
-  ediId: StringOperationFilterInput
-  faktureraKoncern: BooleanOperationFilterInput
-  autogiro: BooleanOperationFilterInput
-  forskottsbetalning: BooleanOperationFilterInput
-  kreditforsakratBelopp: ComparableNullableOfInt32OperationFilterInput
-  kreditforsakringsdatum: ComparableNullableOfDateTimeOperationFilterInput
-  kreditInfo: StringOperationFilterInput
-  fkKreditforsakratbeloppValuta: ComparableNullableOfInt32OperationFilterInput
-  fkEnumFakturaBrytOmvandMoms: ComparableInt32OperationFilterInput
-  fkEnumFakturaBrytDebetKredit: ComparableInt32OperationFilterInput
-  counterAvr: ComparableInt32OperationFilterInput
-  counterSelfInvoice: ComparableInt32OperationFilterInput
-  sparrSkrymmeMobilt: BooleanOperationFilterInput
-  fyraOgonGrans: ComparableNullableOfInt32OperationFilterInput
-  hanterasSomInternPaUtskrifter: BooleanOperationFilterInput
-  fkAviseringsMetod: ComparableNullableOfInt32OperationFilterInput
-  kravAviseringsInformation: BooleanOperationFilterInput
-  fkEdijobbAvisering: ComparableNullableOfInt32OperationFilterInput
-  genereraFvPriser: BooleanOperationFilterInput
-  fkEdijobbSms: ComparableNullableOfInt32OperationFilterInput
-  rowVersion: ListComparableByteOperationFilterInput
-  epostPaminnelse: StringOperationFilterInput
-  fkEnumProcentuelltTillaggPrincip: ComparableInt32OperationFilterInput
-  bransch: StringOperationFilterInput
-  fkEnumBomkorningsMetod: ComparableNullableOfInt32OperationFilterInput
-  rapporteraDataTillNvv: BooleanOperationFilterInput
-  fkFakturabrytResa: ComparableInt32OperationFilterInput
-  dimensionskod: StringOperationFilterInput
-  dimensionsbeskrivning: StringOperationFilterInput
-  autoPrisKlarFaktMobil: BooleanOperationFilterInput
-  enumRapporteringstypNvv: ComparableNullableOfInt32OperationFilterInput
-  appliceraNyttEdiOrderidVidBomkorning: BooleanOperationFilterInput
-  genereraResenoderPerKoordinat: BooleanOperationFilterInput
-  fkFakturabrytBetalningsunderlag: ComparableInt32OperationFilterInput
-  fkFakturabrytVerksamhet: ComparableInt32OperationFilterInput
-  fkBetalvillkorSjalvfaktura: ComparableNullableOfInt32OperationFilterInput
-  inaktiveraAvstandsBerakning: BooleanOperationFilterInput
-  stopKoncernPris: BooleanOperationFilterInput
-  fkFakturabrytKundref: ComparableInt32OperationFilterInput
-  epostNvvbekraftelse: StringOperationFilterInput
-  personNrSwish: StringOperationFilterInput
-  telefonNrSwish: StringOperationFilterInput
-  fkAdresserBesoksadressNavigation: AdresserFilterInput
-  fkAdresserFakturaadressNavigation: AdresserFilterInput
-  fkBetalareNavigation: KunderFilterInput
-  fkEntreprenadNavigation: KunderFilterInput
-  fkKoncernNavigation: KunderFilterInput
-  arbetsplatser: ListFilterInputTypeOfArbetsplatserFilterInput
-  inverseFkBetalareNavigation: ListFilterInputTypeOfKunderFilterInput
-  inverseFkEntreprenadNavigation: ListFilterInputTypeOfKunderFilterInput
-  inverseFkKoncernNavigation: ListFilterInputTypeOfKunderFilterInput
+input CustomerFilterInput {
+  and: [CustomerFilterInput!]
+  or: [CustomerFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  customerName: StringOperationFilterInput
+  customerNo: StringOperationFilterInput
+  visitingAddressId: ComparableInt32OperationFilterInput
+  visitingAddress: AddressFilterInput
+  invoiceAddressId: ComparableInt32OperationFilterInput
+  invoiceAddress: AddressFilterInput
+  payerId: ComparableInt32OperationFilterInput
+  payer: CustomerFilterInput
+  contractorId: ComparableInt32OperationFilterInput
+  contractor: CustomerFilterInput
+  corporationId: ComparableInt32OperationFilterInput
+  corporation: CustomerFilterInput
+  workplaces: ListFilterInputTypeOfWorkplaceFilterInput
+  payerFor: ListFilterInputTypeOfCustomerFilterInput
+  contractorFor: ListFilterInputTypeOfCustomerFilterInput
+  corporationFor: ListFilterInputTypeOfCustomerFilterInput
 }
 
-input KunderSortInput {
-  pk: SortEnumType
-  aktiv: SortEnumType
-  fkKundkategorier: SortEnumType
-  fkBilder: SortEnumType
-  fkBetalvillkor: SortEnumType
-  fkLanderMoms: SortEnumType
-  fkBetalare: SortEnumType
-  fkLinjer: SortEnumType
-  fkValutor: SortEnumType
-  fkSchemaFakturering: SortEnumType
-  fkOmvandSkatt: SortEnumType
-  fkEntreprenad: SortEnumType
-  fkFaktureringsavgifter: SortEnumType
-  kund: SortEnumType
-  leverantor: SortEnumType
-  akare: SortEnumType
-  abonnent: SortEnumType
-  sparr: SortEnumType
-  prisSparr: SortEnumType
-  varning: SortEnumType
-  avrakningskund: SortEnumType
-  varningText: SortEnumType
-  kundNr: SortEnumType
-  kundNrEkonomi: SortEnumType
-  abonnentNr: SortEnumType
-  kundNamn: SortEnumType
-  kundid: SortEnumType
-  fkAdresserFakturaadress: SortEnumType
-  fkAdresserBesoksadress: SortEnumType
-  orgnr: SortEnumType
-  vat: SortEnumType
-  bankgiro: SortEnumType
-  postgiro: SortEnumType
-  skapadTidpunkt: SortEnumType
-  skapadAnvandare: SortEnumType
-  andradTidpunkt: SortEnumType
-  andradAnvandare: SortEnumType
-  kreditLimit: SortEnumType
-  info: SortEnumType
-  popupInfo: SortEnumType
-  fakturamall: SortEnumType
-  kravLittera: SortEnumType
-  bankClearing: SortEnumType
-  bankKonto: SortEnumType
-  betalmetodExternkod: SortEnumType
-  swift: SortEnumType
-  iban: SortEnumType
-  riksbankskod: SortEnumType
-  fkFakturakoer: SortEnumType
-  fkFakturabrytLittera: SortEnumType
-  fkFakturabrytKontakt: SortEnumType
-  fakturabrytAntalOrders: SortEnumType
-  fkFakturabrytResurs: SortEnumType
-  fkKontoBonusIntakt: SortEnumType
-  fkKontoBonusBalans: SortEnumType
-  bonusProcent: SortEnumType
-  fkMomskodBonus: SortEnumType
-  fkMellanskillnadsmall: SortEnumType
-  mall: SortEnumType
-  mallNamn: SortEnumType
-  externkodMallLev: SortEnumType
-  externkodMallKund: SortEnumType
-  fkCountersMall: SortEnumType
-  kravReferens: SortEnumType
-  kravAo: SortEnumType
-  kravVagsedel: SortEnumType
-  kravTrptsedel: SortEnumType
-  fkEnumLitteraMode: SortEnumType
-  litteraMask: SortEnumType
-  fkEnumFakturaPaslagRedovisning: SortEnumType
-  fkKoncern: SortEnumType
-  fkEnumFakturalayout: SortEnumType
-  fkFakturabrytReferens: SortEnumType
-  pallregnr: SortEnumType
-  gannr: SortEnumType
-  fkSprak: SortEnumType
-  fkKundbokforingsmall: SortEnumType
-  kravFraktsedel: SortEnumType
-  inkluderaVagsedlarIfakturan: SortEnumType
-  fkKundgrupper: SortEnumType
-  banknamn: SortEnumType
-  litteraMaskDescription: SortEnumType
-  fkFakturabrytArbetsordernr: SortEnumType
-  fkEnumAvrakningslayout: SortEnumType
-  aktivTerminalScanning: SortEnumType
-  fkEnumBrytpunktPeriod: SortEnumType
-  autoprisViaDeliveryBot: SortEnumType
-  fkAttestflode: SortEnumType
-  skrymmeBerakning: SortEnumType
-  aktivMallMobilwebb: SortEnumType
-  utforKreditkontroll: SortEnumType
-  utforHamtaData: SortEnumType
-  kontrollInnanFakturering: SortEnumType
-  mallPrivatperson: SortEnumType
-  mallForetagskund: SortEnumType
-  inkluderaArbetsordersIfakturan: SortEnumType
-  externalId: SortEnumType
-  fkBolagInternkund: SortEnumType
-  tm: SortEnumType
-  fkEnumKravPaFotoSignatur: SortEnumType
-  fkAnvandare: SortEnumType
-  avrunda10: SortEnumType
-  avrunda100: SortEnumType
-  kravInstruktion: SortEnumType
-  inaktiveraSamtax: SortEnumType
-  fakturaReferens: SortEnumType
-  avrunda1: SortEnumType
-  autoFakturering: SortEnumType
-  transportsedelMask: SortEnumType
-  fkFakturakoerAvrakning: SortEnumType
-  kundrefOnReport: SortEnumType
-  fkEwcgrupp: SortEnumType
-  fkEntreprenader: SortEnumType
-  fkFakturabrytArbetsplats: SortEnumType
-  fakturaOchBilagorSomEnFil: SortEnumType
-  kravPaPosition: SortEnumType
-  globaltPaslag: SortEnumType
-  globalRabatt: SortEnumType
-  stopAutoPris: SortEnumType
-  avrakningEfterKundBetalning: SortEnumType
-  minimumTotalDebiteringResa: SortEnumType
-  minimumTotalAvrakningResa: SortEnumType
-  fkMinimumDebiteringsArtikel: SortEnumType
-  isKontantKund: SortEnumType
-  exkluderaRabattVidDebitering: SortEnumType
-  fkMomslandkod: SortEnumType
-  isKoncern: SortEnumType
-  isEntreprenadAgare: SortEnumType
-  fkArtikeldialekt: SortEnumType
-  kravKundref: SortEnumType
-  fkAnvandareKontakt: SortEnumType
-  sparrText: SortEnumType
-  dbcalcHarFilkrav: SortEnumType
-  fkEnumFgvmodell: SortEnumType
-  ggn: SortEnumType
-  undantaFranKreditkontroll: SortEnumType
-  bomkorningEmailAdresser: SortEnumType
-  bomkorningTillaten: SortEnumType
-  bomkorningAction: SortEnumType
-  fkKommunikationskanal: SortEnumType
-  ediId: SortEnumType
-  faktureraKoncern: SortEnumType
-  autogiro: SortEnumType
-  forskottsbetalning: SortEnumType
-  kreditforsakratBelopp: SortEnumType
-  kreditforsakringsdatum: SortEnumType
-  kreditInfo: SortEnumType
-  fkKreditforsakratbeloppValuta: SortEnumType
-  fkEnumFakturaBrytOmvandMoms: SortEnumType
-  fkEnumFakturaBrytDebetKredit: SortEnumType
-  counterAvr: SortEnumType
-  counterSelfInvoice: SortEnumType
-  sparrSkrymmeMobilt: SortEnumType
-  fyraOgonGrans: SortEnumType
-  hanterasSomInternPaUtskrifter: SortEnumType
-  fkAviseringsMetod: SortEnumType
-  kravAviseringsInformation: SortEnumType
-  fkEdijobbAvisering: SortEnumType
-  genereraFvPriser: SortEnumType
-  fkEdijobbSms: SortEnumType
-  epostPaminnelse: SortEnumType
-  fkEnumProcentuelltTillaggPrincip: SortEnumType
-  bransch: SortEnumType
-  fkEnumBomkorningsMetod: SortEnumType
-  rapporteraDataTillNvv: SortEnumType
-  fkFakturabrytResa: SortEnumType
-  dimensionskod: SortEnumType
-  dimensionsbeskrivning: SortEnumType
-  autoPrisKlarFaktMobil: SortEnumType
-  enumRapporteringstypNvv: SortEnumType
-  appliceraNyttEdiOrderidVidBomkorning: SortEnumType
-  genereraResenoderPerKoordinat: SortEnumType
-  fkFakturabrytBetalningsunderlag: SortEnumType
-  fkFakturabrytVerksamhet: SortEnumType
-  fkBetalvillkorSjalvfaktura: SortEnumType
-  inaktiveraAvstandsBerakning: SortEnumType
-  stopKoncernPris: SortEnumType
-  fkFakturabrytKundref: SortEnumType
-  epostNvvbekraftelse: SortEnumType
-  personNrSwish: SortEnumType
-  telefonNrSwish: SortEnumType
-  fkAdresserBesoksadressNavigation: AdresserSortInput
-  fkAdresserFakturaadressNavigation: AdresserSortInput
-  fkBetalareNavigation: KunderSortInput
-  fkEntreprenadNavigation: KunderSortInput
-  fkKoncernNavigation: KunderSortInput
+input CustomerSortInput {
+  id: SortEnumType
+  customerName: SortEnumType
+  customerNo: SortEnumType
+  visitingAddressId: SortEnumType
+  visitingAddress: AddressSortInput
+  invoiceAddressId: SortEnumType
+  invoiceAddress: AddressSortInput
+  payerId: SortEnumType
+  payer: CustomerSortInput
+  contractorId: SortEnumType
+  contractor: CustomerSortInput
+  corporationId: SortEnumType
+  corporation: CustomerSortInput
 }
 
-input ListComparableByteOperationFilterInput {
-  all: ComparableByteOperationFilterInput
-  none: ComparableByteOperationFilterInput
-  some: ComparableByteOperationFilterInput
+input ListFilterInputTypeOfAddressFilterInput {
+  all: AddressFilterInput
+  none: AddressFilterInput
+  some: AddressFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfAdresserFilterInput {
-  all: AdresserFilterInput
-  none: AdresserFilterInput
-  some: AdresserFilterInput
+input ListFilterInputTypeOfCustomerFilterInput {
+  all: CustomerFilterInput
+  none: CustomerFilterInput
+  some: CustomerFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfArbetsplatserFilterInput {
-  all: ArbetsplatserFilterInput
-  none: ArbetsplatserFilterInput
-  some: ArbetsplatserFilterInput
-  any: Boolean
-}
-
-input ListFilterInputTypeOfKunderFilterInput {
-  all: KunderFilterInput
-  none: KunderFilterInput
-  some: KunderFilterInput
+input ListFilterInputTypeOfWorkplaceFilterInput {
+  all: WorkplaceFilterInput
+  none: WorkplaceFilterInput
+  some: WorkplaceFilterInput
   any: Boolean
 }
 
 type Mutation {
-  upsertArbetsplats(input: UpsertArbetsplatsInput!): MutationOutput!
+  upsertWorkplace(input: UpsertWorkplaceInput!): MutationOutput!
 }
 
 type MutationOutput {
-  pk: Int
+  id: Int
   validationErrors: [ValidationError!]!
 }
 
-type Positioner {
-  pk: Int!
+type Position {
+  id: Int!
   latitude: Float!
   longitude: Float!
-  xkoord: Float
-  ykoord: Float
-  reverseGeocodeResult: String
-  adresser: [Adresser!]!
-  arbetsplatser: [Arbetsplatser!]!
+  addresses: [Address!]!
+  workplaces: [Workplace!]!
 }
 
-type PositionerCollectionSegment {
-  items: [Positioner!]
+type PositionCollectionSegment {
+  items: [Position!]
 
   """
   Information to aid in pagination.
@@ -1109,38 +299,27 @@ type PositionerCollectionSegment {
   totalCount: Int!
 }
 
-input PositionerFilterInput {
-  and: [PositionerFilterInput!]
-  or: [PositionerFilterInput!]
-  pk: ComparableInt32OperationFilterInput
+input PositionFilterInput {
+  and: [PositionFilterInput!]
+  or: [PositionFilterInput!]
+  id: ComparableInt32OperationFilterInput
   latitude: ComparableDoubleOperationFilterInput
   longitude: ComparableDoubleOperationFilterInput
-  xkoord: ComparableNullableOfDoubleOperationFilterInput
-  ykoord: ComparableNullableOfDoubleOperationFilterInput
-  reverseGeocodeResult: StringOperationFilterInput
-  adresser: ListFilterInputTypeOfAdresserFilterInput
-  arbetsplatser: ListFilterInputTypeOfArbetsplatserFilterInput
+  addresses: ListFilterInputTypeOfAddressFilterInput
+  workplaces: ListFilterInputTypeOfWorkplaceFilterInput
 }
 
-input PositionerSortInput {
-  pk: SortEnumType
+input PositionSortInput {
+  id: SortEnumType
   latitude: SortEnumType
   longitude: SortEnumType
-  xkoord: SortEnumType
-  ykoord: SortEnumType
-  reverseGeocodeResult: SortEnumType
 }
 
 type Query {
-  adresser(skip: Int, take: Int, where: AdresserFilterInput, order: [AdresserSortInput!]): AdresserCollectionSegment
-  arbetsplatser(
-    skip: Int
-    take: Int
-    where: ArbetsplatserFilterInput
-    order: [ArbetsplatserSortInput!]
-  ): ArbetsplatserCollectionSegment
-  kunder(skip: Int, take: Int, where: KunderFilterInput, order: [KunderSortInput!]): KunderCollectionSegment
-  positioner(skip: Int, take: Int, where: PositionerFilterInput, order: [PositionerSortInput!]): PositionerCollectionSegment
+  addresses(skip: Int, take: Int, where: AddressFilterInput, order: [AddressSortInput!]): AddressCollectionSegment
+  customers(skip: Int, take: Int, where: CustomerFilterInput, order: [CustomerSortInput!]): CustomerCollectionSegment
+  positions(skip: Int, take: Int, where: PositionFilterInput, order: [PositionSortInput!]): PositionCollectionSegment
+  workplaces(skip: Int, take: Int, where: WorkplaceFilterInput, order: [WorkplaceSortInput!]): WorkplaceCollectionSegment
 }
 
 enum SortEnumType {
@@ -1164,29 +343,66 @@ input StringOperationFilterInput {
 }
 
 type Subscription {
-  arbetsplatsInserted: Arbetsplatser!
-  arbetsplatsUpdated: Arbetsplatser!
+  workplaceInserted: Workplace!
+  workplaceUpdated: Workplace!
 }
 
-"""
-The `TimeSpan` scalar represents an ISO-8601 compliant duration type.
-"""
-scalar TimeSpan
-
-input UpsertArbetsplatsInput {
-  aktiv: Boolean
-  arbetsplatsNamn: String
-  fkKunder: Int
-  adress1: String
-  ort: String
-  postnr: String
+input UpsertWorkplaceInput {
+  active: Boolean
+  workplaceName: String
+  customerId: Int
+  address1: String
+  city: String
+  zipCode: String
   latitude: Float
   longitude: Float
-  pk: Int
+  id: Int
   onlyValidate: Boolean
 }
 
 type ValidationError {
   message: String!
   property: String!
+}
+
+type Workplace {
+  id: Int!
+  active: Boolean!
+  workplaceName: String!
+  addressId: Int!
+  address: Address!
+  customerId: Int!
+  customer: Customer!
+}
+
+type WorkplaceCollectionSegment {
+  items: [Workplace!]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input WorkplaceFilterInput {
+  and: [WorkplaceFilterInput!]
+  or: [WorkplaceFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  active: BooleanOperationFilterInput
+  workplaceName: StringOperationFilterInput
+  addressId: ComparableInt32OperationFilterInput
+  address: AddressFilterInput
+  customerId: ComparableInt32OperationFilterInput
+  customer: CustomerFilterInput
+}
+
+input WorkplaceSortInput {
+  id: SortEnumType
+  active: SortEnumType
+  workplaceName: SortEnumType
+  addressId: SortEnumType
+  address: AddressSortInput
+  customerId: SortEnumType
+  customer: CustomerSortInput
 }

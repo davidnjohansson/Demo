@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Arbetsplatser, Kunder, SortEnumType } from 'graphql-client/schema';
+import { Customer, SortEnumType, Workplace } from 'graphql-client/schema';
 import { BehaviorSubject, debounceTime } from 'rxjs';
 import { MaterialModule } from 'src/shared/modules/material/material.module';
 import { GraphQLService } from 'src/shared/services/graphql/graphql.service';
@@ -23,65 +23,65 @@ import { GraphQLService } from 'src/shared/services/graphql/graphql.service';
 	styleUrls: ['./workplace.component.scss']
 })
 export class WorkplaceComponent implements OnInit {
-	public arbetsplats: Arbetsplatser | undefined;
-	public arbetsplatsFormGroup = new FormGroup({
-		aktiv: new FormControl(true, { nonNullable: true, validators: Validators.required }),
-		arbetsplatsNamn: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
-		fkKunder: new FormControl<Kunder | string>('', { nonNullable: true, validators: Validators.required }),
-		adress1: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
-		ort: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
-		postnr: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+	public workplace: Workplace | undefined;
+	public workplaceFormGroup = new FormGroup({
+		active: new FormControl(true, { nonNullable: true, validators: Validators.required }),
+		workplaceName: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+		customerId: new FormControl<Customer | string>('', { nonNullable: true, validators: Validators.required }),
+		address1: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+		city: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+		zipCode: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
 		latitude: new FormControl<number | null>(null, { validators: Validators.required }),
 		longitude: new FormControl<number | null>(null, { validators: Validators.required })
 	});
-	public kunder: Kunder[] = [];
+	public customers: Customer[] = [];
 	public mapOptions: google.maps.MapOptions = { disableDoubleClickZoom: true };
 	public mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
 	public mapPosition$ = new BehaviorSubject<google.maps.LatLngLiteral>({ lat: 0, lng: 0 });
 	public submitting = false;
 
 	constructor(
-		@Inject(MAT_DIALOG_DATA) public arbetsplatsPk: number | undefined,
+		@Inject(MAT_DIALOG_DATA) public workplaceId: number | undefined,
 		private dialogRef: MatDialogRef<WorkplaceComponent>,
 		private graphqlService: GraphQLService
 	) { }
 
 	async ngOnInit() {
-		await this.getArbetsplats();
-		this.searchKunder();
-		this.onFkKunderChanged();
+		await this.getWorkplace();
+		this.searchCustomer();
+		this.onCustomerChanged();
 		this.onLatitudeChanged();
 		this.onLongitudeChanged();
 		this.onMapPositionChanged();
 		this.initMap();
 	}
 
-	private async getArbetsplats() {
-		if (this.arbetsplatsPk === undefined) return;
+	private async getWorkplace() {
+		if (this.workplaceId === undefined) return;
 
 		const result = await this.graphqlService.client.query({
-			arbetsplatser: [
+			workplaces: [
 				{
 					where: {
-						pk: {
-							eq: this.arbetsplatsPk
+						id: {
+							eq: this.workplaceId
 						}
 					}
 				},
 				{
 					items: {
-						pk: true,
-						aktiv: true,
-						arbetsplatsNamn: true,
-						fkKunderNavigation: {
-							pk: true,
-							kundNamn: true
+						id: true,
+						active: true,
+						workplaceName: true,
+						customer: {
+							id: true,
+							customerName: true
 						},
-						fkAdresserNavigation: {
-							adress1: true,
-							ort: true,
-							postnr: true,
-							fkPositionerNavigation: {
+						address: {
+							address1: true,
+							city: true,
+							zipCode: true,
+							position: {
 								latitude: true,
 								longitude: true
 							}
@@ -91,18 +91,18 @@ export class WorkplaceComponent implements OnInit {
 			]
 		});
 
-		this.arbetsplats = result.data?.arbetsplatser?.items?.at(0);
-		this.patchArbetsplatsFormGroup();
+		this.workplace = result.data?.workplaces?.items?.at(0);
+		this.patchWorkplaceFormGroup();
 	}
 
-	private onFkKunderChanged() {
-		this.arbetsplatsFormGroup.controls.fkKunder
+	private onCustomerChanged() {
+		this.workplaceFormGroup.controls.customerId
 			.valueChanges
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(
-				(value: Kunder | string) => {
+				(value: Customer | string) => {
 					if (typeof (value) === 'string') {
-						this.searchKunder();
+						this.searchCustomer();
 						return;
 					}
 				}
@@ -110,7 +110,7 @@ export class WorkplaceComponent implements OnInit {
 	}
 
 	private onLatitudeChanged() {
-		this.arbetsplatsFormGroup.controls.latitude
+		this.workplaceFormGroup.controls.latitude
 			.valueChanges
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(
@@ -126,7 +126,7 @@ export class WorkplaceComponent implements OnInit {
 	}
 
 	private onLongitudeChanged() {
-		this.arbetsplatsFormGroup.controls.longitude
+		this.workplaceFormGroup.controls.longitude
 			.valueChanges
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(
@@ -146,35 +146,39 @@ export class WorkplaceComponent implements OnInit {
 			.pipe(untilDestroyed(this))
 			.subscribe(
 				(position: google.maps.LatLngLiteral) => {
-					const latitude = this.arbetsplatsFormGroup.controls.latitude.value;
-					const longitude = this.arbetsplatsFormGroup.controls.longitude.value;
+					if (position.lat === 0 && position.lng === 0) return;
+
+					const latitude = this.workplaceFormGroup.controls.latitude.value;
+					const longitude = this.workplaceFormGroup.controls.longitude.value;
 
 					if (latitude !== null && latitude !== position.lat) {
-						this.arbetsplatsFormGroup.controls.latitude.patchValue(position.lat);
+						this.workplaceFormGroup.controls.latitude.patchValue(position.lat);
+						this.workplaceFormGroup.markAsDirty();
 					}
 
 					if (longitude !== null && longitude !== position.lng) {
-						this.arbetsplatsFormGroup.controls.longitude.patchValue(position.lng);
+						this.workplaceFormGroup.controls.longitude.patchValue(position.lng);
+						this.workplaceFormGroup.markAsDirty();
 					}
 				}
 			);
 	}
 
-	private async searchKunder() {
-		const filter = this.arbetsplatsFormGroup.controls.fkKunder.value as string;
-		if (typeof(filter) !== 'string') return;
+	private async searchCustomer() {
+		const filter = this.workplaceFormGroup.controls.customerId.value as string;
+		if (typeof (filter) !== 'string') return;
 
-		const kunderQuery = await this.graphqlService.client.query({
-			kunder: [
+		const customersQuery = await this.graphqlService.client.query({
+			customers: [
 				{
 					where: {
-						kundNamn: {
+						customerName: {
 							contains: filter
 						}
 					},
 					order: [
 						{
-							kundNamn: SortEnumType.ASC
+							customerName: SortEnumType.ASC
 						}
 					],
 					skip: 0,
@@ -182,43 +186,43 @@ export class WorkplaceComponent implements OnInit {
 				},
 				{
 					items: {
-						pk: 1,
-						kundNamn: 1
+						id: true,
+						customerName: true
 					}
 				}
 			]
 		});
 
-		this.kunder = kunderQuery.data?.kunder?.items ?? [];
+		this.customers = customersQuery.data?.customers?.items ?? [];
 	}
 
-	private patchArbetsplatsFormGroup() {
-		this.arbetsplatsFormGroup.patchValue({
-			aktiv: this.arbetsplats?.aktiv ?? true,
-			arbetsplatsNamn: this.arbetsplats?.arbetsplatsNamn ?? '',
-			fkKunder: this.arbetsplats?.fkKunderNavigation ?? '',
-			adress1: this.arbetsplats?.fkAdresserNavigation.adress1 ?? '',
-			ort: this.arbetsplats?.fkAdresserNavigation.ort ?? '',
-			postnr: this.arbetsplats?.fkAdresserNavigation.postnr ?? '',
-			latitude: this.arbetsplats?.fkAdresserNavigation.fkPositionerNavigation?.latitude ?? null,
-			longitude: this.arbetsplats?.fkAdresserNavigation.fkPositionerNavigation?.longitude ?? null
+	private patchWorkplaceFormGroup() {
+		this.workplaceFormGroup.patchValue({
+			active: this.workplace?.active ?? true,
+			workplaceName: this.workplace?.workplaceName ?? '',
+			customerId: this.workplace?.customer ?? '',
+			address1: this.workplace?.address.address1 ?? '',
+			city: this.workplace?.address.city ?? '',
+			zipCode: this.workplace?.address.zipCode ?? '',
+			latitude: this.workplace?.address.position?.latitude ?? null,
+			longitude: this.workplace?.address.position?.longitude ?? null
 		});
 	}
 
 	private initMap() {
 		const hasPosition =
-			this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.latitude !== undefined &&
-			this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.longitude !== undefined;
+			this.workplace?.address?.position?.latitude !== undefined &&
+			this.workplace?.address?.position?.longitude !== undefined;
 
 		if (hasPosition) {
 			this.mapCenter = {
-				lat: this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.latitude!,
-				lng: this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.longitude!
+				lat: this.workplace?.address?.position?.latitude!,
+				lng: this.workplace?.address?.position?.longitude!
 			};
 
 			this.mapPosition$.next({
-				lat: this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.latitude!,
-				lng: this.arbetsplats?.fkAdresserNavigation?.fkPositionerNavigation?.longitude!
+				lat: this.workplace?.address?.position?.latitude!,
+				lng: this.workplace?.address?.position?.longitude!
 			});
 		} else {
 			navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
@@ -241,38 +245,38 @@ export class WorkplaceComponent implements OnInit {
 			lng: event.latLng?.lng()!
 		});
 
-		this.arbetsplatsFormGroup.patchValue({
+		this.workplaceFormGroup.patchValue({
 			latitude: event.latLng?.lat()!,
 			longitude: event.latLng?.lng()!
 		});
 	}
 
-	public getKunderText(kund: Kunder | null) {
-		return kund === null ? '' : kund.kundNamn;
+	public getCustomerText(customer: Customer | null) {
+		return customer === null ? '' : customer.customerName;
 	}
 
 	public async save(closeAfterSave?: boolean) {
 		this.submitting = true;
 
-		const { aktiv, arbetsplatsNamn, fkKunder, adress1, ort, postnr, latitude, longitude } = this.arbetsplatsFormGroup.controls;
-		
+		const { active, workplaceName, customerId, address1, city, zipCode, latitude, longitude } = this.workplaceFormGroup.controls;
+
 		const result = await this.graphqlService.client.mutation({
-			upsertArbetsplats: [
+			upsertWorkplace: [
 				{
 					input: {
-						pk: this.arbetsplatsPk,
-						aktiv: aktiv.value,
-						arbetsplatsNamn: arbetsplatsNamn.value,
-						fkKunder: (fkKunder.value as Kunder).pk,
-						adress1: adress1.value,
-						ort: ort.value,
-						postnr: postnr.value,
+						id: this.workplaceId,
+						active: active.value,
+						workplaceName: workplaceName.value,
+						customerId: (customerId.value as Customer).id,
+						address1: address1.value,
+						city: city.value,
+						zipCode: zipCode.value,
 						latitude: latitude.value,
 						longitude: longitude.value
 					}
 				},
 				{
-					pk: true,
+					id: true,
 					validationErrors: {
 						message: true,
 						property: true
@@ -281,12 +285,12 @@ export class WorkplaceComponent implements OnInit {
 			]
 		});
 
-		this.graphqlService.validate(result.data, this.arbetsplatsFormGroup);
+		this.graphqlService.validate(result.data, this.workplaceFormGroup);
 
-		if (result.data?.upsertArbetsplats.pk) {
-			this.arbetsplatsPk = result.data.upsertArbetsplats.pk;
-			this.getArbetsplats();
-			this.arbetsplatsFormGroup.markAsPristine();
+		if (result.data?.upsertWorkplace.id) {
+			this.workplaceId = result.data.upsertWorkplace.id;
+			this.getWorkplace();
+			this.workplaceFormGroup.markAsPristine();
 			if (closeAfterSave === true) {
 				this.dialogRef.close();
 			}

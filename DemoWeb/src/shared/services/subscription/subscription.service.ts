@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Arbetsplatser } from 'graphql-client/schema';
+import { Workplace } from 'graphql-client/schema';
 import { BehaviorSubject } from 'rxjs';
 import { GraphQLService } from '../graphql/graphql.service';
 
@@ -7,18 +7,18 @@ import { GraphQLService } from '../graphql/graphql.service';
 	providedIn: 'root'
 })
 export class SubscriptionService {
-	public arbetsplatsInserted$ = new BehaviorSubject<Arbetsplatser | undefined>(undefined);
-	public arbetsplatsUpdated$ = new BehaviorSubject<Arbetsplatser | undefined>(undefined);
+	public workplaceInserted$ = new BehaviorSubject<Workplace | undefined>(undefined);
+	public workplaceUpdated$ = new BehaviorSubject<Workplace | undefined>(undefined);
 
 	constructor(private graphqlService: GraphQLService) { }
 
 	public init() {
 		this.graphqlService.client
-			.subscription({ arbetsplatsInserted: { pk: true } })
-			.subscribe(value => this.arbetsplatsInserted$.next(value.data?.arbetsplatsInserted));
+			.subscription({ workplaceInserted: { id: true } })
+			.subscribe(value => this.workplaceInserted$.next(value.data?.workplaceInserted));
 
 		this.graphqlService.client
-			.subscription({ arbetsplatsUpdated: { pk: true } })
-			.subscribe(value => this.arbetsplatsUpdated$.next(value.data?.arbetsplatsUpdated));
+			.subscription({ workplaceUpdated: { id: true } })
+			.subscribe(value => this.workplaceUpdated$.next(value.data?.workplaceUpdated));
 	}
 }

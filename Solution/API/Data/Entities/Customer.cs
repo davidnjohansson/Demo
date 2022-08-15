@@ -12,6 +12,9 @@ namespace API.Data.Entities
         [Column(nameof(KUNDER.KundNamn))]
         public string CustomerName { get; set; } = null!;
 
+        [Column(nameof(KUNDER.KundNr))]
+        public string CustomerNo { get; set; } = null!;
+
         [Column(nameof(KUNDER.FK_ADRESSER_BESOKSADRESS))]
         public int VisitingAddressId { get; set; }
         public virtual Address? VisitingAddress { get; set; }
