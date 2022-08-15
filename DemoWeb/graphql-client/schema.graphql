@@ -185,6 +185,7 @@ input ComparableNullableOfInt32OperationFilterInput {
 
 type Customer {
   id: Int!
+  active: Boolean!
   customerName: String!
   customerNo: String!
   visitingAddressId: Int!
@@ -217,6 +218,7 @@ input CustomerFilterInput {
   and: [CustomerFilterInput!]
   or: [CustomerFilterInput!]
   id: ComparableInt32OperationFilterInput
+  active: BooleanOperationFilterInput
   customerName: StringOperationFilterInput
   customerNo: StringOperationFilterInput
   visitingAddressId: ComparableInt32OperationFilterInput
@@ -237,6 +239,7 @@ input CustomerFilterInput {
 
 input CustomerSortInput {
   id: SortEnumType
+  active: SortEnumType
   customerName: SortEnumType
   customerNo: SortEnumType
   visitingAddressId: SortEnumType

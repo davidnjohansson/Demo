@@ -78,6 +78,7 @@ export interface Workplace {
 
 export interface Customer {
   id: Int
+  active: Boolean
   customerName: String
   customerNo: String
   visitingAddressId: Int
@@ -312,6 +313,7 @@ export interface CustomerFilterInput {
   and?: CustomerFilterInput[] | null
   or?: CustomerFilterInput[] | null
   id?: ComparableInt32OperationFilterInput | null
+  active?: BooleanOperationFilterInput | null
   customerName?: StringOperationFilterInput | null
   customerNo?: StringOperationFilterInput | null
   visitingAddressId?: ComparableInt32OperationFilterInput | null
@@ -418,6 +420,7 @@ export interface WorkplaceRequest {
 
 export interface CustomerRequest {
   id?: boolean | number
+  active?: boolean | number
   customerName?: boolean | number
   customerNo?: boolean | number
   visitingAddressId?: boolean | number
@@ -450,6 +453,7 @@ export interface CollectionSegmentInfoRequest {
 
 export interface CustomerSortInput {
   id?: SortEnumType | null
+  active?: SortEnumType | null
   customerName?: SortEnumType | null
   customerNo?: SortEnumType | null
   visitingAddressId?: SortEnumType | null
@@ -884,6 +888,7 @@ export interface WorkplaceObservableChain {
 
 export interface CustomerPromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
   customerName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
   customerNo: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
   visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
@@ -914,6 +919,7 @@ export interface CustomerPromiseChain {
 
 export interface CustomerObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
   customerName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   customerNo: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
