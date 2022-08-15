@@ -14,7 +14,6 @@ namespace API.Data.Import.Entities
 
         public int PK { get; set; }
         public string? AdresstypNamn { get; set; }
-        public bool? VisaPaWeb { get; set; }
 
         public virtual ICollection<ADRESSER> ADRESSER { get; set; }
     }

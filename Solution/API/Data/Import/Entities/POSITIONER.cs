@@ -16,9 +16,6 @@ namespace API.Data.Import.Entities
         public int PK { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public double? XKoord { get; set; }
-        public double? YKoord { get; set; }
-        public string? ReverseGeocodeResult { get; set; }
 
         public virtual ICollection<ADRESSER> ADRESSER { get; set; }
         public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }

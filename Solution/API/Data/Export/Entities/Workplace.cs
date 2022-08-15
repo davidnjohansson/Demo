@@ -1,7 +1,7 @@
 ﻿using API.Data.Import.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API.Data.Entities
+namespace API.Data.Export.Entities
 {
     [Table(nameof(ARBETSPLATSER))]
     public class Workplace

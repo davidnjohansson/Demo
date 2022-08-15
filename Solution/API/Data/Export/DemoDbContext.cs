@@ -1,9 +1,10 @@
-﻿using API.Data.Entities;
+﻿using API.Data.Export.Entities;
+using API.Data.Export.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace API.Data.Export
 {
-    public class DemoDbContext : DbContext
+    public partial class DemoDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
 
@@ -36,6 +37,17 @@ namespace API.Data
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
+
+            modelBuilder.UseCollation("Finnish_Swedish_CI_AS");
+
+            modelBuilder.ApplyConfiguration(new AddressConfiguration());
+            modelBuilder.ApplyConfiguration(new AddressTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new WorkplaceConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new PositionConfiguration());
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

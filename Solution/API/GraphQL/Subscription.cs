@@ -1,4 +1,4 @@
-﻿using API.Data.Entities;
+﻿using API.Data.Export.Entities;
 
 namespace API.GraphQL
 {

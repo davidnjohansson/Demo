@@ -1,7 +1,7 @@
 ﻿using API.Data.Import.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace API.Data.Entities
+namespace API.Data.Export.Entities
 {
     [Table(nameof(ADRESSER))]
     public class Address
@@ -31,10 +31,8 @@ namespace API.Data.Entities
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();
 
-        [InverseProperty(nameof(Customer.VisitingAddress))]
         public virtual ICollection<Customer> VisitingAddressFor { get; set; } = new HashSet<Customer>();
 
-        [InverseProperty(nameof(Customer.InvoiceAddress))]
         public virtual ICollection<Customer> InvoiceAddressFor { get; set; } = new HashSet<Customer>();
     }
 }

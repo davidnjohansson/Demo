@@ -13,27 +13,9 @@ namespace API.Data.Import.Entities
         public int FK_ADRESSER { get; set; }
         public int? FK_POSITIONER { get; set; }
         public string ArbetsplatsNamn { get; set; } = null!;
-        public TimeSpan? Oppnar { get; set; }
-        public TimeSpan? Stanger { get; set; }
-        public TimeSpan? LunchStart { get; set; }
-        public TimeSpan? LunchStopp { get; set; }
-        public string? Nyckelkod { get; set; }
-        public string? Kartkod { get; set; }
-        public string? SekundarKund { get; set; }
-        public string? Referens1 { get; set; }
-        public string? Referens2 { get; set; }
-        public string? Referens3 { get; set; }
-        public string? Referens4 { get; set; }
-        public string? Referens5 { get; set; }
-        public bool StandardApl { get; set; }
-        public string? Fastighetsbeteckning { get; set; }
-        public string? Anläggningsnummer { get; set; }
         public int? FK_KONTAKT { get; set; }
         public int? FK_EWCGrupp { get; set; }
         public int? FK_KUNDGRUPPER { get; set; }
-        public int? FK_LINJER { get; set; }
-        public int? DebiteringsgrundandeAntal { get; set; }
-        public byte[] RowVersion { get; set; } = null!;
 
         public virtual ADRESSER FK_ADRESSERNavigation { get; set; } = null!;
         public virtual KUNDER FK_KUNDERNavigation { get; set; } = null!;
