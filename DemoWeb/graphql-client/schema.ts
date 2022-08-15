@@ -35,7 +35,7 @@ export interface AddressCollectionSegment {
 
 export interface Address {
   id: Int
-  active: Boolean
+  active: Boolean | null
   address1: String | null
   city: String | null
   zipCode: String | null
@@ -51,7 +51,7 @@ export interface Address {
 
 export interface AddressType {
   id: Int
-  addressTypeName: String
+  addressTypeName: String | null
   addresses: Address[]
   __typename: 'AddressType'
 }
@@ -67,29 +67,31 @@ export interface Position {
 
 export interface Workplace {
   id: Int
-  active: Boolean
+  active: Boolean | null
   workplaceName: String
   addressId: Int
   address: Address
   customerId: Int
   customer: Customer
+  positionId: Int | null
+  position: Position | null
   __typename: 'Workplace'
 }
 
 export interface Customer {
   id: Int
-  active: Boolean
+  active: Boolean | null
   customerName: String
   customerNo: String
-  visitingAddressId: Int
+  visitingAddressId: Int | null
   visitingAddress: Address | null
-  invoiceAddressId: Int
+  invoiceAddressId: Int | null
   invoiceAddress: Address | null
-  payerId: Int
+  payerId: Int | null
   payer: Customer | null
-  contractorId: Int
+  contractorId: Int | null
   contractor: Customer | null
-  corporationId: Int
+  corporationId: Int | null
   corporation: Customer | null
   workplaces: Workplace[]
   payerFor: Customer[]
@@ -307,6 +309,8 @@ export interface WorkplaceFilterInput {
   address?: AddressFilterInput | null
   customerId?: ComparableInt32OperationFilterInput | null
   customer?: CustomerFilterInput | null
+  positionId?: ComparableNullableOfInt32OperationFilterInput | null
+  position?: PositionFilterInput | null
 }
 
 export interface CustomerFilterInput {
@@ -316,15 +320,15 @@ export interface CustomerFilterInput {
   active?: BooleanOperationFilterInput | null
   customerName?: StringOperationFilterInput | null
   customerNo?: StringOperationFilterInput | null
-  visitingAddressId?: ComparableInt32OperationFilterInput | null
+  visitingAddressId?: ComparableNullableOfInt32OperationFilterInput | null
   visitingAddress?: AddressFilterInput | null
-  invoiceAddressId?: ComparableInt32OperationFilterInput | null
+  invoiceAddressId?: ComparableNullableOfInt32OperationFilterInput | null
   invoiceAddress?: AddressFilterInput | null
-  payerId?: ComparableInt32OperationFilterInput | null
+  payerId?: ComparableNullableOfInt32OperationFilterInput | null
   payer?: CustomerFilterInput | null
-  contractorId?: ComparableInt32OperationFilterInput | null
+  contractorId?: ComparableNullableOfInt32OperationFilterInput | null
   contractor?: CustomerFilterInput | null
-  corporationId?: ComparableInt32OperationFilterInput | null
+  corporationId?: ComparableNullableOfInt32OperationFilterInput | null
   corporation?: CustomerFilterInput | null
   workplaces?: ListFilterInputTypeOfWorkplaceFilterInput | null
   payerFor?: ListFilterInputTypeOfCustomerFilterInput | null
@@ -414,6 +418,8 @@ export interface WorkplaceRequest {
   address?: AddressRequest
   customerId?: boolean | number
   customer?: CustomerRequest
+  positionId?: boolean | number
+  position?: PositionRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -494,6 +500,8 @@ export interface WorkplaceSortInput {
   address?: AddressSortInput | null
   customerId?: SortEnumType | null
   customer?: CustomerSortInput | null
+  positionId?: SortEnumType | null
+  position?: PositionSortInput | null
 }
 
 export interface WorkplaceCollectionSegmentRequest {
@@ -800,7 +808,7 @@ export interface AddressCollectionSegmentObservableChain {
 
 export interface AddressPromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
   address1: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
   city: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
   zipCode: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
@@ -819,7 +827,7 @@ export interface AddressPromiseChain {
 
 export interface AddressObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
   address1: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
   city: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
   zipCode: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
@@ -838,13 +846,13 @@ export interface AddressObservableChain {
 
 export interface AddressTypePromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
-  addressTypeName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  addressTypeName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
   addresses: { execute: (request: AddressRequest, defaultValue?: Address[]) => Promise<Address[]> }
 }
 
 export interface AddressTypeObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
-  addressTypeName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  addressTypeName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
   addresses: { execute: (request: AddressRequest, defaultValue?: Address[]) => Observable<Address[]> }
 }
 
@@ -866,17 +874,21 @@ export interface PositionObservableChain {
 
 export interface WorkplacePromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
   workplaceName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
   addressId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   address: AddressPromiseChain & { execute: (request: AddressRequest, defaultValue?: Address) => Promise<Address> }
   customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
+  positionId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  position: PositionPromiseChain & {
+    execute: (request: PositionRequest, defaultValue?: Position | null) => Promise<Position | null>
+  }
 }
 
 export interface WorkplaceObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
   workplaceName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   addressId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   address: AddressObservableChain & { execute: (request: AddressRequest, defaultValue?: Address) => Observable<Address> }
@@ -884,30 +896,34 @@ export interface WorkplaceObservableChain {
   customer: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
   }
+  positionId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  position: PositionObservableChain & {
+    execute: (request: PositionRequest, defaultValue?: Position | null) => Observable<Position | null>
+  }
 }
 
 export interface CustomerPromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
   customerName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
   customerNo: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
-  visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   visitingAddress: AddressPromiseChain & {
     execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
   }
-  invoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  invoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   invoiceAddress: AddressPromiseChain & {
     execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
   }
-  payerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  payerId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   payer: CustomerPromiseChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Promise<Customer | null>
   }
-  contractorId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  contractorId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   contractor: CustomerPromiseChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Promise<Customer | null>
   }
-  corporationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  corporationId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   corporation: CustomerPromiseChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Promise<Customer | null>
   }
@@ -919,26 +935,26 @@ export interface CustomerPromiseChain {
 
 export interface CustomerObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
-  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
   customerName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   customerNo: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
-  visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  visitingAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   visitingAddress: AddressObservableChain & {
     execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
   }
-  invoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  invoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   invoiceAddress: AddressObservableChain & {
     execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
   }
-  payerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  payerId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   payer: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Observable<Customer | null>
   }
-  contractorId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  contractorId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   contractor: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Observable<Customer | null>
   }
-  corporationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  corporationId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   corporation: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer | null) => Observable<Customer | null>
   }

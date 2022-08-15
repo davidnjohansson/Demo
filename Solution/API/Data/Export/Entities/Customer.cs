@@ -10,7 +10,7 @@ namespace API.Data.Export.Entities
         public int Id { get; set; }
 
         [Column(nameof(KUNDER.Aktiv))]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         [Column(nameof(KUNDER.KundNamn))]
         public string CustomerName { get; set; } = null!;
@@ -19,23 +19,23 @@ namespace API.Data.Export.Entities
         public string CustomerNo { get; set; } = null!;
 
         [Column(nameof(KUNDER.FK_ADRESSER_BESOKSADRESS))]
-        public int VisitingAddressId { get; set; }
+        public int? VisitingAddressId { get; set; }
         public virtual Address? VisitingAddress { get; set; }
 
         [Column(nameof(KUNDER.FK_ADRESSER_FAKTURAADRESS))]
-        public int InvoiceAddressId { get; set; }
+        public int? InvoiceAddressId { get; set; }
         public virtual Address? InvoiceAddress { get; set; }
 
         [Column(nameof(KUNDER.FK_BETALARE))]
-        public int PayerId { get; set; }
+        public int? PayerId { get; set; }
         public virtual Customer? Payer { get; set; }
 
         [Column(nameof(KUNDER.FK_ENTREPRENAD))]
-        public int ContractorId { get; set; }
+        public int? ContractorId { get; set; }
         public virtual Customer? Contractor { get; set; }
 
         [Column(nameof(KUNDER.FK_KONCERN))]
-        public int CorporationId { get; set; }
+        public int? CorporationId { get; set; }
         public virtual Customer? Corporation { get; set; }
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();

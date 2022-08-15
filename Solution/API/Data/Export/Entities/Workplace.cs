@@ -10,7 +10,7 @@ namespace API.Data.Export.Entities
         public int Id { get; set; }
 
         [Column(nameof(ARBETSPLATSER.Aktiv))]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         [Column(nameof(ARBETSPLATSER.ArbetsplatsNamn))]
         public string WorkplaceName { get; set; } = null!;
@@ -22,5 +22,9 @@ namespace API.Data.Export.Entities
         [Column(nameof(ARBETSPLATSER.FK_KUNDER))]
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; } = null!;
+
+        [Column(nameof(ARBETSPLATSER.FK_POSITIONER))]
+        public int? PositionId { get; set; }
+        public virtual Position? Position { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace API.Data.Export.Entities
         public int Id { get; set; }
 
         [Column(nameof(ADRESSER.Aktiv))]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         [Column(nameof(ADRESSER.Adress1))]
         public string? Address1 { get; set; }

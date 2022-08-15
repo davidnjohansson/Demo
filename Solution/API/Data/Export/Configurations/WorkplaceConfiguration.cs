@@ -32,6 +32,11 @@ namespace API.Data.Export.Configurations
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ARBETSPLATSER_KUNDER");
 
+            entity.HasOne(d => d.Position)
+                .WithMany(p => p.Workplaces)
+                .HasForeignKey(d => d.PositionId)
+                .HasConstraintName("FK_ARBETSPLATSER_POSITIONER");
+
             OnConfigurePartial(entity);
         }
 

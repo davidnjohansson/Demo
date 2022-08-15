@@ -47,7 +47,7 @@ directive @stream(
 
 type Address {
   id: Int!
-  active: Boolean!
+  active: Boolean
   address1: String
   city: String
   zipCode: String
@@ -101,7 +101,7 @@ input AddressSortInput {
 
 type AddressType {
   id: Int!
-  addressTypeName: String!
+  addressTypeName: String
   addresses: [Address!]!
 }
 
@@ -185,18 +185,18 @@ input ComparableNullableOfInt32OperationFilterInput {
 
 type Customer {
   id: Int!
-  active: Boolean!
+  active: Boolean
   customerName: String!
   customerNo: String!
-  visitingAddressId: Int!
+  visitingAddressId: Int
   visitingAddress: Address
-  invoiceAddressId: Int!
+  invoiceAddressId: Int
   invoiceAddress: Address
-  payerId: Int!
+  payerId: Int
   payer: Customer
-  contractorId: Int!
+  contractorId: Int
   contractor: Customer
-  corporationId: Int!
+  corporationId: Int
   corporation: Customer
   workplaces: [Workplace!]!
   payerFor: [Customer!]!
@@ -221,15 +221,15 @@ input CustomerFilterInput {
   active: BooleanOperationFilterInput
   customerName: StringOperationFilterInput
   customerNo: StringOperationFilterInput
-  visitingAddressId: ComparableInt32OperationFilterInput
+  visitingAddressId: ComparableNullableOfInt32OperationFilterInput
   visitingAddress: AddressFilterInput
-  invoiceAddressId: ComparableInt32OperationFilterInput
+  invoiceAddressId: ComparableNullableOfInt32OperationFilterInput
   invoiceAddress: AddressFilterInput
-  payerId: ComparableInt32OperationFilterInput
+  payerId: ComparableNullableOfInt32OperationFilterInput
   payer: CustomerFilterInput
-  contractorId: ComparableInt32OperationFilterInput
+  contractorId: ComparableNullableOfInt32OperationFilterInput
   contractor: CustomerFilterInput
-  corporationId: ComparableInt32OperationFilterInput
+  corporationId: ComparableNullableOfInt32OperationFilterInput
   corporation: CustomerFilterInput
   workplaces: ListFilterInputTypeOfWorkplaceFilterInput
   payerFor: ListFilterInputTypeOfCustomerFilterInput
@@ -370,12 +370,14 @@ type ValidationError {
 
 type Workplace {
   id: Int!
-  active: Boolean!
+  active: Boolean
   workplaceName: String!
   addressId: Int!
   address: Address!
   customerId: Int!
   customer: Customer!
+  positionId: Int
+  position: Position
 }
 
 type WorkplaceCollectionSegment {
@@ -398,6 +400,8 @@ input WorkplaceFilterInput {
   address: AddressFilterInput
   customerId: ComparableInt32OperationFilterInput
   customer: CustomerFilterInput
+  positionId: ComparableNullableOfInt32OperationFilterInput
+  position: PositionFilterInput
 }
 
 input WorkplaceSortInput {
@@ -408,4 +412,6 @@ input WorkplaceSortInput {
   address: AddressSortInput
   customerId: SortEnumType
   customer: CustomerSortInput
+  positionId: SortEnumType
+  position: PositionSortInput
 }
