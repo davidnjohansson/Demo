@@ -3,31 +3,31 @@
 using System;
 using System.Collections.Generic;
 
-namespace API.Entities
+namespace API.Data.Import.Entities
 {
-    public partial class Kunder
+    public partial class KUNDER
     {
-        public Kunder()
+        public KUNDER()
         {
-            Arbetsplatser = new HashSet<Arbetsplatser>();
-            InverseFkBetalareNavigation = new HashSet<Kunder>();
-            InverseFkEntreprenadNavigation = new HashSet<Kunder>();
-            InverseFkKoncernNavigation = new HashSet<Kunder>();
+            ARBETSPLATSER = new HashSet<ARBETSPLATSER>();
+            InverseFK_BETALARENavigation = new HashSet<KUNDER>();
+            InverseFK_ENTREPRENADNavigation = new HashSet<KUNDER>();
+            InverseFK_KONCERNNavigation = new HashSet<KUNDER>();
         }
 
-        public int Pk { get; set; }
+        public int PK { get; set; }
         public bool? Aktiv { get; set; }
-        public int FkKundkategorier { get; set; }
-        public int? FkBilder { get; set; }
-        public int? FkBetalvillkor { get; set; }
-        public int FkLanderMoms { get; set; }
-        public int? FkBetalare { get; set; }
-        public int? FkLinjer { get; set; }
-        public int FkValutor { get; set; }
-        public int? FkSchemaFakturering { get; set; }
-        public int? FkOmvandSkatt { get; set; }
-        public int? FkEntreprenad { get; set; }
-        public int? FkFaktureringsavgifter { get; set; }
+        public int FK_KUNDKATEGORIER { get; set; }
+        public int? FK_BILDER { get; set; }
+        public int? FK_BETALVILLKOR { get; set; }
+        public int FK_LANDER_MOMS { get; set; }
+        public int? FK_BETALARE { get; set; }
+        public int? FK_LINJER { get; set; }
+        public int FK_VALUTOR { get; set; }
+        public int? FK_SCHEMA_FAKTURERING { get; set; }
+        public int? FK_OMVAND_SKATT { get; set; }
+        public int? FK_ENTREPRENAD { get; set; }
+        public int? FK_FAKTURERINGSAVGIFTER { get; set; }
         public bool? Kund { get; set; }
         public bool Leverantor { get; set; }
         public bool Akare { get; set; }
@@ -42,8 +42,8 @@ namespace API.Entities
         public string? AbonnentNr { get; set; }
         public string KundNamn { get; set; } = null!;
         public string Kundid { get; set; } = null!;
-        public int? FkAdresserFakturaadress { get; set; }
-        public int? FkAdresserBesoksadress { get; set; }
+        public int? FK_ADRESSER_FAKTURAADRESS { get; set; }
+        public int? FK_ADRESSER_BESOKSADRESS { get; set; }
         public string? Orgnr { get; set; }
         public string? Vat { get; set; }
         public string? Bankgiro { get; set; }
@@ -61,48 +61,48 @@ namespace API.Entities
         public string? BankKonto { get; set; }
         public string? BetalmetodExternkod { get; set; }
         public string? Swift { get; set; }
-        public string? Iban { get; set; }
+        public string? IBAN { get; set; }
         public string? Riksbankskod { get; set; }
-        public int? FkFakturakoer { get; set; }
-        public int FkFakturabrytLittera { get; set; }
-        public int FkFakturabrytKontakt { get; set; }
+        public int? FK_FAKTURAKOER { get; set; }
+        public int FK_FAKTURABRYT_LITTERA { get; set; }
+        public int FK_FAKTURABRYT_KONTAKT { get; set; }
         public int? FakturabrytAntalOrders { get; set; }
-        public int FkFakturabrytResurs { get; set; }
-        public int? FkKontoBonusIntakt { get; set; }
-        public int? FkKontoBonusBalans { get; set; }
+        public int FK_FAKTURABRYT_RESURS { get; set; }
+        public int? FK_KONTO_BONUS_INTAKT { get; set; }
+        public int? FK_KONTO_BONUS_BALANS { get; set; }
         public double? BonusProcent { get; set; }
-        public int? FkMomskodBonus { get; set; }
-        public int? FkMellanskillnadsmall { get; set; }
+        public int? FK_MOMSKOD_BONUS { get; set; }
+        public int? FK_MELLANSKILLNADSMALL { get; set; }
         public bool Mall { get; set; }
         public string? MallNamn { get; set; }
         public string? ExternkodMallLev { get; set; }
         public string? ExternkodMallKund { get; set; }
-        public int? FkCountersMall { get; set; }
+        public int? FK_COUNTERS_MALL { get; set; }
         public bool KravReferens { get; set; }
-        public bool KravAo { get; set; }
+        public bool KravAO { get; set; }
         public bool KravVagsedel { get; set; }
         public bool KravTrptsedel { get; set; }
-        public int FkEnumLitteraMode { get; set; }
+        public int FK_EnumLitteraMode { get; set; }
         public string? LitteraMask { get; set; }
-        public int FkEnumFakturaPaslagRedovisning { get; set; }
-        public int? FkKoncern { get; set; }
-        public int? FkEnumFakturalayout { get; set; }
-        public int FkFakturabrytReferens { get; set; }
+        public int FK_EnumFakturaPaslagRedovisning { get; set; }
+        public int? FK_KONCERN { get; set; }
+        public int? FK_EnumFakturalayout { get; set; }
+        public int FK_FAKTURABRYT_REFERENS { get; set; }
         public string? Pallregnr { get; set; }
-        public string? Gannr { get; set; }
-        public int? FkSprak { get; set; }
-        public int? FkKundbokforingsmall { get; set; }
+        public string? GANnr { get; set; }
+        public int? FK_SPRAK { get; set; }
+        public int? FK_KUNDBOKFORINGSMALL { get; set; }
         public bool KravFraktsedel { get; set; }
-        public bool InkluderaVagsedlarIfakturan { get; set; }
-        public int? FkKundgrupper { get; set; }
+        public bool InkluderaVagsedlarIFakturan { get; set; }
+        public int? FK_KUNDGRUPPER { get; set; }
         public string? Banknamn { get; set; }
         public string? LitteraMaskDescription { get; set; }
-        public int FkFakturabrytArbetsordernr { get; set; }
-        public int? FkEnumAvrakningslayout { get; set; }
+        public int FK_FAKTURABRYT_ARBETSORDERNR { get; set; }
+        public int? FK_EnumAvrakningslayout { get; set; }
         public bool AktivTerminalScanning { get; set; }
-        public int FkEnumBrytpunktPeriod { get; set; }
+        public int FK_EnumBrytpunkt_Period { get; set; }
         public bool? AutoprisViaDeliveryBot { get; set; }
-        public int? FkAttestflode { get; set; }
+        public int? FK_ATTESTFLODE { get; set; }
         public byte[]? Farg { get; set; }
         public byte[]? ForegroundFarg { get; set; }
         public bool? SkrymmeBerakning { get; set; }
@@ -112,12 +112,12 @@ namespace API.Entities
         public bool KontrollInnanFakturering { get; set; }
         public bool MallPrivatperson { get; set; }
         public bool MallForetagskund { get; set; }
-        public bool InkluderaArbetsordersIfakturan { get; set; }
+        public bool InkluderaArbetsordersIFakturan { get; set; }
         public string? ExternalId { get; set; }
-        public int? FkBolagInternkund { get; set; }
-        public bool Tm { get; set; }
-        public int? FkEnumKravPaFotoSignatur { get; set; }
-        public int? FkAnvandare { get; set; }
+        public int? FK_BOLAG_Internkund { get; set; }
+        public bool TM { get; set; }
+        public int? FK_EnumKravPaFotoSignatur { get; set; }
+        public int? FK_ANVANDARE { get; set; }
         public double? Avrunda10 { get; set; }
         public double? Avrunda100 { get; set; }
         public string? KravInstruktion { get; set; }
@@ -126,11 +126,11 @@ namespace API.Entities
         public double? Avrunda1 { get; set; }
         public bool? AutoFakturering { get; set; }
         public string? TransportsedelMask { get; set; }
-        public int? FkFakturakoerAvrakning { get; set; }
+        public int? FK_FAKTURAKOER_AVRAKNING { get; set; }
         public bool KundrefOnReport { get; set; }
-        public int? FkEwcgrupp { get; set; }
-        public int? FkEntreprenader { get; set; }
-        public int FkFakturabrytArbetsplats { get; set; }
+        public int? FK_EWCGrupp { get; set; }
+        public int? FK_ENTREPRENADER { get; set; }
+        public int FK_FAKTURABRYT_ARBETSPLATS { get; set; }
         public bool? FakturaOchBilagorSomEnFil { get; set; }
         public bool KravPaPosition { get; set; }
         public double? GlobaltPaslag { get; set; }
@@ -139,75 +139,75 @@ namespace API.Entities
         public bool? AvrakningEfterKundBetalning { get; set; }
         public double? MinimumTotalDebiteringResa { get; set; }
         public double? MinimumTotalAvrakningResa { get; set; }
-        public int? FkMinimumDebiteringsArtikel { get; set; }
+        public int? FK_MinimumDebiteringsArtikel { get; set; }
         public bool IsKontantKund { get; set; }
         public bool? ExkluderaRabattVidDebitering { get; set; }
-        public int? FkMomslandkod { get; set; }
+        public int? FK_MOMSLANDKOD { get; set; }
         public bool IsKoncern { get; set; }
         public bool IsEntreprenadAgare { get; set; }
-        public int? FkArtikeldialekt { get; set; }
+        public int? FK_ARTIKELDIALEKT { get; set; }
         public bool KravKundref { get; set; }
-        public int? FkAnvandareKontakt { get; set; }
+        public int? FK_ANVANDARE_KONTAKT { get; set; }
         public string? SparrText { get; set; }
-        public bool? DbcalcHarFilkrav { get; set; }
-        public int FkEnumFgvmodell { get; set; }
-        public string? Ggn { get; set; }
+        public bool? DBCalc_HarFilkrav { get; set; }
+        public int FK_EnumFGVModell { get; set; }
+        public string? GGN { get; set; }
         public bool UndantaFranKreditkontroll { get; set; }
         public string? BomkorningEmailAdresser { get; set; }
         public bool? BomkorningTillaten { get; set; }
         public bool? BomkorningAction { get; set; }
-        public int? FkKommunikationskanal { get; set; }
-        public string? EdiId { get; set; }
+        public int? FK_KOMMUNIKATIONSKANAL { get; set; }
+        public string? EdiID { get; set; }
         public bool FaktureraKoncern { get; set; }
         public bool Autogiro { get; set; }
         public bool Forskottsbetalning { get; set; }
         public int? KreditforsakratBelopp { get; set; }
         public DateTime? Kreditforsakringsdatum { get; set; }
         public string? KreditInfo { get; set; }
-        public int? FkKreditforsakratbeloppValuta { get; set; }
-        public int FkEnumFakturaBrytOmvandMoms { get; set; }
-        public int FkEnumFakturaBrytDebetKredit { get; set; }
+        public int? FK_KREDITFORSAKRATBELOPP_VALUTA { get; set; }
+        public int FK_EnumFakturaBryt_OmvandMoms { get; set; }
+        public int FK_EnumFakturaBryt_DebetKredit { get; set; }
         public int CounterAvr { get; set; }
         public int CounterSelfInvoice { get; set; }
         public bool? SparrSkrymmeMobilt { get; set; }
         public int? FyraOgonGrans { get; set; }
         public bool HanterasSomInternPaUtskrifter { get; set; }
-        public int? FkAviseringsMetod { get; set; }
+        public int? FK_AviseringsMetod { get; set; }
         public bool KravAviseringsInformation { get; set; }
-        public int? FkEdijobbAvisering { get; set; }
+        public int? FK_EDIJOBB_AVISERING { get; set; }
         public bool GenereraFvPriser { get; set; }
-        public int? FkEdijobbSms { get; set; }
+        public int? FK_EDIJOBB_SMS { get; set; }
         public byte[] RowVersion { get; set; } = null!;
         public string? EpostPaminnelse { get; set; }
-        public int FkEnumProcentuelltTillaggPrincip { get; set; }
+        public int FK_EnumProcentuelltTillaggPrincip { get; set; }
         public string? Bransch { get; set; }
-        public int? FkEnumBomkorningsMetod { get; set; }
-        public bool RapporteraDataTillNvv { get; set; }
-        public int FkFakturabrytResa { get; set; }
+        public int? FK_EnumBomkorningsMetod { get; set; }
+        public bool RapporteraDataTillNVV { get; set; }
+        public int FK_FAKTURABRYT_RESA { get; set; }
         public string? Dimensionskod { get; set; }
         public string? Dimensionsbeskrivning { get; set; }
         public bool AutoPrisKlarFaktMobil { get; set; }
-        public int? EnumRapporteringstypNvv { get; set; }
+        public int? EnumRapporteringstypNVV { get; set; }
         public bool AppliceraNyttEdiOrderidVidBomkorning { get; set; }
         public bool GenereraResenoderPerKoordinat { get; set; }
-        public int FkFakturabrytBetalningsunderlag { get; set; }
-        public int FkFakturabrytVerksamhet { get; set; }
-        public int? FkBetalvillkorSjalvfaktura { get; set; }
+        public int FK_FAKTURABRYT_BETALNINGSUNDERLAG { get; set; }
+        public int FK_FAKTURABRYT_VERKSAMHET { get; set; }
+        public int? FK_BETALVILLKOR_SJALVFAKTURA { get; set; }
         public bool InaktiveraAvstandsBerakning { get; set; }
         public bool StopKoncernPris { get; set; }
-        public int FkFakturabrytKundref { get; set; }
-        public string? EpostNvvbekraftelse { get; set; }
+        public int FK_FAKTURABRYT_KUNDREF { get; set; }
+        public string? EpostNVVBekraftelse { get; set; }
         public string? PersonNrSwish { get; set; }
         public string? TelefonNrSwish { get; set; }
 
-        public virtual Adresser? FkAdresserBesoksadressNavigation { get; set; }
-        public virtual Adresser? FkAdresserFakturaadressNavigation { get; set; }
-        public virtual Kunder? FkBetalareNavigation { get; set; }
-        public virtual Kunder? FkEntreprenadNavigation { get; set; }
-        public virtual Kunder? FkKoncernNavigation { get; set; }
-        public virtual ICollection<Arbetsplatser> Arbetsplatser { get; set; }
-        public virtual ICollection<Kunder> InverseFkBetalareNavigation { get; set; }
-        public virtual ICollection<Kunder> InverseFkEntreprenadNavigation { get; set; }
-        public virtual ICollection<Kunder> InverseFkKoncernNavigation { get; set; }
+        public virtual ADRESSER? FK_ADRESSER_BESOKSADRESSNavigation { get; set; }
+        public virtual ADRESSER? FK_ADRESSER_FAKTURAADRESSNavigation { get; set; }
+        public virtual KUNDER? FK_BETALARENavigation { get; set; }
+        public virtual KUNDER? FK_ENTREPRENADNavigation { get; set; }
+        public virtual KUNDER? FK_KONCERNNavigation { get; set; }
+        public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }
+        public virtual ICollection<KUNDER> InverseFK_BETALARENavigation { get; set; }
+        public virtual ICollection<KUNDER> InverseFK_ENTREPRENADNavigation { get; set; }
+        public virtual ICollection<KUNDER> InverseFK_KONCERNNavigation { get; set; }
     }
 }

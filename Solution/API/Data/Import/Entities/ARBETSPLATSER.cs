@@ -3,15 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace API.Entities
+namespace API.Data.Import.Entities
 {
-    public partial class Arbetsplatser
+    public partial class ARBETSPLATSER
     {
-        public int Pk { get; set; }
+        public int PK { get; set; }
         public bool? Aktiv { get; set; }
-        public int FkKunder { get; set; }
-        public int FkAdresser { get; set; }
-        public int? FkPositioner { get; set; }
+        public int FK_KUNDER { get; set; }
+        public int FK_ADRESSER { get; set; }
+        public int? FK_POSITIONER { get; set; }
         public string ArbetsplatsNamn { get; set; } = null!;
         public TimeSpan? Oppnar { get; set; }
         public TimeSpan? Stanger { get; set; }
@@ -28,15 +28,15 @@ namespace API.Entities
         public bool StandardApl { get; set; }
         public string? Fastighetsbeteckning { get; set; }
         public string? Anläggningsnummer { get; set; }
-        public int? FkKontakt { get; set; }
-        public int? FkEwcgrupp { get; set; }
-        public int? FkKundgrupper { get; set; }
-        public int? FkLinjer { get; set; }
+        public int? FK_KONTAKT { get; set; }
+        public int? FK_EWCGrupp { get; set; }
+        public int? FK_KUNDGRUPPER { get; set; }
+        public int? FK_LINJER { get; set; }
         public int? DebiteringsgrundandeAntal { get; set; }
         public byte[] RowVersion { get; set; } = null!;
 
-        public virtual Adresser FkAdresserNavigation { get; set; } = null!;
-        public virtual Kunder FkKunderNavigation { get; set; } = null!;
-        public virtual Positioner? FkPositionerNavigation { get; set; }
+        public virtual ADRESSER FK_ADRESSERNavigation { get; set; } = null!;
+        public virtual KUNDER FK_KUNDERNavigation { get; set; } = null!;
+        public virtual POSITIONER? FK_POSITIONERNavigation { get; set; }
     }
 }

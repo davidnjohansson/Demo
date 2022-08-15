@@ -3,19 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace API.Entities
+namespace API.Data.Import.Entities
 {
-    public partial class Adresstyp
+    public partial class ADRESSTYP
     {
-        public Adresstyp()
+        public ADRESSTYP()
         {
-            Adresser = new HashSet<Adresser>();
+            ADRESSER = new HashSet<ADRESSER>();
         }
 
-        public int Pk { get; set; }
+        public int PK { get; set; }
         public string? AdresstypNamn { get; set; }
         public bool? VisaPaWeb { get; set; }
 
-        public virtual ICollection<Adresser> Adresser { get; set; }
+        public virtual ICollection<ADRESSER> ADRESSER { get; set; }
     }
 }

@@ -2,20 +2,15 @@ using API.Data;
 using API.GraphQL;
 using API.Services;
 using HotChocolate.Types.Pagination;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<DemoDbContext>(opt =>
-{
-    opt.UseLazyLoadingProxies();
-    opt.UseSqlServer("Data Source=./;Initial Catalog=T5_FLEXILAST;User Id=T5-SQL-USER;Password=%3jn__!asdei;Persist Security Info=True");
-});
+builder.Services.AddDbContext<DemoDbContext>();
 
 builder.Services.AddInMemorySubscriptions();
 
-builder.Services.AddScoped<UpsertArbetsplatsService>();
+builder.Services.AddScoped<UpsertWorkplaceService>();
 
 builder.Services
     .AddGraphQLServer()

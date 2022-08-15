@@ -2,16 +2,16 @@
 {
     public class MutationOutput : Output
     {
-        public int? Pk { get; set; }
+        public int? Id { get; set; }
 
         public MutationOutput()
         {
 
         }
 
-        public MutationOutput(int? pk)
+        public MutationOutput(int? id)
         {
-            Pk = pk;
+            Id = id;
         }
     }
 }

@@ -3,24 +3,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace API.Entities
+namespace API.Data.Import.Entities
 {
-    public partial class Adresser
+    public partial class ADRESSER
     {
-        public Adresser()
+        public ADRESSER()
         {
-            Arbetsplatser = new HashSet<Arbetsplatser>();
-            KunderFkAdresserBesoksadressNavigation = new HashSet<Kunder>();
-            KunderFkAdresserFakturaadressNavigation = new HashSet<Kunder>();
+            ARBETSPLATSER = new HashSet<ARBETSPLATSER>();
+            KUNDERFK_ADRESSER_BESOKSADRESSNavigation = new HashSet<KUNDER>();
+            KUNDERFK_ADRESSER_FAKTURAADRESSNavigation = new HashSet<KUNDER>();
         }
 
-        public int Pk { get; set; }
+        public int PK { get; set; }
         public bool? Aktiv { get; set; }
-        public int FkAdresstyp { get; set; }
-        public int? FkPositioner { get; set; }
-        public int? FkLander { get; set; }
+        public int FK_ADRESSTYP { get; set; }
+        public int? FK_POSITIONER { get; set; }
+        public int? FK_LANDER { get; set; }
         public string? Namn { get; set; }
-        public string? Co { get; set; }
+        public string? CO { get; set; }
         public string? Adress1 { get; set; }
         public string? Adress2 { get; set; }
         public string? Zon { get; set; }
@@ -36,7 +36,7 @@ namespace API.Entities
         public string? Vagbeskrivning { get; set; }
         public string? Referens { get; set; }
         public string? Id { get; set; }
-        public int? FkZon { get; set; }
+        public int? FK_ZON { get; set; }
         public string? Lastinfo { get; set; }
         public string? Lossinfo { get; set; }
         public string? PallregNummer { get; set; }
@@ -49,10 +49,10 @@ namespace API.Entities
         public string? Framkomlighet { get; set; }
         public string? CfarNr { get; set; }
 
-        public virtual Adresstyp FkAdresstypNavigation { get; set; } = null!;
-        public virtual Positioner? FkPositionerNavigation { get; set; }
-        public virtual ICollection<Arbetsplatser> Arbetsplatser { get; set; }
-        public virtual ICollection<Kunder> KunderFkAdresserBesoksadressNavigation { get; set; }
-        public virtual ICollection<Kunder> KunderFkAdresserFakturaadressNavigation { get; set; }
+        public virtual ADRESSTYP FK_ADRESSTYPNavigation { get; set; } = null!;
+        public virtual POSITIONER? FK_POSITIONERNavigation { get; set; }
+        public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }
+        public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_BESOKSADRESSNavigation { get; set; }
+        public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_FAKTURAADRESSNavigation { get; set; }
     }
 }
