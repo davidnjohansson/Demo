@@ -8,25 +8,16 @@ namespace API.Controllers
     [ApiController]
     public class WorkplaceController : ControllerBase
     {
-        private readonly UpsertWorkplaceService _upsertWorkplaceService;
-
-        public WorkplaceController(UpsertWorkplaceService upsertWorkplaceService)
-        {
-            _upsertWorkplaceService = upsertWorkplaceService;
-        }
-
         [HttpPost(nameof(WorkplaceController.UpsertWorkplace))]
-        public async Task<ActionResult<MutationOutput>> UpsertWorkplace(UpsertWorkplaceInput input)
+        public async Task<ActionResult<MutationOutput>> UpsertWorkplace([FromServices] UpsertWorkplaceService service, UpsertWorkplaceInput input)
         {
-            var output = await _upsertWorkplaceService.ValidateAsync(input);
+            var output = await service.ValidateAsync(input);
 
-            if (output.ValidationErrors.Any()) return new BadRequestObjectResult(output);
+            if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
 
-            if (input.OnlyValidate == true) return new OkObjectResult(output);
+            var id = await service.ExecuteAsync(input);
 
-            var id = await _upsertWorkplaceService.ExecuteAsync(input);
-
-            return new OkObjectResult(new MutationOutput(id));
+            return new MutationOutput(id);
         }
     }
 }
