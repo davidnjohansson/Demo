@@ -20,6 +20,9 @@ export type String = string
 /** The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
 export type Float = number
 
+/** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
+export type DateTime = any
+
 export enum SortEnumType {
   ASC = 'ASC',
   DESC = 'DESC',
@@ -97,7 +100,76 @@ export interface Customer {
   payerFor: Customer[]
   contractorFor: Customer[]
   corporationFor: Customer[]
+  validationCustomers: ValidationCustomer[]
   __typename: 'Customer'
+}
+
+export interface ValidationCustomer {
+  id: Int
+  validationId: Int
+  validation: Validation
+  customerId: Int
+  customer: Customer
+  __typename: 'ValidationCustomer'
+}
+
+export interface Validation {
+  id: Int
+  name: String
+  active: Boolean
+  general: Boolean
+  onlyWarning: Boolean
+  validationGroupId: Int | null
+  validationGroup: ValidationGroup | null
+  validationCustomers: ValidationCustomer[]
+  validationRules: ValidationRule[]
+  validationBusinesses: ValidationBusiness[]
+  __typename: 'Validation'
+}
+
+export interface ValidationGroup {
+  id: Int
+  groupName: String
+  validations: Validation[]
+  __typename: 'ValidationGroup'
+}
+
+export interface ValidationRule {
+  id: Int
+  entityName: String
+  propertyName: String
+  enumOperation: Int
+  errorMessage: String | null
+  valueNumeric: Float | null
+  valueAlphanumeric: String | null
+  valueDateTime: DateTime | null
+  valueBoolean: Boolean | null
+  valueForeignKey: Int | null
+  regexPattern: String | null
+  allowNull: Boolean
+  inverseValidationRuleId: Int | null
+  inverseValidationRule: ValidationRule | null
+  validationId: Int
+  validation: Validation
+  inverseValidationRules: ValidationRule[]
+  __typename: 'ValidationRule'
+}
+
+export interface ValidationBusiness {
+  id: Int
+  validationId: Int
+  validation: Validation
+  businessId: Int
+  business: Business
+  __typename: 'ValidationBusiness'
+}
+
+export interface Business {
+  id: Int
+  active: Boolean | null
+  businessName: String | null
+  validationBusinesses: ValidationBusiness[]
+  __typename: 'Business'
 }
 
 /** Information about the offset pagination. */
@@ -334,6 +406,7 @@ export interface CustomerFilterInput {
   payerFor?: ListFilterInputTypeOfCustomerFilterInput | null
   contractorFor?: ListFilterInputTypeOfCustomerFilterInput | null
   corporationFor?: ListFilterInputTypeOfCustomerFilterInput | null
+  validationCustomers?: ListFilterInputTypeOfValidationCustomerFilterInput | null
 }
 
 export interface ListFilterInputTypeOfCustomerFilterInput {
@@ -341,6 +414,138 @@ export interface ListFilterInputTypeOfCustomerFilterInput {
   none?: CustomerFilterInput | null
   some?: CustomerFilterInput | null
   any?: Boolean | null
+}
+
+export interface ListFilterInputTypeOfValidationCustomerFilterInput {
+  all?: ValidationCustomerFilterInput | null
+  none?: ValidationCustomerFilterInput | null
+  some?: ValidationCustomerFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ValidationCustomerFilterInput {
+  and?: ValidationCustomerFilterInput[] | null
+  or?: ValidationCustomerFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  validationId?: ComparableInt32OperationFilterInput | null
+  validation?: ValidationFilterInput | null
+  customerId?: ComparableInt32OperationFilterInput | null
+  customer?: CustomerFilterInput | null
+}
+
+export interface ValidationFilterInput {
+  and?: ValidationFilterInput[] | null
+  or?: ValidationFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  name?: StringOperationFilterInput | null
+  active?: BooleanOperationFilterInput | null
+  general?: BooleanOperationFilterInput | null
+  onlyWarning?: BooleanOperationFilterInput | null
+  validationGroupId?: ComparableNullableOfInt32OperationFilterInput | null
+  validationGroup?: ValidationGroupFilterInput | null
+  validationCustomers?: ListFilterInputTypeOfValidationCustomerFilterInput | null
+  validationRules?: ListFilterInputTypeOfValidationRuleFilterInput | null
+  validationBusinesses?: ListFilterInputTypeOfValidationBusinessFilterInput | null
+}
+
+export interface ValidationGroupFilterInput {
+  and?: ValidationGroupFilterInput[] | null
+  or?: ValidationGroupFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  groupName?: StringOperationFilterInput | null
+  validations?: ListFilterInputTypeOfValidationFilterInput | null
+}
+
+export interface ListFilterInputTypeOfValidationFilterInput {
+  all?: ValidationFilterInput | null
+  none?: ValidationFilterInput | null
+  some?: ValidationFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ListFilterInputTypeOfValidationRuleFilterInput {
+  all?: ValidationRuleFilterInput | null
+  none?: ValidationRuleFilterInput | null
+  some?: ValidationRuleFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ValidationRuleFilterInput {
+  and?: ValidationRuleFilterInput[] | null
+  or?: ValidationRuleFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  entityName?: StringOperationFilterInput | null
+  propertyName?: StringOperationFilterInput | null
+  enumOperation?: ComparableInt32OperationFilterInput | null
+  errorMessage?: StringOperationFilterInput | null
+  valueNumeric?: ComparableNullableOfDoubleOperationFilterInput | null
+  valueAlphanumeric?: StringOperationFilterInput | null
+  valueDateTime?: ComparableNullableOfDateTimeOperationFilterInput | null
+  valueBoolean?: BooleanOperationFilterInput | null
+  valueForeignKey?: ComparableNullableOfInt32OperationFilterInput | null
+  regexPattern?: StringOperationFilterInput | null
+  allowNull?: BooleanOperationFilterInput | null
+  inverseValidationRuleId?: ComparableNullableOfInt32OperationFilterInput | null
+  inverseValidationRule?: ValidationRuleFilterInput | null
+  validationId?: ComparableInt32OperationFilterInput | null
+  validation?: ValidationFilterInput | null
+  inverseValidationRules?: ListFilterInputTypeOfValidationRuleFilterInput | null
+}
+
+export interface ComparableNullableOfDoubleOperationFilterInput {
+  eq?: Float | null
+  neq?: Float | null
+  in?: (Float | null)[] | null
+  nin?: (Float | null)[] | null
+  gt?: Float | null
+  ngt?: Float | null
+  gte?: Float | null
+  ngte?: Float | null
+  lt?: Float | null
+  nlt?: Float | null
+  lte?: Float | null
+  nlte?: Float | null
+}
+
+export interface ComparableNullableOfDateTimeOperationFilterInput {
+  eq?: DateTime | null
+  neq?: DateTime | null
+  in?: (DateTime | null)[] | null
+  nin?: (DateTime | null)[] | null
+  gt?: DateTime | null
+  ngt?: DateTime | null
+  gte?: DateTime | null
+  ngte?: DateTime | null
+  lt?: DateTime | null
+  nlt?: DateTime | null
+  lte?: DateTime | null
+  nlte?: DateTime | null
+}
+
+export interface ListFilterInputTypeOfValidationBusinessFilterInput {
+  all?: ValidationBusinessFilterInput | null
+  none?: ValidationBusinessFilterInput | null
+  some?: ValidationBusinessFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ValidationBusinessFilterInput {
+  and?: ValidationBusinessFilterInput[] | null
+  or?: ValidationBusinessFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  validationId?: ComparableInt32OperationFilterInput | null
+  validation?: ValidationFilterInput | null
+  businessId?: ComparableInt32OperationFilterInput | null
+  business?: BusinessFilterInput | null
+}
+
+export interface BusinessFilterInput {
+  and?: BusinessFilterInput[] | null
+  or?: BusinessFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  active?: BooleanOperationFilterInput | null
+  businessName?: StringOperationFilterInput | null
+  validationBusinesses?: ListFilterInputTypeOfValidationBusinessFilterInput | null
 }
 
 export interface AddressSortInput {
@@ -443,6 +648,81 @@ export interface CustomerRequest {
   payerFor?: CustomerRequest
   contractorFor?: CustomerRequest
   corporationFor?: CustomerRequest
+  validationCustomers?: ValidationCustomerRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ValidationCustomerRequest {
+  id?: boolean | number
+  validationId?: boolean | number
+  validation?: ValidationRequest
+  customerId?: boolean | number
+  customer?: CustomerRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ValidationRequest {
+  id?: boolean | number
+  name?: boolean | number
+  active?: boolean | number
+  general?: boolean | number
+  onlyWarning?: boolean | number
+  validationGroupId?: boolean | number
+  validationGroup?: ValidationGroupRequest
+  validationCustomers?: ValidationCustomerRequest
+  validationRules?: ValidationRuleRequest
+  validationBusinesses?: ValidationBusinessRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ValidationGroupRequest {
+  id?: boolean | number
+  groupName?: boolean | number
+  validations?: ValidationRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ValidationRuleRequest {
+  id?: boolean | number
+  entityName?: boolean | number
+  propertyName?: boolean | number
+  enumOperation?: boolean | number
+  errorMessage?: boolean | number
+  valueNumeric?: boolean | number
+  valueAlphanumeric?: boolean | number
+  valueDateTime?: boolean | number
+  valueBoolean?: boolean | number
+  valueForeignKey?: boolean | number
+  regexPattern?: boolean | number
+  allowNull?: boolean | number
+  inverseValidationRuleId?: boolean | number
+  inverseValidationRule?: ValidationRuleRequest
+  validationId?: boolean | number
+  validation?: ValidationRequest
+  inverseValidationRules?: ValidationRuleRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ValidationBusinessRequest {
+  id?: boolean | number
+  validationId?: boolean | number
+  validation?: ValidationRequest
+  businessId?: boolean | number
+  business?: BusinessRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface BusinessRequest {
+  id?: boolean | number
+  active?: boolean | number
+  businessName?: boolean | number
+  validationBusinesses?: ValidationBusinessRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -593,6 +873,42 @@ const Customer_possibleTypes = ['Customer']
 export const isCustomer = (obj: { __typename: String }): obj is Customer => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Customer_possibleTypes.includes(obj.__typename)
+}
+
+const ValidationCustomer_possibleTypes = ['ValidationCustomer']
+export const isValidationCustomer = (obj: { __typename: String }): obj is ValidationCustomer => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ValidationCustomer_possibleTypes.includes(obj.__typename)
+}
+
+const Validation_possibleTypes = ['Validation']
+export const isValidation = (obj: { __typename: String }): obj is Validation => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Validation_possibleTypes.includes(obj.__typename)
+}
+
+const ValidationGroup_possibleTypes = ['ValidationGroup']
+export const isValidationGroup = (obj: { __typename: String }): obj is ValidationGroup => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ValidationGroup_possibleTypes.includes(obj.__typename)
+}
+
+const ValidationRule_possibleTypes = ['ValidationRule']
+export const isValidationRule = (obj: { __typename: String }): obj is ValidationRule => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ValidationRule_possibleTypes.includes(obj.__typename)
+}
+
+const ValidationBusiness_possibleTypes = ['ValidationBusiness']
+export const isValidationBusiness = (obj: { __typename: String }): obj is ValidationBusiness => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ValidationBusiness_possibleTypes.includes(obj.__typename)
+}
+
+const Business_possibleTypes = ['Business']
+export const isBusiness = (obj: { __typename: String }): obj is Business => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Business_possibleTypes.includes(obj.__typename)
 }
 
 const CollectionSegmentInfo_possibleTypes = ['CollectionSegmentInfo']
@@ -931,6 +1247,9 @@ export interface CustomerPromiseChain {
   payerFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
   contractorFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
   corporationFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
+  validationCustomers: {
+    execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Promise<ValidationCustomer[]>
+  }
 }
 
 export interface CustomerObservableChain {
@@ -962,6 +1281,177 @@ export interface CustomerObservableChain {
   payerFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   contractorFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   corporationFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
+  validationCustomers: {
+    execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Observable<ValidationCustomer[]>
+  }
+}
+
+export interface ValidationCustomerPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  validation: ValidationPromiseChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Promise<Validation>
+  }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
+}
+
+export interface ValidationCustomerObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  validation: ValidationObservableChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Observable<Validation>
+  }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  customer: CustomerObservableChain & {
+    execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
+  }
+}
+
+export interface ValidationPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  name: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  general: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  onlyWarning: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  validationGroupId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  validationGroup: ValidationGroupPromiseChain & {
+    execute: (request: ValidationGroupRequest, defaultValue?: ValidationGroup | null) => Promise<ValidationGroup | null>
+  }
+  validationCustomers: {
+    execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Promise<ValidationCustomer[]>
+  }
+  validationRules: {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Promise<ValidationRule[]>
+  }
+  validationBusinesses: {
+    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Promise<ValidationBusiness[]>
+  }
+}
+
+export interface ValidationObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  name: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  general: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  onlyWarning: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  validationGroupId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  validationGroup: ValidationGroupObservableChain & {
+    execute: (request: ValidationGroupRequest, defaultValue?: ValidationGroup | null) => Observable<ValidationGroup | null>
+  }
+  validationCustomers: {
+    execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Observable<ValidationCustomer[]>
+  }
+  validationRules: {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Observable<ValidationRule[]>
+  }
+  validationBusinesses: {
+    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Observable<ValidationBusiness[]>
+  }
+}
+
+export interface ValidationGroupPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  groupName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  validations: { execute: (request: ValidationRequest, defaultValue?: Validation[]) => Promise<Validation[]> }
+}
+
+export interface ValidationGroupObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  groupName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  validations: { execute: (request: ValidationRequest, defaultValue?: Validation[]) => Observable<Validation[]> }
+}
+
+export interface ValidationRulePromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  entityName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  enumOperation: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  errorMessage: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  valueNumeric: { execute: (request?: boolean | number, defaultValue?: Float | null) => Promise<Float | null> }
+  valueAlphanumeric: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  valueDateTime: { execute: (request?: boolean | number, defaultValue?: DateTime | null) => Promise<DateTime | null> }
+  valueBoolean: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
+  valueForeignKey: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  regexPattern: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  allowNull: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  inverseValidationRuleId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  inverseValidationRule: ValidationRulePromiseChain & {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule | null) => Promise<ValidationRule | null>
+  }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  validation: ValidationPromiseChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Promise<Validation>
+  }
+  inverseValidationRules: {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Promise<ValidationRule[]>
+  }
+}
+
+export interface ValidationRuleObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  entityName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  enumOperation: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  errorMessage: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  valueNumeric: { execute: (request?: boolean | number, defaultValue?: Float | null) => Observable<Float | null> }
+  valueAlphanumeric: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  valueDateTime: { execute: (request?: boolean | number, defaultValue?: DateTime | null) => Observable<DateTime | null> }
+  valueBoolean: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
+  valueForeignKey: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  regexPattern: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  allowNull: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  inverseValidationRuleId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  inverseValidationRule: ValidationRuleObservableChain & {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule | null) => Observable<ValidationRule | null>
+  }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  validation: ValidationObservableChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Observable<Validation>
+  }
+  inverseValidationRules: {
+    execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Observable<ValidationRule[]>
+  }
+}
+
+export interface ValidationBusinessPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  validation: ValidationPromiseChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Promise<Validation>
+  }
+  businessId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  business: BusinessPromiseChain & { execute: (request: BusinessRequest, defaultValue?: Business) => Promise<Business> }
+}
+
+export interface ValidationBusinessObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  validation: ValidationObservableChain & {
+    execute: (request: ValidationRequest, defaultValue?: Validation) => Observable<Validation>
+  }
+  businessId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  business: BusinessObservableChain & {
+    execute: (request: BusinessRequest, defaultValue?: Business) => Observable<Business>
+  }
+}
+
+export interface BusinessPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
+  businessName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  validationBusinesses: {
+    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Promise<ValidationBusiness[]>
+  }
+}
+
+export interface BusinessObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
+  businessName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  validationBusinesses: {
+    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Observable<ValidationBusiness[]>
+  }
 }
 
 /** Information about the offset pagination. */

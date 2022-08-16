@@ -1,10 +1,11 @@
 ﻿using API.Data.Import.Entities;
+using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Data.Export.Entities
 {
     [Table(nameof(KUNDER))]
-    public class Customer
+    public class Customer : IEntity
     {
         [Column(nameof(KUNDER.PK))]
         public int Id { get; set; }
@@ -45,5 +46,7 @@ namespace API.Data.Export.Entities
         public virtual ICollection<Customer> ContractorFor { get; set; } = new HashSet<Customer>();
 
         public virtual ICollection<Customer> CorporationFor { get; set; } = new HashSet<Customer>();
+
+        public virtual ICollection<ValidationCustomer> ValidationCustomers { get; set; } = new HashSet<ValidationCustomer>();
     }
 }

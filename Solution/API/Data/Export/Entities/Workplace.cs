@@ -1,10 +1,11 @@
 ﻿using API.Data.Import.Entities;
+using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Data.Export.Entities
 {
     [Table(nameof(ARBETSPLATSER))]
-    public class Workplace
+    public class Workplace : IEntity
     {
         [Column(nameof(ARBETSPLATSER.PK))]
         public int Id { get; set; }

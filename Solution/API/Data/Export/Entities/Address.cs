@@ -1,10 +1,11 @@
 ﻿using API.Data.Import.Entities;
+using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Data.Export.Entities
 {
     [Table(nameof(ADRESSER))]
-    public class Address
+    public class Address : IEntity
     {
         [Column(nameof(ADRESSER.PK))]
         public int Id { get; set; }

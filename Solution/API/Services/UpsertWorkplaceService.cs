@@ -4,6 +4,7 @@ using API.GraphQL;
 using HotChocolate.Subscriptions;
 using Microsoft.EntityFrameworkCore;
 using T5.API.Types;
+using API.Exceptions;
 
 namespace API.Services
 {
@@ -195,12 +196,23 @@ namespace API.Services
             return output;
         }
 
-        public async Task<int> ExecuteAsync(UpsertWorkplaceInput input)
+        public async Task<MutationOutput> ExecuteAsync(UpsertWorkplaceInput input)
         {
-            return input.Id is null ? await InsertAsync(input) : await UpdateAsync(input);
+            var output = new MutationOutput();
+
+            if (input.Id is null)
+            {
+                output = await InsertAsync(input, output);
+            }
+            else
+            {
+                output = await UpdateAsync(input, output);
+            }
+
+            return output;
         }
 
-        private async Task<int> InsertAsync(UpsertWorkplaceInput input)
+        private async Task<MutationOutput> InsertAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
             var position = new Position
             {
@@ -231,13 +243,25 @@ namespace API.Services
 
             _db.Workplaces.Add(workplace);
 
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                // Valideringsfel finns i exception.
+                // Returnera dessa i output.
+                return output;
+            }
+
             await _sender.SendAsync(nameof(Subscription.WorkplaceInserted), workplace);
 
-            return workplace.Id;
+            output.Id = workplace.Id;
+
+            return output;
         }
 
-        private async Task<int> UpdateAsync(UpsertWorkplaceInput input)
+        private async Task<MutationOutput> UpdateAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
             var workplace = (await _db.Workplaces.FirstOrDefaultAsync(workplace => workplace.Id == input.Id))!;
 
@@ -260,10 +284,22 @@ namespace API.Services
 
             _db.Workplaces.Update(workplace);
 
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                // Valideringsfel finns i exception.
+                // Returnera dessa i output.
+                return output;
+            }
+            
             await _sender.SendAsync(nameof(Subscription.WorkplaceUpdated), workplace);
 
-            return workplace.Id;
+            output.Id = workplace.Id;
+
+            return output;
         }
     }
 }

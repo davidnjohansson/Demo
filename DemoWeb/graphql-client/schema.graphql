@@ -45,6 +45,17 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
+"""
+The `@specifiedBy` directive is used within the type system definition language
+to provide a URL for specifying the behavior of custom scalar definitions.
+"""
+directive @specifiedBy(
+  """
+  The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types.
+  """
+  url: String!
+) on SCALAR
+
 type Address {
   id: Int!
   active: Boolean
@@ -123,6 +134,22 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
+type Business {
+  id: Int!
+  active: Boolean
+  businessName: String
+  validationBusinesses: [ValidationBusiness!]!
+}
+
+input BusinessFilterInput {
+  and: [BusinessFilterInput!]
+  or: [BusinessFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  active: BooleanOperationFilterInput
+  businessName: StringOperationFilterInput
+  validationBusinesses: ListFilterInputTypeOfValidationBusinessFilterInput
+}
+
 """
 Information about the offset pagination.
 """
@@ -168,6 +195,36 @@ input ComparableInt32OperationFilterInput {
   nlte: Int
 }
 
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableNullableOfDoubleOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float]
+  nin: [Float]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
 input ComparableNullableOfInt32OperationFilterInput {
   eq: Int
   neq: Int
@@ -202,6 +259,7 @@ type Customer {
   payerFor: [Customer!]!
   contractorFor: [Customer!]!
   corporationFor: [Customer!]!
+  validationCustomers: [ValidationCustomer!]!
 }
 
 type CustomerCollectionSegment {
@@ -235,6 +293,7 @@ input CustomerFilterInput {
   payerFor: ListFilterInputTypeOfCustomerFilterInput
   contractorFor: ListFilterInputTypeOfCustomerFilterInput
   corporationFor: ListFilterInputTypeOfCustomerFilterInput
+  validationCustomers: ListFilterInputTypeOfValidationCustomerFilterInput
 }
 
 input CustomerSortInput {
@@ -254,6 +313,11 @@ input CustomerSortInput {
   corporation: CustomerSortInput
 }
 
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime
+
 input ListFilterInputTypeOfAddressFilterInput {
   all: AddressFilterInput
   none: AddressFilterInput
@@ -265,6 +329,34 @@ input ListFilterInputTypeOfCustomerFilterInput {
   all: CustomerFilterInput
   none: CustomerFilterInput
   some: CustomerFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfValidationBusinessFilterInput {
+  all: ValidationBusinessFilterInput
+  none: ValidationBusinessFilterInput
+  some: ValidationBusinessFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfValidationCustomerFilterInput {
+  all: ValidationCustomerFilterInput
+  none: ValidationCustomerFilterInput
+  some: ValidationCustomerFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfValidationFilterInput {
+  all: ValidationFilterInput
+  none: ValidationFilterInput
+  some: ValidationFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfValidationRuleFilterInput {
+  all: ValidationRuleFilterInput
+  none: ValidationRuleFilterInput
+  some: ValidationRuleFilterInput
   any: Boolean
 }
 
@@ -363,9 +455,129 @@ input UpsertWorkplaceInput {
   onlyValidate: Boolean
 }
 
+type Validation {
+  id: Int!
+  name: String!
+  active: Boolean!
+  general: Boolean!
+  onlyWarning: Boolean!
+  validationGroupId: Int
+  validationGroup: ValidationGroup
+  validationCustomers: [ValidationCustomer!]!
+  validationRules: [ValidationRule!]!
+  validationBusinesses: [ValidationBusiness!]!
+}
+
+type ValidationBusiness {
+  id: Int!
+  validationId: Int!
+  validation: Validation!
+  businessId: Int!
+  business: Business!
+}
+
+input ValidationBusinessFilterInput {
+  and: [ValidationBusinessFilterInput!]
+  or: [ValidationBusinessFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  validationId: ComparableInt32OperationFilterInput
+  validation: ValidationFilterInput
+  businessId: ComparableInt32OperationFilterInput
+  business: BusinessFilterInput
+}
+
+type ValidationCustomer {
+  id: Int!
+  validationId: Int!
+  validation: Validation!
+  customerId: Int!
+  customer: Customer!
+}
+
+input ValidationCustomerFilterInput {
+  and: [ValidationCustomerFilterInput!]
+  or: [ValidationCustomerFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  validationId: ComparableInt32OperationFilterInput
+  validation: ValidationFilterInput
+  customerId: ComparableInt32OperationFilterInput
+  customer: CustomerFilterInput
+}
+
 type ValidationError {
   message: String!
   property: String!
+}
+
+input ValidationFilterInput {
+  and: [ValidationFilterInput!]
+  or: [ValidationFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  name: StringOperationFilterInput
+  active: BooleanOperationFilterInput
+  general: BooleanOperationFilterInput
+  onlyWarning: BooleanOperationFilterInput
+  validationGroupId: ComparableNullableOfInt32OperationFilterInput
+  validationGroup: ValidationGroupFilterInput
+  validationCustomers: ListFilterInputTypeOfValidationCustomerFilterInput
+  validationRules: ListFilterInputTypeOfValidationRuleFilterInput
+  validationBusinesses: ListFilterInputTypeOfValidationBusinessFilterInput
+}
+
+type ValidationGroup {
+  id: Int!
+  groupName: String!
+  validations: [Validation!]!
+}
+
+input ValidationGroupFilterInput {
+  and: [ValidationGroupFilterInput!]
+  or: [ValidationGroupFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  groupName: StringOperationFilterInput
+  validations: ListFilterInputTypeOfValidationFilterInput
+}
+
+type ValidationRule {
+  id: Int!
+  entityName: String!
+  propertyName: String!
+  enumOperation: Int!
+  errorMessage: String
+  valueNumeric: Float
+  valueAlphanumeric: String
+  valueDateTime: DateTime
+  valueBoolean: Boolean
+  valueForeignKey: Int
+  regexPattern: String
+  allowNull: Boolean!
+  inverseValidationRuleId: Int
+  inverseValidationRule: ValidationRule
+  validationId: Int!
+  validation: Validation!
+  inverseValidationRules: [ValidationRule!]!
+}
+
+input ValidationRuleFilterInput {
+  and: [ValidationRuleFilterInput!]
+  or: [ValidationRuleFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  entityName: StringOperationFilterInput
+  propertyName: StringOperationFilterInput
+  enumOperation: ComparableInt32OperationFilterInput
+  errorMessage: StringOperationFilterInput
+  valueNumeric: ComparableNullableOfDoubleOperationFilterInput
+  valueAlphanumeric: StringOperationFilterInput
+  valueDateTime: ComparableNullableOfDateTimeOperationFilterInput
+  valueBoolean: BooleanOperationFilterInput
+  valueForeignKey: ComparableNullableOfInt32OperationFilterInput
+  regexPattern: StringOperationFilterInput
+  allowNull: BooleanOperationFilterInput
+  inverseValidationRuleId: ComparableNullableOfInt32OperationFilterInput
+  inverseValidationRule: ValidationRuleFilterInput
+  validationId: ComparableInt32OperationFilterInput
+  validation: ValidationFilterInput
+  inverseValidationRules: ListFilterInputTypeOfValidationRuleFilterInput
 }
 
 type Workplace {

@@ -21,6 +21,12 @@ namespace API.Data.Import
         public virtual DbSet<ARBETSPLATSER> ARBETSPLATSER { get; set; } = null!;
         public virtual DbSet<KUNDER> KUNDER { get; set; } = null!;
         public virtual DbSet<POSITIONER> POSITIONER { get; set; } = null!;
+        public virtual DbSet<VALIDERING> VALIDERING { get; set; } = null!;
+        public virtual DbSet<VALIDERING_GRUPP> VALIDERING_GRUPP { get; set; } = null!;
+        public virtual DbSet<VALIDERING_KUNDER> VALIDERING_KUNDER { get; set; } = null!;
+        public virtual DbSet<VALIDERING_REGEL> VALIDERING_REGEL { get; set; } = null!;
+        public virtual DbSet<VALIDERING_VERKSAMHETER> VALIDERING_VERKSAMHETER { get; set; } = null!;
+        public virtual DbSet<VERKSAMHETER> VERKSAMHETER { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +37,12 @@ namespace API.Data.Import
             modelBuilder.ApplyConfiguration(new Configurations.ARBETSPLATSERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.KUNDERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.POSITIONERConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VALIDERINGConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VALIDERING_GRUPPConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VALIDERING_KUNDERConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VALIDERING_REGELConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VALIDERING_VERKSAMHETERConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.VERKSAMHETERConfiguration());
             OnModelCreatingPartial(modelBuilder);
         }
 

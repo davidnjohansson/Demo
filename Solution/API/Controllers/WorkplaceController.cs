@@ -15,9 +15,7 @@ namespace API.Controllers
 
             if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
 
-            var id = await service.ExecuteAsync(input);
-
-            return new MutationOutput(id);
+            return await service.ExecuteAsync(input);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using API.Data.Import.Entities;
+using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Data.Export.Entities
 {
     [Table(nameof(POSITIONER))]
-    public class Position
+    public class Position : IEntity
     {
         [Column(nameof(POSITIONER.PK))]
         public int Id { get; set; }
