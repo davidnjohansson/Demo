@@ -99,7 +99,19 @@ namespace API.Data.Export
                 {
                     if (tableName != validationRule.EntityName) continue;
 
-                    // Här är en match. Fortsätt här. Måste kolla på property.
+                    foreach (var property in entity.GetType().GetProperties())
+                    {
+                        var columnName = property
+                            .GetCustomAttributes(true)
+                            .OfType<ColumnAttribute>()
+                            .Select(columnAttribute => columnAttribute.Name)
+                            .FirstOrDefault();
+
+                        if (columnName == null) continue;
+                        if (columnName != validationRule.PropertyName) continue;
+
+                        Console.WriteLine(columnName);
+                    }
                 }
             }
 

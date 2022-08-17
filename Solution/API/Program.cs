@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 string fileName = ".secret.json";
 string path = $"{Directory.GetCurrentDirectory()}\\{fileName}";
 
-// Create .secret.json if not exists.
 if (File.Exists(path) == false)
 {
     File.WriteAllText(path, JsonSerializer.Serialize(new Secret()));
@@ -22,12 +21,14 @@ var secret = JsonSerializer.Deserialize<Secret>(json)!;
 
 foreach (var property in secret.GetType().GetProperties())
 {
-    if (property.Name == nameof(secret.ConnectionString) && string.IsNullOrEmpty(secret.ConnectionString))
+    if (property.Name == nameof(secret.ConnectionString))
     {
-        Console.Write($"{property.Name}: ");
-        var connectionString = Console.ReadLine();
-        secret.ConnectionString = connectionString ?? string.Empty;
-        builder.Configuration[property.Name] = connectionString;
+        if (string.IsNullOrEmpty(secret.ConnectionString))
+        {
+            Console.Write($"{property.Name}: ");
+            secret.ConnectionString = Console.ReadLine() ?? string.Empty;
+        }
+        builder.Configuration[property.Name] = secret.ConnectionString;
     }
 }
 

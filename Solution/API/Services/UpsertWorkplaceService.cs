@@ -127,70 +127,70 @@ namespace API.Services
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.Latitude))
-                {
-                    if (input.Latitude is null)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Obligatorisk",
-                            Property = nameof(input.Latitude)
-                        });
-                        continue;
-                    }
+                //else if (property.Name == nameof(input.Latitude))
+                //{
+                //    if (input.Latitude is null)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Obligatorisk",
+                //            Property = nameof(input.Latitude)
+                //        });
+                //        continue;
+                //    }
 
-                    if (input.Latitude < -90)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Latitude får inte vara mindre än -90",
-                            Property = nameof(input.Latitude)
-                        });
-                        continue;
-                    }
+                //    if (input.Latitude < -90)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Latitude får inte vara mindre än -90",
+                //            Property = nameof(input.Latitude)
+                //        });
+                //        continue;
+                //    }
 
-                    if (input.Latitude > 90)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Latitude får inte vara mer än 90",
-                            Property = nameof(input.Latitude)
-                        });
-                        continue;
-                    }
-                }
-                else if (property.Name == nameof(input.Longitude))
-                {
-                    if (input.Longitude is null)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Obligatorisk",
-                            Property = nameof(input.Longitude)
-                        });
-                        continue;
-                    }
+                //    if (input.Latitude > 90)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Latitude får inte vara mer än 90",
+                //            Property = nameof(input.Latitude)
+                //        });
+                //        continue;
+                //    }
+                //}
+                //else if (property.Name == nameof(input.Longitude))
+                //{
+                //    if (input.Longitude is null)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Obligatorisk",
+                //            Property = nameof(input.Longitude)
+                //        });
+                //        continue;
+                //    }
 
-                    if (input.Longitude < -180)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Longitude får inte vara mindre än -90",
-                            Property = nameof(input.Longitude)
-                        });
-                        continue;
-                    }
+                //    if (input.Longitude < -180)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Longitude får inte vara mindre än -90",
+                //            Property = nameof(input.Longitude)
+                //        });
+                //        continue;
+                //    }
 
-                    if (input.Longitude > 180)
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Longitude får inte vara mer än 90",
-                            Property = nameof(input.Longitude)
-                        });
-                        continue;
-                    }
-                }
+                //    if (input.Longitude > 180)
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Longitude får inte vara mer än 90",
+                //            Property = nameof(input.Longitude)
+                //        });
+                //        continue;
+                //    }
+                //}
             }
 
             return output;
