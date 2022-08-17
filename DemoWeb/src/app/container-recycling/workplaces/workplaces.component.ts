@@ -8,7 +8,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { GraphQLService } from 'src/shared/services/graphql/graphql.service';
-import { Arbetsplatser, ArbetsplatserSortInput, SortEnumType } from 'graphql-client/schema';
+import { SortEnumType, Workplace, WorkplaceSortInput } from 'graphql-client/schema';
 import { Sort } from '@angular/material/sort';
 import { debounceTime, lastValueFrom } from 'rxjs';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -35,19 +35,19 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 	public filterFormControl = new FormControl<string>('', { nonNullable: true });
 
 	public searching = false;
-	private order: ArbetsplatserSortInput[] = [
+	private order: WorkplaceSortInput[] = [
 		{
-			arbetsplatsNamn: SortEnumType.ASC
+			workplaceName: SortEnumType.ASC
 		}
 	];
 	public skip = 0;
 	public take = 10;
-	public arbetsplatser: Arbetsplatser[] = [];
+	public workplaces: Workplace[] = [];
 	public totalCount = 0;
 	public displayedColumns: string[] = [];
 
-	public selection = new SelectionModel<Arbetsplatser>(false, []);
-	public selectedArbetsplatsLatLng: google.maps.LatLng | null = null;
+	public selection = new SelectionModel<Workplace>(false, []);
+	public selectedWorkplaceLatLng: google.maps.LatLng | null = null;
 
 	public mapOpened = false;
 	public mapCenter: google.maps.LatLngLiteral = {
@@ -69,8 +69,8 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 
 	ngOnInit() {
 		this.title = this.activatedRoute.routeConfig?.title as string;
-		this.onArbetsplatsInserted();
-		this.onArbetsplatsUpdated();
+		this.onWorkplaceInserted();
+		this.onWorkplaceUpdated();
 		this.onFilterChanged();
 		this.onBreakpointChanged();
 		this.onHandset();
@@ -82,14 +82,14 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 		this.onPageChanged();
 	}
 
-	private onArbetsplatsInserted() {
-		this.subscriptionService.arbetsplatsInserted$
+	private onWorkplaceInserted() {
+		this.subscriptionService.workplaceInserted$
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(() => this.search());
 	}
 
-	private onArbetsplatsUpdated() {
-		this.subscriptionService.arbetsplatsUpdated$
+	private onWorkplaceUpdated() {
+		this.subscriptionService.workplaceUpdated$
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(() => this.search());
 	}
@@ -112,33 +112,33 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 				(state: BreakpointState) => {
 					if (state.breakpoints[Breakpoints.XSmall]) {
 						this.displayedColumns = [
-							'arbetsplatsNamn',
-							'fkKunderNavigation.kundNamn',
+							'workplaceNamn',
+							'customer.customerName',
 						];
 					} else if (state.breakpoints[Breakpoints.Small]) {
 						this.displayedColumns = [
-							'aktiv',
-							'arbetsplatsNamn',
-							'fkKunderNavigation.kundNamn',
+							'active',
+							'workplaceName',
+							'customer.customerName',
 						];
 					} else if (state.breakpoints[Breakpoints.Medium] || state.breakpoints[Breakpoints.Large]) {
 						this.displayedColumns = [
 							'select',
-							'aktiv',
-							'arbetsplatsNamn',
-							'fkKunderNavigation.kundNamn',
-							'fkAdresserNavigation.adress1',
-							'fkAdresserNavigation.ort'
+							'active',
+							'workplaceName',
+							'customer.customerName',
+							'address.address1',
+							'address.city'
 						];
 					} else if (state.breakpoints[Breakpoints.XLarge]) {
 						this.displayedColumns = [
 							'select',
-							'aktiv',
-							'arbetsplatsNamn',
-							'fkKunderNavigation.kundNamn',
-							'fkAdresserNavigation.adress1',
-							'fkAdresserNavigation.ort',
-							'fkAdresserNavigation.postnr'
+							'active',
+							'workplaceName',
+							'customer.customerName',
+							'address.address1',
+							'address.city',
+							'address.zipCode'
 						];
 					}
 				}
@@ -162,51 +162,51 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 	}
 
 	public onSortChanged(sort: Sort) {
-		const order: ArbetsplatserSortInput[] = [];
+		const order: WorkplaceSortInput[] = [];
 
 		switch (sort.active) {
-			case 'arbetsplatsNamn':
+			case 'workplaceName':
 				order.push({
-					arbetsplatsNamn: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					workplaceName: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 				});
 				break;
-			case 'aktiv':
+			case 'active':
 				order.push({
-					aktiv: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					active: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 				});
 				break;
-			case 'fkKunderNavigation.kundNr':
+			case 'customer.customerNo':
 				order.push({
-					fkKunderNavigation: {
-						kundNr: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					customer: {
+						customerNo: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 					}
 				});
 				break;
-			case 'fkKunderNavigation.kundNamn':
+			case 'customer.customerName':
 				order.push({
-					fkKunderNavigation: {
-						kundNamn: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					customer: {
+						customerName: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 					}
 				});
 				break;
-			case 'fkAdresserNavigation.adress1':
+			case 'address.address1':
 				order.push({
-					fkAdresserNavigation: {
-						adress1: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					address: {
+						address1: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 					}
 				});
 				break;
-			case 'fkAdresserNavigation.postnr':
+			case 'address.zipCode':
 				order.push({
-					fkAdresserNavigation: {
-						postnr: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					address: {
+						zipCode: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 					}
 				});
 				break;
-			case 'fkAdresserNavigation.ort':
+			case 'address.city':
 				order.push({
-					fkAdresserNavigation: {
-						ort: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
+					address: {
+						city: sort.direction === 'asc' ? SortEnumType.ASC : SortEnumType.DESC
 					}
 				});
 				break;
@@ -230,36 +230,36 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 	private async search() {
 		this.searching = true;
 
-		const arbetsplatserQuery = await this.graphql.client.query({
-			arbetsplatser: [
+		const workplaceQuery = await this.graphql.client.query({
+			workplaces: [
 				{
 					order: this.order,
 					where: {
 						or: [
 							{
-								arbetsplatsNamn: {
+								workplaceName: {
 									contains: this.filterFormControl.value
 								}
 							},
 							{
-								fkKunderNavigation: {
-									kundNr: {
+								customer: {
+									customerNo: {
 										contains: this.filterFormControl.value
 									},
-									kundNamn: {
+									customerName: {
 										contains: this.filterFormControl.value
 									}
 								}
 							},
 							{
-								fkAdresserNavigation: {
-									adress1: {
+								address: {
+									address1: {
 										contains: this.filterFormControl.value
 									},
-									postnr: {
+									zipCode: {
 										contains: this.filterFormControl.value
 									},
-									ort: {
+									city: {
 										contains: this.filterFormControl.value
 									}
 								}
@@ -271,20 +271,20 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 				},
 				{
 					items: {
-						pk: true,
-						arbetsplatsNamn: true,
-						aktiv: true,
-						fkKunderNavigation: {
-							pk: true,
-							kundNamn: true
+						id: true,
+						workplaceName: true,
+						active: true,
+						customer: {
+							id: true,
+							customerName: true
 						},
-						fkAdresserNavigation: {
-							pk: true,
-							adress1: true,
-							postnr: true,
-							ort: true,
-							fkPositionerNavigation: {
-								pk: true,
+						address: {
+							id: true,
+							address1: true,
+							zipCode: true,
+							city: true,
+							position: {
+								id: true,
 								latitude: true,
 								longitude: true
 							}
@@ -299,17 +299,17 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 			]
 		});
 
-		const items = arbetsplatserQuery.data?.arbetsplatser?.items ?? new Array(this.take);
-		const totalCount = arbetsplatserQuery?.data?.arbetsplatser?.totalCount ?? 0;
+		const items = workplaceQuery.data?.workplaces?.items ?? new Array(this.take);
+		const totalCount = workplaceQuery?.data?.workplaces?.totalCount ?? 0;
 
 		if (items.length > 0) {
-			this.arbetsplatser = items;
+			this.workplaces = items;
 			this.totalCount = totalCount;
 
-			if (this.arbetsplatser.length < this.take) {
-				const rowsToAdd = this.take - this.arbetsplatser.length;
+			if (this.workplaces.length < this.take) {
+				const rowsToAdd = this.take - this.workplaces.length;
 				const emptyRows = new Array(rowsToAdd);
-				this.arbetsplatser = this.arbetsplatser.concat(emptyRows);
+				this.workplaces = this.workplaces.concat(emptyRows);
 			}
 		}
 
@@ -375,28 +375,28 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 		this.mapOpened = !this.mapOpened;
 	}
 
-	public onSelectionChanged(arbetsplats: Arbetsplatser) {
-		if (this.selection.isSelected(arbetsplats) === false) {
+	public onSelectionChanged(workplace: Workplace) {
+		if (this.selection.isSelected(workplace) === false) {
 			this.selection.clear();
 		}
-		this.selection.toggle(arbetsplats);
+		this.selection.toggle(workplace);
 
 		if (this.selection.selected.length >= 1) {
 			this.mapCenter = {
-				lat: arbetsplats.fkAdresserNavigation.fkPositionerNavigation?.latitude ?? 0,
-				lng: arbetsplats.fkAdresserNavigation.fkPositionerNavigation?.longitude ?? 0,
+				lat: workplace.address.position?.latitude ?? 0,
+				lng: workplace.address.position?.longitude ?? 0,
 			};
 
-			this.selectedArbetsplatsLatLng = new google.maps.LatLng({
-				lat: arbetsplats.fkAdresserNavigation.fkPositionerNavigation?.latitude ?? 0,
-				lng: arbetsplats.fkAdresserNavigation.fkPositionerNavigation?.longitude ?? 0
+			this.selectedWorkplaceLatLng = new google.maps.LatLng({
+				lat: workplace.address.position?.latitude ?? 0,
+				lng: workplace.address.position?.longitude ?? 0
 			});
 
 			if (this.mapOpened === false) {
 				this.openMap(250);
 			}
 		} else {
-			this.selectedArbetsplatsLatLng = null;
+			this.selectedWorkplaceLatLng = null;
 
 			if (this.mapOpened === true) {
 				this.closeMap(250);
@@ -404,20 +404,20 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 		}
 	}
 
-	public getRowClass(arbetsplats: Arbetsplatser | undefined) {
-		return arbetsplats ? 'row' : 'row-empty';
+	public getRowClass(workplace: Workplace | undefined) {
+		return workplace ? 'row' : 'row-empty';
 	}
 
 	public addWorkplace() {
 		this.openWorkplaceDialog();
 	}
 
-	public rowClicked(arbetsplats: Arbetsplatser | undefined) {
-		if (arbetsplats === undefined) return;
-		this.openWorkplaceDialog(arbetsplats.pk);
+	public rowClicked(workplace: Workplace | undefined) {
+		if (workplace === undefined) return;
+		this.openWorkplaceDialog(workplace.id);
 	}
 
-	private async openWorkplaceDialog(arbetsplatsPk?: number) {
+	private async openWorkplaceDialog(workplaceId?: number) {
 		const dialogConfig: MatDialogConfig = {
 			autoFocus: true,
 			disableClose: false,
@@ -427,7 +427,7 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 			position: {
 				top: '5vh'
 			},
-			data: arbetsplatsPk
+			data: workplaceId
 		};
 
 		const dialogResult = await lastValueFrom(this.workplaceDialog.open(WorkplaceComponent, dialogConfig).afterClosed());

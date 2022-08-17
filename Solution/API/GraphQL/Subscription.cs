@@ -1,13 +1,13 @@
-﻿using API.Entities;
+﻿using API.Data.Export.Entities;
 
 namespace API.GraphQL
 {
     public class Subscription
     {
         [Subscribe]
-        public Arbetsplatser ArbetsplatsInserted([EventMessage] Arbetsplatser arbetsplats) => arbetsplats;
+        public Workplace WorkplaceInserted([EventMessage] Workplace workplace) => workplace;
 
         [Subscribe]
-        public Arbetsplatser ArbetsplatsUpdated([EventMessage] Arbetsplatser arbetsplats) => arbetsplats;
+        public Workplace WorkplaceUpdated([EventMessage] Workplace workplace) => workplace;
     }
 }

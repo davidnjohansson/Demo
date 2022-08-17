@@ -5,15 +5,13 @@ namespace API.GraphQL
 {
     public class Mutation
     {
-        public async Task<MutationOutput> UpsertArbetsplats([Service] UpsertArbetsplatsService service, UpsertArbetsplatsInput input)
+        public async Task<MutationOutput> UpsertWorkplace([Service] UpsertWorkplaceService service, UpsertWorkplaceInput input)
         {
             var output = await service.ValidateAsync(input);
 
             if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
 
-            var pk = await service.ExecuteAsync(input);
-
-            return new MutationOutput(pk);
+            return await service.ExecuteAsync(input);
         }
     }
 }

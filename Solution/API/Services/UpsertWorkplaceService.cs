@@ -1,127 +1,128 @@
-﻿using API.Data;
-using API.Entities;
+﻿using API.Data.Export.Entities;
+using API.Data.Export;
 using API.GraphQL;
 using HotChocolate.Subscriptions;
 using Microsoft.EntityFrameworkCore;
 using T5.API.Types;
+using API.Exceptions;
 
 namespace API.Services
 {
-    public class UpsertArbetsplatsInput : Input
+    public class UpsertWorkplaceInput : Input
     {
-        public bool? Aktiv { get; set; }
-        public string? ArbetsplatsNamn { get; set; }
-        public int? FkKunder { get; set; }
-        public string? Adress1 { get; set; }
-        public string? Ort { get; set; }
-        public string? Postnr { get; set; }
+        public bool? Active { get; set; }
+        public string? WorkplaceName { get; set; }
+        public int? CustomerId { get; set; }
+        public string? Address1 { get; set; }
+        public string? City { get; set; }
+        public string? ZipCode { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
     }
 
-    public class UpsertArbetsplatsService
+    public class UpsertWorkplaceService
     {
         private readonly DemoDbContext _db;
         private readonly ITopicEventSender _sender;
 
-        public UpsertArbetsplatsService(DemoDbContext db, ITopicEventSender sender)
+        public UpsertWorkplaceService(DemoDbContext db, ITopicEventSender sender)
         {
             _db = db;
             _sender = sender;
         }
 
-        public async Task<MutationOutput> ValidateAsync(UpsertArbetsplatsInput input)
+        public async Task<MutationOutput> ValidateAsync(UpsertWorkplaceInput input)
         {
             var output = new MutationOutput();
 
-            foreach (var property in typeof(UpsertArbetsplatsInput).GetProperties())
+            foreach (var property in typeof(UpsertWorkplaceInput).GetProperties())
             {
-                if (property.Name == nameof(input.Pk))
+                if (property.Name == nameof(input.Id))
                 {
-                    if (input.Pk is not null)
+                    if (input.Id is not null)
                     {
-                        var arbetsplatsExists = await _db.Arbetsplatser.AnyAsync(arbetsplats => arbetsplats.Pk == input.Pk);
+                        var workplaceExists = await _db.Workplaces.AnyAsync(workplace => workplace.Id == input.Id);
 
-                        if (arbetsplatsExists is false)
+                        if (workplaceExists is false)
                         {
                             output.ValidationErrors.Add(new ValidationError
                             {
                                 Message = "Arbetsplats kunde inte hittas",
-                                Property = nameof(input.Pk)
+                                Property = nameof(input.Id)
                             });
                         }
                     }
                 }
-                else if (property.Name == nameof(input.Aktiv))
+                else if (property.Name == nameof(input.Active))
                 {
-                    if (input.Aktiv is null)
+                    if (input.Active is null)
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Obligatorisk",
-                            Property = nameof(input.Aktiv)
+                            Property = nameof(input.Active)
                         });
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.ArbetsplatsNamn))
+                else if (property.Name == nameof(input.WorkplaceName))
                 {
-                    if (string.IsNullOrWhiteSpace(input.ArbetsplatsNamn))
+                    if (string.IsNullOrWhiteSpace(input.WorkplaceName))
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Obligatorisk",
-                            Property = nameof(input.ArbetsplatsNamn)
+                            Property = nameof(input.WorkplaceName)
                         });
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.FkKunder))
+                else if (property.Name == nameof(input.CustomerId))
                 {
-                    var kundExists = await _db.Kunder.AnyAsync(kund => kund.Pk == input.FkKunder);
+                    var customerExists = await _db.Customers.AnyAsync(customer => customer.Id == input.CustomerId);
 
-                    if (kundExists is false)
+                    if (customerExists is false)
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Kund kunde inte hittas",
-                            Property = nameof(input.FkKunder)
+                            Property = nameof(input.CustomerId)
                         });
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.Adress1))
+                else if (property.Name == nameof(input.Address1))
                 {
-                    if (string.IsNullOrWhiteSpace(input.Adress1))
+                    if (string.IsNullOrWhiteSpace(input.Address1))
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Obligatorisk",
-                            Property = nameof(input.Adress1)
+                            Property = nameof(input.Address1)
                         });
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.Ort))
+                else if (property.Name == nameof(input.City))
                 {
-                    if (string.IsNullOrWhiteSpace(input.Ort))
+                    if (string.IsNullOrWhiteSpace(input.City))
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Obligatorisk",
-                            Property = nameof(input.Ort)
+                            Property = nameof(input.City)
                         });
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.Postnr))
+                else if (property.Name == nameof(input.ZipCode))
                 {
-                    if (string.IsNullOrWhiteSpace(input.Postnr))
+                    if (string.IsNullOrWhiteSpace(input.ZipCode))
                     {
                         output.ValidationErrors.Add(new ValidationError
                         {
                             Message = "Obligatorisk",
-                            Property = nameof(input.Postnr)
+                            Property = nameof(input.ZipCode)
                         });
                         continue;
                     }
@@ -195,75 +196,110 @@ namespace API.Services
             return output;
         }
 
-        public async Task<int> ExecuteAsync(UpsertArbetsplatsInput input)
+        public async Task<MutationOutput> ExecuteAsync(UpsertWorkplaceInput input)
         {
-            return input.Pk is null ? await InsertAsync(input) : await UpdateAsync(input);
+            var output = new MutationOutput();
+
+            if (input.Id is null)
+            {
+                output = await InsertAsync(input, output);
+            }
+            else
+            {
+                output = await UpdateAsync(input, output);
+            }
+
+            return output;
         }
 
-        private async Task<int> InsertAsync(UpsertArbetsplatsInput input)
+        private async Task<MutationOutput> InsertAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
-            var position = new Positioner
+            var position = new Position
             {
                 Latitude = input.Latitude!.Value,
                 Longitude = input.Longitude!.Value,
             };
 
-            var adresstyp = (await _db.Adresstyp.FirstOrDefaultAsync(adresstyp => adresstyp.AdresstypNamn == "Arbetsplatsadress"))!;
+            var addressType = (await _db.AddressTypes.FirstOrDefaultAsync(addressType => addressType.AddressTypeName == "Arbetsplatsadress"))!;
 
-            var adress = new Adresser
+            var address = new Address
             {
-                Adress1 = input.Adress1!,
-                FkAdresstypNavigation = adresstyp,
-                FkPositionerNavigation = position,
-                Ort = input.Ort!,
-                Postnr = input.Postnr!
+                Address1 = input.Address1!,
+                AddressType = addressType,
+                Position = position,
+                City = input.City,
+                ZipCode = input.ZipCode
             };
 
-            var kund = (await _db.Kunder.FirstOrDefaultAsync(kund => kund.Pk == input.FkKunder))!;
+            var customer = (await _db.Customers.FirstOrDefaultAsync(customer => customer.Id == input.CustomerId))!;
 
-            var arbetsplats = new Arbetsplatser
+            var workplace = new Workplace
             {
-                Aktiv = input.Aktiv!.Value,
-                ArbetsplatsNamn = input.ArbetsplatsNamn!,
-                FkAdresserNavigation = adress,
-                FkKunderNavigation = kund
+                Active = input.Active!.Value,
+                WorkplaceName = input.WorkplaceName!,
+                Address = address,
+                Customer = customer
             };
 
-            _db.Arbetsplatser.Add(arbetsplats);
+            _db.Workplaces.Add(workplace);
 
-            await _db.SaveChangesAsync();
-            await _sender.SendAsync(nameof(Subscription.ArbetsplatsInserted), arbetsplats);
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                // Valideringsfel finns i exception.
+                // Returnera dessa i output.
+                return output;
+            }
 
-            return arbetsplats.Pk;
+            await _sender.SendAsync(nameof(Subscription.WorkplaceInserted), workplace);
+
+            output.Id = workplace.Id;
+
+            return output;
         }
 
-        private async Task<int> UpdateAsync(UpsertArbetsplatsInput input)
+        private async Task<MutationOutput> UpdateAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
-            var arbetsplats = (await _db.Arbetsplatser.FirstOrDefaultAsync(arbetsplats => arbetsplats.Pk == input.Pk))!;
+            var workplace = (await _db.Workplaces.FirstOrDefaultAsync(workplace => workplace.Id == input.Id))!;
 
-            var position = arbetsplats.FkAdresserNavigation.FkPositionerNavigation ?? new Positioner();
+            var position = workplace.Address.Position ?? new Position();
             position.Latitude = input.Latitude!.Value;
             position.Longitude = input.Longitude!.Value;
 
-            var adress = arbetsplats.FkAdresserNavigation;
-            adress.Adress1 = input.Adress1!;
-            adress.FkPositionerNavigation = position;
-            adress.Ort = input.Ort!;
-            adress.Postnr = input.Postnr!;
+            var address = workplace.Address;
+            address.Address1 = input.Address1!;
+            address.Position = position;
+            address.City = input.City!;
+            address.ZipCode = input.ZipCode!;
 
-            var kund = (await _db.Kunder.FirstOrDefaultAsync(kund => kund.Pk == input.FkKunder))!;
+            var customer = (await _db.Customers.FirstOrDefaultAsync(customer => customer.Id == input.CustomerId))!;
 
-            arbetsplats.Aktiv = input.Aktiv!.Value;
-            arbetsplats.ArbetsplatsNamn = input.ArbetsplatsNamn!;
-            arbetsplats.FkAdresserNavigation = adress;
-            arbetsplats.FkKunderNavigation = kund;
+            workplace.Active = input.Active!.Value;
+            workplace.WorkplaceName = input.WorkplaceName!;
+            workplace.Address = address;
+            workplace.Customer = customer;
 
-            _db.Arbetsplatser.Update(arbetsplats);
+            _db.Workplaces.Update(workplace);
 
-            await _db.SaveChangesAsync();
-            await _sender.SendAsync(nameof(Subscription.ArbetsplatsUpdated), arbetsplats);
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                // Valideringsfel finns i exception.
+                // Returnera dessa i output.
+                return output;
+            }
+            
+            await _sender.SendAsync(nameof(Subscription.WorkplaceUpdated), workplace);
 
-            return arbetsplats.Pk;
+            output.Id = workplace.Id;
+
+            return output;
         }
     }
 }

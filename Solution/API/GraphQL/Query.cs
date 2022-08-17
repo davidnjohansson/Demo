@@ -1,5 +1,5 @@
-﻿using API.Data;
-using API.Entities;
+﻿using API.Data.Export.Entities;
+using API.Data.Export;
 
 namespace API.GraphQL
 {
@@ -9,36 +9,36 @@ namespace API.GraphQL
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Adresser> Adresser([Service] DemoDbContext db)
+        public IQueryable<Address> Addresses([Service] DemoDbContext db)
         {
-            return db.Adresser;
+            return db.Addresses;
         }
 
         [UseOffsetPaging]
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Arbetsplatser> Arbetsplatser([Service] DemoDbContext db)
+        public IQueryable<Customer> Customers([Service] DemoDbContext db)
         {
-            return db.Arbetsplatser;
+            return db.Customers;
         }
 
         [UseOffsetPaging]
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Kunder> Kunder([Service] DemoDbContext db)
+        public IQueryable<Position> Positions([Service] DemoDbContext db)
         {
-            return db.Kunder;
+            return db.Positions;
         }
 
         [UseOffsetPaging]
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Positioner> Positioner([Service] DemoDbContext db)
+        public IQueryable<Workplace> Workplaces([Service] DemoDbContext db)
         {
-            return db.Positioner;
+            return db.Workplaces;
         }
     }
 }

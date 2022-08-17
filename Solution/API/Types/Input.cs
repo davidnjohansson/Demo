@@ -2,7 +2,7 @@
 {
     public abstract class Input
     {
-        public int? Pk { get; set; }
+        public int? Id { get; set; }
         public bool? OnlyValidate { get; set; }
     }
 }
