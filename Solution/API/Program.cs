@@ -1,9 +1,39 @@
 using API.Data.Export;
 using API.GraphQL;
 using API.Services;
+using API.Types;
 using HotChocolate.Types.Pagination;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Set secret
+string fileName = ".secret.json";
+string path = $"{Directory.GetCurrentDirectory()}\\{fileName}";
+
+// Create .secret.json if not exists.
+if (File.Exists(path) == false)
+{
+    File.WriteAllText(path, JsonSerializer.Serialize(new Secret()));
+}
+
+var json = File.ReadAllText(fileName);
+var secret = JsonSerializer.Deserialize<Secret>(json)!;
+
+foreach (var property in secret.GetType().GetProperties())
+{
+    if (property.Name == nameof(secret.ConnectionString) && string.IsNullOrEmpty(secret.ConnectionString))
+    {
+        Console.Write($"{property.Name}: ");
+        var connectionString = Console.ReadLine();
+        secret.ConnectionString = connectionString ?? string.Empty;
+        builder.Configuration[property.Name] = connectionString;
+    }
+}
+
+var newJson = JsonSerializer.Serialize(secret);
+File.WriteAllText(path, newJson);
+#endregion
 
 // Add services to the container.
 builder.Services.AddDbContext<DemoDbContext>();

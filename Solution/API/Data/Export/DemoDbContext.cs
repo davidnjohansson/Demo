@@ -5,6 +5,7 @@ using API.Interfaces;
 using API.Exceptions;
 using T5.API.Types;
 using System.ComponentModel.DataAnnotations.Schema;
+using API.Types;
 
 namespace API.Data.Export
 {
@@ -37,7 +38,7 @@ namespace API.Data.Export
         {
             optionsBuilder
                 .UseLazyLoadingProxies()
-                .UseSqlServer("Data Source=./;Initial Catalog=T5_FLEXILAST;User Id=T5-SQL-USER;Password=%3jn__!asdei;Persist Security Info=True");
+                .UseSqlServer(_configuration[nameof(Secret.ConnectionString)]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
