@@ -82,73 +82,40 @@ namespace API.HelperServices
 
                 if (tableName != validationRule.EntityName) continue;
 
-                validationErrors.AddRange(ValidateEntity(entity, validationRule));
+                var validationError = ValidateProperty(entity, validationRule);
+
+                if (validationError is not null)
+                {
+                    validationErrors.Add(validationError);
+                }
             }
 
             return validationErrors;
         }
 
-        //public List<ValidationError> Validate()
-        //{
-        //    var validationErrors = new List<ValidationError>();
-
-        //    var entities = _db.ChangeTracker
-        //        .Entries()
-        //        .Where(entityEntry => entityEntry.State == EntityState.Modified)
-        //        .Select(entityEntry => entityEntry.Entity)
-        //        .OfType<IEntity>()
-        //        .ToList();
-
-        //    var validationRules = _db.ValidationRules
-        //        .Where(validationRule => validationRule.Validation.Active)
-        //        .ToList();
-
-        //    foreach (var entity in entities)
-        //    {
-        //        var tableName = entity
-        //            .GetType()
-        //            .GetCustomAttributes(true)
-        //            .OfType<TableAttribute>()
-        //            .Select(tableAttribute => tableAttribute.Name)
-        //            .FirstOrDefault();
-
-        //        foreach (var validationRule in validationRules)
-        //        {
-        //            if (tableName != validationRule.EntityName) continue;
-
-        //            validationErrors.AddRange(ValidateEntity(entity, validationRule));
-        //        }
-        //    }
-
-        //    return validationErrors;
-        //}
-
-        private static List<ValidationError> ValidateEntity(IEntity entity, ValidationRule validationRule)
+        private static ValidationError? ValidateProperty(IEntity entity, ValidationRule validationRule)
         {
-            var validationErrors = new List<ValidationError>();
-
-            foreach (var property in entity.GetType().GetProperties())
-            {
-                var columnName = property
+            var property = entity
+                .GetType()
+                .GetProperties()
+                .Where(property => property
                     .GetCustomAttributes(true)
                     .OfType<ColumnAttribute>()
                     .Select(columnAttribute => columnAttribute.Name)
-                    .FirstOrDefault();
+                    .FirstOrDefault() == validationRule.PropertyName)
+                .FirstOrDefault();
 
-                if (columnName != validationRule.PropertyName) continue;
+            if (property == null) return null;
+            
+            var propertyValue = property.GetValue(entity);
 
-                var propertyValue = property.GetValue(entity);
+            if (IsValidPropertyValue(propertyValue, validationRule)) return null;
 
-                if (IsValidPropertyValue(propertyValue, validationRule)) continue;
-
-                validationErrors.Add(new ValidationError
-                {
-                    Message = validationRule.ErrorMessage ?? string.Empty,
-                    Property = property.Name
-                });
-            }
-
-            return validationErrors;
+            return new ValidationError
+            {
+                Message = validationRule.ErrorMessage ?? string.Empty,
+                Property = property.Name
+            };
         }
 
         private static bool IsValidPropertyValue(object? propertyValue, ValidationRule validationRule)
