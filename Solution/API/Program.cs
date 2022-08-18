@@ -1,5 +1,7 @@
 using API.Data.Export;
 using API.GraphQL;
+using API.HelperServices;
+using API.Interfaces;
 using API.Services;
 using API.Types;
 using HotChocolate.Types.Pagination;
@@ -41,6 +43,8 @@ builder.Services.AddDbContext<DemoDbContext>();
 
 builder.Services.AddInMemorySubscriptions();
 
+builder.Services.AddScoped<ValidationService>();
+
 builder.Services.AddScoped<UpsertWorkplaceService>();
 
 builder.Services
@@ -56,6 +60,7 @@ builder.Services
     .AddProjections()
     .AddFiltering()
     .AddSorting()
+    .AddType<IEntity>()
     .AddMutationType<Mutation>()
     .AddQueryType<Query>()
     .AddSubscriptionType<Subscription>();

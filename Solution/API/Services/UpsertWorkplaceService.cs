@@ -4,7 +4,7 @@ using API.GraphQL;
 using HotChocolate.Subscriptions;
 using Microsoft.EntityFrameworkCore;
 using T5.API.Types;
-using API.Exceptions;
+using API.HelperServices;
 
 namespace API.Services
 {
@@ -24,11 +24,13 @@ namespace API.Services
     {
         private readonly DemoDbContext _db;
         private readonly ITopicEventSender _sender;
+        private readonly ValidationService _validationService;
 
-        public UpsertWorkplaceService(DemoDbContext db, ITopicEventSender sender)
+        public UpsertWorkplaceService(DemoDbContext db, ITopicEventSender sender, ValidationService validationService)
         {
             _db = db;
             _sender = sender;
+            _validationService = validationService;
         }
 
         public async Task<MutationOutput> ValidateAsync(UpsertWorkplaceInput input)
@@ -65,18 +67,18 @@ namespace API.Services
                         continue;
                     }
                 }
-                else if (property.Name == nameof(input.WorkplaceName))
-                {
-                    if (string.IsNullOrWhiteSpace(input.WorkplaceName))
-                    {
-                        output.ValidationErrors.Add(new ValidationError
-                        {
-                            Message = "Obligatorisk",
-                            Property = nameof(input.WorkplaceName)
-                        });
-                        continue;
-                    }
-                }
+                //else if (property.Name == nameof(input.WorkplaceName))
+                //{
+                //    if (string.IsNullOrWhiteSpace(input.WorkplaceName))
+                //    {
+                //        output.ValidationErrors.Add(new ValidationError
+                //        {
+                //            Message = "Obligatorisk",
+                //            Property = nameof(input.WorkplaceName)
+                //        });
+                //        continue;
+                //    }
+                //}
                 else if (property.Name == nameof(input.CustomerId))
                 {
                     var customerExists = await _db.Customers.AnyAsync(customer => customer.Id == input.CustomerId);
@@ -243,17 +245,11 @@ namespace API.Services
 
             _db.Workplaces.Add(workplace);
 
-            try
-            {
-                await _db.SaveChangesAsync();
-            }
-            catch (ValidationException ex)
-            {
-                // Valideringsfel finns i exception.
-                // Returnera dessa i output.
-                return output;
-            }
+            output.ValidationErrors.AddRange(_validationService.Validate());
 
+            if (output.ValidationErrors.Any()) return output;
+
+            await _db.SaveChangesAsync();
             await _sender.SendAsync(nameof(Subscription.WorkplaceInserted), workplace);
 
             output.Id = workplace.Id;
@@ -284,17 +280,11 @@ namespace API.Services
 
             _db.Workplaces.Update(workplace);
 
-            try
-            {
-                await _db.SaveChangesAsync();
-            }
-            catch (ValidationException ex)
-            {
-                // Valideringsfel finns i exception.
-                // Returnera dessa i output.
-                return output;
-            }
-            
+            output.ValidationErrors.AddRange(_validationService.Validate());
+
+            if (output.ValidationErrors.Any()) return output;
+
+            await _db.SaveChangesAsync();
             await _sender.SendAsync(nameof(Subscription.WorkplaceUpdated), workplace);
 
             output.Id = workplace.Id;

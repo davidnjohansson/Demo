@@ -1,4 +1,5 @@
 ﻿using API.Data.Import.Entities;
+using API.Enums;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +18,14 @@ namespace API.Data.Export.Entities
         public string PropertyName { get; set; } = null!;
 
         [Column(nameof(VALIDERING_REGEL.FK_EnumOperation))]
-        public int EnumOperation { get; set; }
+        public int EnumOperationId { get; set; }
+
+        [NotMapped]
+        public EnumValidationOperation EnumOperation 
+        { 
+            get => (EnumValidationOperation)EnumOperationId;
+            set => EnumOperationId = (int)value;
+        }
 
         [Column(nameof(VALIDERING_REGEL.Felmeddelande))]
         public string? ErrorMessage { get; set; }

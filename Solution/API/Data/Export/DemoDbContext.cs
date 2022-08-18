@@ -1,10 +1,6 @@
 ﻿using API.Data.Export.Entities;
 using API.Data.Export.Configurations;
 using Microsoft.EntityFrameworkCore;
-using API.Interfaces;
-using API.Exceptions;
-using T5.API.Types;
-using System.ComponentModel.DataAnnotations.Schema;
 using API.Types;
 
 namespace API.Data.Export
@@ -13,12 +9,8 @@ namespace API.Data.Export
     {
         private readonly IConfiguration _configuration;
 
-        public DemoDbContext(
-            DbContextOptions<DemoDbContext> options,
-            IConfiguration configuration) : base(options)
+        public DemoDbContext(DbContextOptions<DemoDbContext> options, IConfiguration configuration) : base(options)
         {
-            SavingChanges += DemoDbContext_SavingChanges;
-
             _configuration = configuration;
         }
 
@@ -68,64 +60,5 @@ namespace API.Data.Export
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-        private void DemoDbContext_SavingChanges(object? sender, SavingChangesEventArgs e)
-        {
-            var validationErrors = new List<ValidationError>();
-
-            var entities = ChangeTracker
-                .Entries()
-                .Where(entityEntry => entityEntry.State == EntityState.Modified)
-                .Select(entityEntry => entityEntry.Entity)
-                .OfType<IEntity>()
-                .ToList();
-
-            var validationRules = ValidationRules
-                .Where(validationRule => validationRule.Validation.Active)
-                .ToList();
-
-            foreach (var entity in entities)
-            {
-                var tableName = entity
-                    .GetType()
-                    .GetCustomAttributes(true)
-                    .OfType<TableAttribute>()
-                    .Select(tableAttribute => tableAttribute.Name)
-                    .FirstOrDefault();
-
-                if (tableName == null) continue;
-
-                foreach (var validationRule in validationRules)
-                {
-                    if (tableName != validationRule.EntityName) continue;
-
-                    foreach (var property in entity.GetType().GetProperties())
-                    {
-                        var columnName = property
-                            .GetCustomAttributes(true)
-                            .OfType<ColumnAttribute>()
-                            .Select(columnAttribute => columnAttribute.Name)
-                            .FirstOrDefault();
-
-                        if (columnName == null) continue;
-                        if (columnName != validationRule.PropertyName) continue;
-
-                        Console.WriteLine(columnName);
-                    }
-                }
-            }
-
-            //throw new ValidationException
-            //{
-            //    ValidationErrors = new List<ValidationError>
-            //    {
-            //        new ValidationError
-            //        {
-            //            Message = "Test message",
-            //            Property = "Test property"
-            //        }
-            //    }
-            //};
-        }
     }
 }
