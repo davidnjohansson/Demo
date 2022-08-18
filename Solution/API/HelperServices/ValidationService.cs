@@ -51,8 +51,15 @@ namespace API.HelperServices
             //
             var validations = customerValidations.Union(businessValidations).Union(generalValidations);
 
-            var validationsWithNoGroup = validations.Where(validation => validation.ValidationGroup == null).ToList();
-            var validationGroups = validations.Where(validation => validation.ValidationGroup != null).Select(validation => validation.ValidationGroup).ToList();
+            var validationsWithNoGroup = validations
+                .Where(validation => validation.ValidationGroup == null)
+                .ToList();
+
+            var validationGroups = validations
+                .Where(validation => validation.ValidationGroup != null)
+                .Select(validation => validation.ValidationGroup)
+                .Distinct()
+                .ToList();
 
             foreach (var entity in entities)
             {
@@ -197,7 +204,7 @@ namespace API.HelperServices
                 case EnumValidationOperation.GreaterThanOrEqual:
                     return GetComparable(validationRule)?.CompareTo(entityCompareValue) <= 0;
                 case EnumValidationOperation.Regex:
-                    return Regex.Match(entityCompareValue?.ToString() ?? string.Empty, validationRule.RegexPattern!).Success; // GlobalSettings here
+                    return Regex.Match(entityCompareValue as string ?? string.Empty, validationRule.RegexPattern!).Success; // GlobalSettings here
                 case EnumValidationOperation.IsNotNull:
                     return propertyValue != null;
                 case EnumValidationOperation.IsNull:

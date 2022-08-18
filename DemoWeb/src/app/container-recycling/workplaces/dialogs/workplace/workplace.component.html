@@ -6,7 +6,7 @@
 				<div class="workplace-basic-data-form">
 					<mat-checkbox class="workplace-basic-data-form-checkbox" [checked]="true" formControlName="active">Aktiv</mat-checkbox>
 					<mat-form-field>
-						<mat-label>Arbetsplats</mat-label>
+						<mat-label>Namn</mat-label>
 						<input type="text" matInput formControlName="workplaceName" autocomplete="off" spellcheck="false">
 						<mat-error *ngIf="workplaceFormGroup.controls.workplaceName.invalid">
 							{{ workplaceFormGroup.controls.workplaceName.errors?.workplaceName }}
