@@ -20,7 +20,7 @@ namespace API.HelperServices
             _db = db;
         }
 
-        public List<ValidationError> Validate()
+        public List<ValidationError> Validate(Customer? customer = null, Business? business = null)
         {
             var validationErrors = new List<ValidationError>();
 
@@ -31,11 +31,47 @@ namespace API.HelperServices
                 .OfType<IEntity>()
                 .ToList();
 
-            var validationRules = _db.ValidationRules
-                .Where(validationRule => validationRule.Validation.Active)
-                .ToList();
+            //
+            var customerValidations = customer?.ValidationCustomers.Select(validationCustomer => validationCustomer.Validation) ?? Enumerable.Empty<Validation>();
+
+            customerValidations = customerValidations.Where(
+                    validation => validation.ValidationBusinesses.Any() == false ||
+                    validation.ValidationBusinesses.Any(validationBusiness => validationBusiness.Business == business));
+
+            //
+            var businessValidations = business?.ValidationBusinesses.Select(validationBusiness => validationBusiness.Validation) ?? Enumerable.Empty<Validation>();
+
+            businessValidations = businessValidations.Where(
+                    validation => validation.ValidationCustomers.Any() == false ||
+                    validation.ValidationCustomers.Any(validationCustomer => validationCustomer.Customer == customer));
+
+            //
+            var generalValidations = _db.Validations.Where(validation => validation.General) ?? Enumerable.Empty<Validation>();
+
+            //
+            var validations = customerValidations.Union(businessValidations).Union(generalValidations);
+
+            var validationsWithNoGroup = validations.Where(validation => validation.ValidationGroup == null).ToList();
+            var validationGroups = validations.Where(validation => validation.ValidationGroup != null).Select(validation => validation.ValidationGroup).ToList();
 
             foreach (var entity in entities)
+            {
+                foreach (var validation in validationsWithNoGroup)
+                {
+                    validationErrors.AddRange(Validate(entity, validation));
+                }
+
+                // 
+            }
+
+            return validationErrors;
+        }
+
+        private static List<ValidationError> Validate(IEntity entity, Validation validation)
+        {
+            var validationErrors = new List<ValidationError>();
+
+            foreach (var validationRule in validation.ValidationRules)
             {
                 var tableName = entity
                     .GetType()
@@ -44,16 +80,48 @@ namespace API.HelperServices
                     .Select(tableAttribute => tableAttribute.Name)
                     .FirstOrDefault();
 
-                foreach (var validationRule in validationRules)
-                {
-                    if (tableName != validationRule.EntityName) continue;
+                if (tableName != validationRule.EntityName) continue;
 
-                    validationErrors.AddRange(ValidateEntity(entity, validationRule));
-                }
+                validationErrors.AddRange(ValidateEntity(entity, validationRule));
             }
 
             return validationErrors;
         }
+
+        //public List<ValidationError> Validate()
+        //{
+        //    var validationErrors = new List<ValidationError>();
+
+        //    var entities = _db.ChangeTracker
+        //        .Entries()
+        //        .Where(entityEntry => entityEntry.State == EntityState.Modified)
+        //        .Select(entityEntry => entityEntry.Entity)
+        //        .OfType<IEntity>()
+        //        .ToList();
+
+        //    var validationRules = _db.ValidationRules
+        //        .Where(validationRule => validationRule.Validation.Active)
+        //        .ToList();
+
+        //    foreach (var entity in entities)
+        //    {
+        //        var tableName = entity
+        //            .GetType()
+        //            .GetCustomAttributes(true)
+        //            .OfType<TableAttribute>()
+        //            .Select(tableAttribute => tableAttribute.Name)
+        //            .FirstOrDefault();
+
+        //        foreach (var validationRule in validationRules)
+        //        {
+        //            if (tableName != validationRule.EntityName) continue;
+
+        //            validationErrors.AddRange(ValidateEntity(entity, validationRule));
+        //        }
+        //    }
+
+        //    return validationErrors;
+        //}
 
         private static List<ValidationError> ValidateEntity(IEntity entity, ValidationRule validationRule)
         {
