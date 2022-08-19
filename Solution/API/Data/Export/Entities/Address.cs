@@ -1,4 +1,5 @@
-﻿using API.Data.Import.Entities;
+﻿using API.Attributes;
+using API.Data.Import.Entities;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,10 +25,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(ADRESSER.FK_ADRESSTYP))]
         public int AddressTypeId { get; set; }
+        [Property(nameof(ADRESSER.FK_ADRESSTYP))]
         public virtual AddressType AddressType { get; set; } = null!;
 
         [Column(nameof(ADRESSER.FK_POSITIONER))]
         public int? PositionId { get; set; }
+        [Property(nameof(ADRESSER.FK_POSITIONER))]
         public virtual Position? Position { get; set; }
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();

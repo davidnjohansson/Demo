@@ -1,4 +1,5 @@
-﻿using API.Data.Import.Entities;
+﻿using API.Attributes;
+using API.Data.Import.Entities;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,22 +22,27 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(KUNDER.FK_ADRESSER_BESOKSADRESS))]
         public int? VisitingAddressId { get; set; }
+        [Property(nameof(KUNDER.FK_ADRESSER_BESOKSADRESS))]
         public virtual Address? VisitingAddress { get; set; }
 
         [Column(nameof(KUNDER.FK_ADRESSER_FAKTURAADRESS))]
         public int? InvoiceAddressId { get; set; }
+        [Property(nameof(KUNDER.FK_ADRESSER_FAKTURAADRESS))]
         public virtual Address? InvoiceAddress { get; set; }
 
         [Column(nameof(KUNDER.FK_BETALARE))]
         public int? PayerId { get; set; }
+        [Property(nameof(KUNDER.FK_BETALARE))]
         public virtual Customer? Payer { get; set; }
 
         [Column(nameof(KUNDER.FK_ENTREPRENAD))]
         public int? ContractorId { get; set; }
+        [Property(nameof(KUNDER.FK_ENTREPRENAD))]
         public virtual Customer? Contractor { get; set; }
 
         [Column(nameof(KUNDER.FK_KONCERN))]
         public int? CorporationId { get; set; }
+        [Property(nameof(KUNDER.FK_KONCERN))]
         public virtual Customer? Corporation { get; set; }
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();

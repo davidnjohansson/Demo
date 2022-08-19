@@ -1,4 +1,5 @@
-﻿using API.Data.Import.Entities;
+﻿using API.Attributes;
+using API.Data.Import.Entities;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,6 +27,7 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(VALIDERING.FK_GRUPP))]
         public int? ValidationGroupId { get; set; }
+        [Property(nameof(VALIDERING.FK_GRUPP))]
         public virtual ValidationGroup? ValidationGroup { get; set; }
 
         public virtual ICollection<ValidationCustomer> ValidationCustomers { get; set; } = new HashSet<ValidationCustomer>();

@@ -1,4 +1,5 @@
-﻿using API.Data.Import.Entities;
+﻿using API.Attributes;
+using API.Data.Import.Entities;
 using API.Enums;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -53,10 +54,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(VALIDERING_REGEL.FK_REGEL))]
         public int? InverseValidationRuleId { get; set; }
+        [Property(nameof(VALIDERING_REGEL.FK_REGEL))]
         public virtual ValidationRule? InverseValidationRule { get; set; }
 
         [Column(nameof(VALIDERING_REGEL.FK_VALIDERING))]
         public int ValidationId { get; set; }
+        [Property(nameof(VALIDERING_REGEL.FK_VALIDERING))]
         public virtual Validation Validation { get; set; } = null!;
 
         public virtual ICollection<ValidationRule> InverseValidationRules { get; set; } = new HashSet<ValidationRule>();

@@ -1,4 +1,5 @@
-﻿using API.Data.Import.Entities;
+﻿using API.Attributes;
+using API.Data.Import.Entities;
 using API.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,14 +19,17 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(ARBETSPLATSER.FK_ADRESSER))]
         public int AddressId { get; set; }
+        [Property(nameof(ARBETSPLATSER.FK_ADRESSER))]
         public virtual Address Address { get; set; } = null!;
 
         [Column(nameof(ARBETSPLATSER.FK_KUNDER))]
         public int CustomerId { get; set; }
+        [Property(nameof(ARBETSPLATSER.FK_KUNDER))]
         public virtual Customer Customer { get; set; } = null!;
 
         [Column(nameof(ARBETSPLATSER.FK_POSITIONER))]
         public int? PositionId { get; set; }
+        [Property(nameof(ARBETSPLATSER.FK_POSITIONER))]
         public virtual Position? Position { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace API.Extensions
+﻿using System.Collections;
+
+namespace API.Extensions
 {
     public static class BFExtensions
     {
