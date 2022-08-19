@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace API.Data.Export.Configurations
 {
-    public partial class BusinessConfiguration : IEntityTypeConfiguration<Business>
+    public partial class OperationConfiguration : IEntityTypeConfiguration<Operation>
     {
-        public void Configure(EntityTypeBuilder<Business> entity)
+        public void Configure(EntityTypeBuilder<Operation> entity)
         {
             entity
                 .Property(e => e.Active)
@@ -14,13 +14,13 @@ namespace API.Data.Export.Configurations
                 .HasDefaultValueSql("((1))");
 
             entity
-                .Property(e => e.BusinessName)
+                .Property(e => e.OperationName)
                 .HasMaxLength(8000)
                 .IsUnicode(false);
 
             OnConfigurePartial(entity);
         }
 
-        partial void OnConfigurePartial(EntityTypeBuilder<Business> entity);
+        partial void OnConfigurePartial(EntityTypeBuilder<Operation> entity);
     }
 }

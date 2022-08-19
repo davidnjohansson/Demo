@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace API.Data.Export.Entities
 {
     [Table(nameof(VALIDERING_VERKSAMHETER))]
-    public class ValidationBusiness : IEntity
+    public class ValidationOperation : IEntity
     {
         [Column(nameof(VALIDERING_VERKSAMHETER.PK))]
         public int Id { get; set; }
@@ -15,7 +15,7 @@ namespace API.Data.Export.Entities
         public virtual Validation Validation { get; set; } = null!;
 
         [Column(nameof(VALIDERING_VERKSAMHETER.FK_VERKSAMHETER))]
-        public int BusinessId { get; set; }
-        public virtual Business Business { get; set; } = null!;
+        public int OperationId { get; set; }
+        public virtual Operation Operation { get; set; } = null!;
     }
 }

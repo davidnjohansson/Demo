@@ -245,7 +245,7 @@ namespace API.Services
 
             _db.Workplaces.Add(workplace);
 
-            output.ValidationErrors.AddRange(_validationService.Validate());
+            //output.ValidationErrors.AddRange(_validationService.Validate());
 
             if (output.ValidationErrors.Any()) return output;
 
@@ -280,7 +280,7 @@ namespace API.Services
 
             _db.Workplaces.Update(workplace);
 
-            output.ValidationErrors.AddRange(_validationService.Validate(customer));
+            //output.ValidationErrors.AddRange(_validationService.Validate(customer));
 
             if (output.ValidationErrors.Any()) return output;
 

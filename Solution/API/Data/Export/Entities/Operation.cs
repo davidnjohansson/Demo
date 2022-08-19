@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace API.Data.Export.Entities
 {
     [Table(nameof(VERKSAMHETER))]
-    public class Business : IEntity
+    public class Operation : IEntity
     {
         [Column(nameof(VERKSAMHETER.PK))]
         public int Id { get; set; }
@@ -14,8 +14,8 @@ namespace API.Data.Export.Entities
         public bool? Active { get; set; }
 
         [Column(nameof(VERKSAMHETER.VerksamhetNamn))]
-        public string? BusinessName { get; set; }
+        public string? OperationName { get; set; }
 
-        public virtual ICollection<ValidationBusiness> ValidationBusinesses { get; set; } = new HashSet<ValidationBusiness>();
+        public virtual ICollection<ValidationOperation> ValidationOperations { get; set; } = new HashSet<ValidationOperation>();
     }
 }

@@ -4,25 +4,25 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace API.Data.Export.Configurations
 {
-    public partial class ValidationBusinessConfiguration : IEntityTypeConfiguration<ValidationBusiness>
+    public partial class ValidationOperationConfiguration : IEntityTypeConfiguration<ValidationOperation>
     {
-        public void Configure(EntityTypeBuilder<ValidationBusiness> entity)
+        public void Configure(EntityTypeBuilder<ValidationOperation> entity)
         {
             entity.HasOne(d => d.Validation)
-                .WithMany(p => p.ValidationBusinesses)
+                .WithMany(p => p.ValidationOperations)
                 .HasForeignKey(d => d.ValidationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VALIDERING_VERKSAMHETER_VALIDERING");
 
-            entity.HasOne(d => d.Business)
-                .WithMany(p => p.ValidationBusinesses)
-                .HasForeignKey(d => d.BusinessId)
+            entity.HasOne(d => d.Operation)
+                .WithMany(p => p.ValidationOperations)
+                .HasForeignKey(d => d.OperationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VALIDERING_VERKSAMHETER_VERKSAMHETER");
 
             OnConfigurePartial(entity);
         }
 
-        partial void OnConfigurePartial(EntityTypeBuilder<ValidationBusiness> entity);
+        partial void OnConfigurePartial(EntityTypeBuilder<ValidationOperation> entity);
     }
 }

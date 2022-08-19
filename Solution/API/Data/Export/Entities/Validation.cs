@@ -32,6 +32,6 @@ namespace API.Data.Export.Entities
 
         public virtual ICollection<ValidationRule> ValidationRules { get; set; } = new HashSet<ValidationRule>();
 
-        public virtual ICollection<ValidationBusiness> ValidationBusinesses { get; set; } = new HashSet<ValidationBusiness>();
+        public virtual ICollection<ValidationOperation> ValidationOperations { get; set; } = new HashSet<ValidationOperation>();
     }
 }

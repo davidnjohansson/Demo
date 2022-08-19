@@ -16,13 +16,13 @@ namespace API.Data.Export
 
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<AddressType> AddressTypes { get; set; } = null!;
-        public DbSet<Business> Businesses { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
+        public DbSet<Operation> Operations { get; set; } = null!;
         public DbSet<Position> Positions { get; set; } = null!;
-        public DbSet<ValidationBusiness> ValidationBusinesses { get; set; } = null!;
         public DbSet<Validation> Validations { get; set; } = null!;
         public DbSet<ValidationCustomer> ValidationCustomers { get; set; } = null!;
         public DbSet<ValidationGroup> ValidationGroups { get; set; } = null!;
+        public DbSet<ValidationOperation> ValidationOperations { get; set; } = null!;
         public DbSet<ValidationRule> ValidationRules { get; set; } = null!;
         public DbSet<Workplace> Workplaces { get; set; } = null!;
 
@@ -47,13 +47,13 @@ namespace API.Data.Export
 
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new AddressTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new BusinessConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationConfiguration());
             modelBuilder.ApplyConfiguration(new PositionConfiguration());
-            modelBuilder.ApplyConfiguration(new ValidationBusinessConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationCustomerConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationGroupConfiguration());
+            modelBuilder.ApplyConfiguration(new ValidationOperationConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationRuleConfiguration());
             modelBuilder.ApplyConfiguration(new WorkplaceConfiguration());
             OnModelCreatingPartial(modelBuilder);
