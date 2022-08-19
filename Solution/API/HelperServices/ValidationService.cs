@@ -66,39 +66,42 @@ namespace API.HelperServices
 
             foreach (var validationRule in validationRules)
             {
-                if (IsValid(entity, validationRule) == false)
-                {
-                    if (validationRule.Validation.OnlyWarning)
-                    {
+                var validationError = ValidateProperty(entity, validationRule);
 
-                    }
-                    else
-                    {
-                        validationErrors.Add(new ValidationError
-                        {
-                            Message = validationRule.ErrorMessage ?? string.Empty,
-                            Property = GetPropertyInfo(entity, validationRule)?.Name ?? string.Empty
-                        });
-                    }
+                if (validationError is not null)
+                {
+                    validationErrors.Add(validationError);
                 }
             }
 
             return validationErrors;
         }
 
-        private static bool IsValid(IEntity entity, ValidationRule validationRule)
+        private static ValidationError? ValidateProperty(IEntity entity, ValidationRule validationRule)
         {
             var prop = GetPropertyInfo(entity, validationRule);
 
             if (prop == null)
-                return false; // Varför false här?
+            {
+                return new ValidationError
+                {
+                    Message = $"Property {validationRule.PropertyName} kan inte hittas på entitet {validationRule.EntityName}",
+                    Property = string.Empty
+                };
+            }
 
             if (GetComparable(validationRule) == null)
-                return false;
+            {
+                return new ValidationError
+                {
+                    Message = $"Kunde inte hitta en IComparable",
+                    Property = prop.Name
+                };
+            }
 
             var propValue = prop.GetValue(entity);
             if (propValue == null && validationRule.AllowNull)
-                return true;
+                return null;
 
             if (propValue is string)
                 if (string.IsNullOrEmpty((string)propValue))
@@ -115,7 +118,7 @@ namespace API.HelperServices
             if (propValue is IEntity)
             {
                 if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegel)
-                    return IsValid((IEntity)propValue, validationRule.InverseValidationRule);
+                    return ValidateProperty((IEntity)propValue, validationRule.InverseValidationRule);
 
                 entityCompareValue = ((IEntity)propValue).Id;
             }
@@ -125,20 +128,34 @@ namespace API.HelperServices
                 {
                     foreach (var item in (IList)propValue)
                     {
-                        if (IsValid((IEntity)item, validationRule.InverseValidationRule))
-                            return true;
+                        if (ValidateProperty((IEntity)item, validationRule.InverseValidationRule) == null)
+                        {
+                            return null;
+                        }
                     }
-                    return false;
+                    return new ValidationError
+                    {
+                        Message = "Fråga Sebastian hur det här felet uppstår?",
+                        Property = prop.Name
+                    };
                 }
                 else if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegelFleraAll)
                 {
                     foreach (var item in (IList)propValue)
                     {
                         if (item is IEntity)
-                            if (IsValid((IEntity)item, validationRule.InverseValidationRule) == false)
-                                return false;
+                        {
+                            if (ValidateProperty((IEntity)item, validationRule.InverseValidationRule) is not null)
+                            {
+                                return new ValidationError
+                                {
+                                    Message = "Fråga Sebastian hur det här felet uppstår?",
+                                    Property = prop.Name
+                                };
+                            }
+                        }
                     }
-                    return true;
+                    return null;
                 }
             }
             else
@@ -147,25 +164,29 @@ namespace API.HelperServices
             switch (validationRule.EnumOperation)
             {
                 case EnumValidationOperation.Equals:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) == 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) == 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.DoesNotEqual:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) != 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) != 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.LesserThan:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) > 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) > 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.LesserThanOrEqual:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) >= 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) >= 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.GreaterThan:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) < 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) < 0 ? null : GetValidationError(prop, validationRule) ;
                 case EnumValidationOperation.GreaterThanOrEqual:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) <= 0;
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) <= 0 ? null : GetValidationError(prop, validationRule) ;
                 case EnumValidationOperation.Regex:
-                    return Regex.Match(entityCompareValue?.ToString() ?? string.Empty, validationRule.RegexPattern).Success;
+                    return Regex.Match(entityCompareValue?.ToString() ?? string.Empty, validationRule.RegexPattern).Success ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.IsNotNull:
-                    return propValue != null;
+                    return propValue != null ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.IsNull:
-                    return propValue == null;
+                    return propValue == null ? null : GetValidationError(prop, validationRule);
             }
-            return false;
+            return new ValidationError
+            {
+                Message = "Fråga Sebastian hur det här felet uppstår?",
+                Property = prop.Name
+            };
         }
 
         private static PropertyInfo? GetPropertyInfo(IEntity entity, ValidationRule validationRule)
@@ -182,201 +203,14 @@ namespace API.HelperServices
             return propertyInfo;
         }
 
-        //public List<ValidationError> Validate(Customer? customer = null, Business? business = null)
-        //{
-        //    var validationErrors = new List<ValidationError>();
-
-        //    var entities = _db.ChangeTracker
-        //        .Entries()
-        //        .Where(entityEntry => entityEntry.State == EntityState.Modified)
-        //        .Select(entityEntry => entityEntry.Entity)
-        //        .OfType<IEntity>()
-        //        .ToList();
-
-        //    //
-        //    var customerValidations = customer?.ValidationCustomers.Select(validationCustomer => validationCustomer.Validation) ?? Enumerable.Empty<Validation>();
-
-        //    customerValidations = customerValidations.Where(
-        //            validation => validation.ValidationBusinesses.Any() == false ||
-        //            validation.ValidationBusinesses.Any(validationBusiness => validationBusiness.Business == business));
-
-        //    //
-        //    var businessValidations = business?.ValidationBusinesses.Select(validationBusiness => validationBusiness.Validation) ?? Enumerable.Empty<Validation>();
-
-        //    businessValidations = businessValidations.Where(
-        //            validation => validation.ValidationCustomers.Any() == false ||
-        //            validation.ValidationCustomers.Any(validationCustomer => validationCustomer.Customer == customer));
-
-        //    //
-        //    var generalValidations = _db.Validations.Where(validation => validation.General) ?? Enumerable.Empty<Validation>();
-
-        //    //
-        //    var validations = customerValidations.Union(businessValidations).Union(generalValidations);
-
-        //    var validationsWithNoGroup = validations
-        //        .Where(validation => validation.ValidationGroup == null)
-        //        .ToList();
-
-        //    var validationGroups = validations
-        //        .Where(validation => validation.ValidationGroup != null)
-        //        .Select(validation => validation.ValidationGroup)
-        //        .Distinct()
-        //        .ToList();
-
-        //    foreach (var entity in entities)
-        //    {
-        //        foreach (var validation in validationsWithNoGroup)
-        //        {
-        //            validationErrors.AddRange(Validate(entity, validation));
-        //        }
-
-        //        // 
-        //    }
-
-        //    return validationErrors;
-        //}
-
-        //private static List<ValidationError> Validate(IEntity entity, Validation validation)
-        //{
-        //    var validationErrors = new List<ValidationError>();
-
-        //    foreach (var validationRule in validation.ValidationRules)
-        //    {
-        //        var tableName = entity
-        //            .GetType()
-        //            .GetCustomAttributes(true)
-        //            .OfType<TableAttribute>()
-        //            .Select(tableAttribute => tableAttribute.Name)
-        //            .FirstOrDefault();
-
-        //        if (tableName != validationRule.EntityName) continue;
-
-        //        var validationError = ValidateProperty(entity, validationRule);
-
-        //        if (validationError is not null)
-        //        {
-        //            validationErrors.Add(validationError);
-        //        }
-        //    }
-
-        //    return validationErrors;
-        //}
-
-        //private static ValidationError? ValidateProperty(IEntity entity, ValidationRule validationRule)
-        //{
-        //    var property = entity
-        //        .GetType()
-        //        .GetProperties()
-        //        .Where(property => property
-        //            .GetCustomAttributes(true)
-        //            .OfType<ColumnAttribute>()
-        //            .Select(columnAttribute => columnAttribute.Name)
-        //            .FirstOrDefault() == validationRule.PropertyName)
-        //        .FirstOrDefault();
-
-        //    if (property == null) return null;
-
-        //    var propertyValue = property.GetValue(entity);
-
-        //    if (IsValidPropertyValue(propertyValue, validationRule)) return null;
-
-        //    return new ValidationError
-        //    {
-        //        Message = validationRule.ErrorMessage ?? string.Empty,
-        //        Property = property.Name
-        //    };
-        //}
-
-        //private static bool IsValidPropertyValue(object? propertyValue, ValidationRule validationRule)
-        //{
-        //    if (propertyValue == null && validationRule.AllowNull) return true;
-
-        //    if (propertyValue is string propertyValueAsString)
-        //    {
-        //        if (string.IsNullOrEmpty(propertyValueAsString))
-        //        {
-        //            propertyValue = null;
-        //        }
-        //    }
-
-        //    if (propertyValue is int && GetComparable(validationRule) is double)
-        //    {
-        //        var propertyValueAsInt = propertyValue as int?;
-        //        if (propertyValueAsInt.HasValue)
-        //        {
-        //            propertyValue = Convert.ToDouble(propertyValueAsInt.Value);
-        //        }
-        //    }
-
-        //    IComparable? entityCompareValue = null;
-
-        //    if (propertyValue is IEntity e)
-        //    {
-        //        if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegel)
-        //        {
-        //            return IsValidPropertyValue(e, validationRule.InverseValidationRule!);
-        //        }
-        //        entityCompareValue = e.Id;
-        //    }
-        //    else if (propertyValue is IEnumerable && (propertyValue as IEnumerable)!.OfType<IEntity>().Any())
-        //    {
-        //        if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegelFleraAny)
-        //        {
-        //            foreach (var item in (IList)propertyValue)
-        //            {
-        //                if (IsValidPropertyValue((IEntity)item, validationRule.InverseValidationRule!) == false)
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //            return true;
-        //        }
-        //        else if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegelFleraAll)
-        //        {
-        //            foreach (var item in (IList)propertyValue)
-        //            {
-        //                if (item is IEntity itemAsEntity)
-        //                {
-        //                    if (IsValidPropertyValue(itemAsEntity, validationRule.InverseValidationRule!))
-        //                    {
-        //                        return true;
-        //                    }
-        //                }
-        //            }
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        entityCompareValue = propertyValue as IComparable;
-        //    }
-
-        //    switch (validationRule.EnumOperation)
-        //    {
-        //        case EnumValidationOperation.Equals:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) == 0;
-        //        case EnumValidationOperation.DoesNotEqual:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) != 0;
-        //        case EnumValidationOperation.LesserThan:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) > 0;
-        //        case EnumValidationOperation.LesserThanOrEqual:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) >= 0;
-        //        case EnumValidationOperation.GreaterThan:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) < 0;
-        //        case EnumValidationOperation.GreaterThanOrEqual:
-        //            return GetComparable(validationRule)?.CompareTo(entityCompareValue) <= 0;
-        //        case EnumValidationOperation.Regex:
-        //            return Regex.Match(entityCompareValue as string ?? string.Empty, validationRule.RegexPattern!).Success; // GlobalSettings here
-        //        case EnumValidationOperation.IsNotNull:
-        //            return propertyValue != null;
-        //        case EnumValidationOperation.IsNull:
-        //            return propertyValue == null;
-        //        default:
-        //            break;
-        //    }
-
-        //    return true;
-        //}
+        private static ValidationError GetValidationError(PropertyInfo propertyInfo, ValidationRule validationRule)
+        {
+            return new ValidationError
+            {
+                Message = validationRule.ErrorMessage ?? string.Empty,
+                Property = propertyInfo.Name
+            };
+        }
 
         private static IComparable? GetComparable(ValidationRule validationRule)
         {
