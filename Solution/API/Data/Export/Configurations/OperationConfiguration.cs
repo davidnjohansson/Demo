@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Operation> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity
                 .Property(e => e.Active)
                 .IsRequired()

@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<AddressType> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity
                 .Property(e => e.AddressTypeName)
                 .HasMaxLength(8000)

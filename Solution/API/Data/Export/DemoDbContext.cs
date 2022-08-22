@@ -17,6 +17,7 @@ namespace API.Data.Export
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<AddressType> AddressTypes { get; set; } = null!;
         public DbSet<Contact> Contacts { get; set; } = null!;
+        public DbSet<ContactWorkplace> ContactWorkplaces { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Operation> Operations { get; set; } = null!;
         public DbSet<Person> Persons { get; set; } = null!;
@@ -50,6 +51,7 @@ namespace API.Data.Export
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new AddressTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ContactConfiguration());
+            modelBuilder.ApplyConfiguration(new ContactWorkplaceConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new OperationConfiguration());
             modelBuilder.ApplyConfiguration(new PersonConfiguration());

@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<ValidationGroup> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity.Property(e => e.GroupName)
                 .HasMaxLength(8000)
                 .IsUnicode(false);

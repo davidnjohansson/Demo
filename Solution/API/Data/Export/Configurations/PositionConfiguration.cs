@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Position> entity)
         {
+            entity.HasKey(e => e.Id);
+
             OnConfigurePartial(entity);
         }
 

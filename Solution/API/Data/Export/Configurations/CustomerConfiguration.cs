@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Customer> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity.HasIndex(e => e.Id, "_dta_index_KUNDER_5_958626458__K1_8066");
 
             entity

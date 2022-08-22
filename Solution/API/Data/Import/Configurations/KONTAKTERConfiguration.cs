@@ -46,19 +46,6 @@ namespace API.Data.Import.Configurations
                 .HasForeignKey(d => d.FK_PERSONER)
                 .HasConstraintName("FK_KONTAKTER_PERSONER");
 
-            entity.HasMany(d => d.FK_ARBETSPLATSER)
-                .WithMany(p => p.FK_KONTAKTER)
-                .UsingEntity<Dictionary<string, object>>(
-                    "KONTAKTER_ARBETSPLATSER",
-                    l => l.HasOne<ARBETSPLATSER>().WithMany().HasForeignKey("FK_ARBETSPLATSER").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_KONTAKTER_ARBETSPLATSER_ARBETSPLATSER"),
-                    r => r.HasOne<KONTAKTER>().WithMany().HasForeignKey("FK_KONTAKTER").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_KONTAKTER_ARBETSPLATSER_KONTAKTER"),
-                    j =>
-                    {
-                        j.HasKey("FK_KONTAKTER", "FK_ARBETSPLATSER");
-
-                        j.ToTable("KONTAKTER_ARBETSPLATSER");
-                    });
-
             OnConfigurePartial(entity);
         }
 

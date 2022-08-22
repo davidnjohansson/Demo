@@ -20,6 +20,7 @@ namespace API.Data.Import
         public virtual DbSet<ADRESSTYP> ADRESSTYP { get; set; } = null!;
         public virtual DbSet<ARBETSPLATSER> ARBETSPLATSER { get; set; } = null!;
         public virtual DbSet<KONTAKTER> KONTAKTER { get; set; } = null!;
+        public virtual DbSet<KONTAKTER_ARBETSPLATSER> KONTAKTER_ARBETSPLATSER { get; set; } = null!;
         public virtual DbSet<KUNDER> KUNDER { get; set; } = null!;
         public virtual DbSet<PERSONER> PERSONER { get; set; } = null!;
         public virtual DbSet<POSITIONER> POSITIONER { get; set; } = null!;
@@ -38,6 +39,7 @@ namespace API.Data.Import
             modelBuilder.ApplyConfiguration(new Configurations.ADRESSTYPConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ARBETSPLATSERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.KONTAKTERConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.KONTAKTER_ARBETSPLATSERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.KUNDERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PERSONERConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.POSITIONERConfiguration());

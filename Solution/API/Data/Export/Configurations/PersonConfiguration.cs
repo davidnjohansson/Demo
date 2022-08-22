@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Person> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity.Property(e => e.PersonName)
                 .HasMaxLength(8000)
                 .IsUnicode(false);

@@ -9,6 +9,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Address> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity
                 .Property(e => e.Active)
                 .HasDefaultValueSql("((1))");

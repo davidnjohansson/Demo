@@ -8,15 +8,15 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<Workplace> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity.HasIndex(e => e.CustomerId, "_dta_index_ARBETSPLATSER_5_773577794__K3_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_4364");
 
-            entity
-                .Property(e => e.Active)
+            entity.Property(e => e.Active)
                 .IsRequired()
                 .HasDefaultValueSql("((1))");
 
-            entity
-                .Property(e => e.WorkplaceName)
+            entity.Property(e => e.WorkplaceName)
                 .HasMaxLength(8000)
                 .IsUnicode(false);
 

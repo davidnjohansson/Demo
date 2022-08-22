@@ -37,6 +37,6 @@ namespace API.Data.Export.Entities
         [Property(nameof(ARBETSPLATSER.FK_KONTAKT))]
         public virtual Contact? Contact { get; set; }
 
-        public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
+        public virtual ICollection<ContactWorkplace> ContactWorkplaces { get; set; } = new HashSet<ContactWorkplace>();
     }
 }

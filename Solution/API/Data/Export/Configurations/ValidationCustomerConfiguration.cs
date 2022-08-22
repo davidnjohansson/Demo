@@ -8,6 +8,8 @@ namespace API.Data.Export.Configurations
     {
         public void Configure(EntityTypeBuilder<ValidationCustomer> entity)
         {
+            entity.HasKey(e => e.Id);
+
             entity.HasOne(d => d.Customer)
                 .WithMany(p => p.ValidationCustomers)
                 .HasForeignKey(d => d.CustomerId)
