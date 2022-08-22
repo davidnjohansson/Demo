@@ -28,6 +28,7 @@ namespace API.Data.Export
         public DbSet<ValidationOperation> ValidationOperations { get; set; } = null!;
         public DbSet<ValidationRule> ValidationRules { get; set; } = null!;
         public DbSet<Workplace> Workplaces { get; set; } = null!;
+        public DbSet<WorkplaceOwner> WorkplaceOwners { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -62,6 +63,7 @@ namespace API.Data.Export
             modelBuilder.ApplyConfiguration(new ValidationOperationConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationRuleConfiguration());
             modelBuilder.ApplyConfiguration(new WorkplaceConfiguration());
+            modelBuilder.ApplyConfiguration(new WorkplaceOwnerConfiguration());
             OnModelCreatingPartial(modelBuilder);
         }
 

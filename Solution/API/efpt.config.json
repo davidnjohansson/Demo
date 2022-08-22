@@ -76,6 +76,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ARBETSPLATSER_AGARE]",
+         "ObjectType": 0
+      },
+      {
          "ExcludedColumns": [
             "FK_MEDDELANDE_MALLAR",
             "FK_KONTAKTTYP"

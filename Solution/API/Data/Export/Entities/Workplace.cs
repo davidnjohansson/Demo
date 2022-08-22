@@ -38,5 +38,7 @@ namespace API.Data.Export.Entities
         public virtual Contact? Contact { get; set; }
 
         public virtual ICollection<ContactWorkplace> ContactWorkplaces { get; set; } = new HashSet<ContactWorkplace>();
+
+        public virtual ICollection<WorkplaceOwner> WorkplaceOwners { get; set; } = new HashSet<WorkplaceOwner>();
     }
 }

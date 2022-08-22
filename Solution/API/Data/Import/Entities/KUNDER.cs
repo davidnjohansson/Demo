@@ -10,6 +10,7 @@ namespace API.Data.Import.Entities
         public KUNDER()
         {
             ARBETSPLATSER = new HashSet<ARBETSPLATSER>();
+            ARBETSPLATSER_AGARE = new HashSet<ARBETSPLATSER_AGARE>();
             InverseFK_BETALARENavigation = new HashSet<KUNDER>();
             InverseFK_ENTREPRENADNavigation = new HashSet<KUNDER>();
             InverseFK_KONCERNNavigation = new HashSet<KUNDER>();
@@ -65,6 +66,7 @@ namespace API.Data.Import.Entities
         public virtual KUNDER? FK_ENTREPRENADNavigation { get; set; }
         public virtual KUNDER? FK_KONCERNNavigation { get; set; }
         public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }
+        public virtual ICollection<ARBETSPLATSER_AGARE> ARBETSPLATSER_AGARE { get; set; }
         public virtual ICollection<KUNDER> InverseFK_BETALARENavigation { get; set; }
         public virtual ICollection<KUNDER> InverseFK_ENTREPRENADNavigation { get; set; }
         public virtual ICollection<KUNDER> InverseFK_KONCERNNavigation { get; set; }

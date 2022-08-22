@@ -10,6 +10,8 @@ namespace API.Data.Import.Entities
         public ADRESSER()
         {
             ARBETSPLATSER = new HashSet<ARBETSPLATSER>();
+            ARBETSPLATSER_AGAREFK_ADRESSER_GAMMAL_FAKTURERINGNavigation = new HashSet<ARBETSPLATSER_AGARE>();
+            ARBETSPLATSER_AGAREFK_ADRESSER_NY_FAKTURERINGNavigation = new HashSet<ARBETSPLATSER_AGARE>();
             KUNDERFK_ADRESSER_BESOKSADRESSNavigation = new HashSet<KUNDER>();
             KUNDERFK_ADRESSER_FAKTURAADRESSNavigation = new HashSet<KUNDER>();
             PERSONER = new HashSet<PERSONER>();
@@ -28,6 +30,8 @@ namespace API.Data.Import.Entities
         public virtual ADRESSTYP FK_ADRESSTYPNavigation { get; set; } = null!;
         public virtual POSITIONER? FK_POSITIONERNavigation { get; set; }
         public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }
+        public virtual ICollection<ARBETSPLATSER_AGARE> ARBETSPLATSER_AGAREFK_ADRESSER_GAMMAL_FAKTURERINGNavigation { get; set; }
+        public virtual ICollection<ARBETSPLATSER_AGARE> ARBETSPLATSER_AGAREFK_ADRESSER_NY_FAKTURERINGNavigation { get; set; }
         public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_BESOKSADRESSNavigation { get; set; }
         public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_FAKTURAADRESSNavigation { get; set; }
         public virtual ICollection<PERSONER> PERSONER { get; set; }
