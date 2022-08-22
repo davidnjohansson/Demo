@@ -13,12 +13,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(VALIDERING_KUNDER.FK_VALIDERING))]
         public int ValidationId { get; set; }
-        [Property(nameof(VALIDERING_KUNDER.FK_VALIDERING))]
+        [Navigation(nameof(VALIDERING_KUNDER.FK_VALIDERING))]
         public virtual Validation Validation { get; set; } = null!;
 
         [Column(nameof(VALIDERING_KUNDER.FK_KUNDER))]
         public int CustomerId { get; set; }
-        [Property(nameof(VALIDERING_KUNDER.FK_KUNDER))]
+        [Navigation(nameof(VALIDERING_KUNDER.FK_KUNDER))]
         public virtual Customer Customer { get; set; } = null!;
     }
 }

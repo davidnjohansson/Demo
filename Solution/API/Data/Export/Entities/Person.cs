@@ -19,7 +19,7 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(PERSONER.FK_ADRESSER))]
         public int? AddressId { get; set; }
-        [Property(nameof(PERSONER.FK_ADRESSER))]
+        [Navigation(nameof(PERSONER.FK_ADRESSER))]
         public virtual Address? Address { get; set; }
 
         public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();

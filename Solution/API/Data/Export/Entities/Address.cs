@@ -25,12 +25,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(ADRESSER.FK_ADRESSTYP))]
         public int AddressTypeId { get; set; }
-        [Property(nameof(ADRESSER.FK_ADRESSTYP))]
+        [Navigation(nameof(ADRESSER.FK_ADRESSTYP))]
         public virtual AddressType AddressType { get; set; } = null!;
 
         [Column(nameof(ADRESSER.FK_POSITIONER))]
         public int? PositionId { get; set; }
-        [Property(nameof(ADRESSER.FK_POSITIONER))]
+        [Navigation(nameof(ADRESSER.FK_POSITIONER))]
         public virtual Position? Position { get; set; }
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();

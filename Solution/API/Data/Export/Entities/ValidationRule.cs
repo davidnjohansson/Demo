@@ -54,12 +54,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(VALIDERING_REGEL.FK_REGEL))]
         public int? InverseValidationRuleId { get; set; }
-        [Property(nameof(VALIDERING_REGEL.FK_REGEL))]
+        [Navigation(nameof(VALIDERING_REGEL.FK_REGEL))]
         public virtual ValidationRule? InverseValidationRule { get; set; }
 
         [Column(nameof(VALIDERING_REGEL.FK_VALIDERING))]
         public int ValidationId { get; set; }
-        [Property(nameof(VALIDERING_REGEL.FK_VALIDERING))]
+        [Navigation(nameof(VALIDERING_REGEL.FK_VALIDERING))]
         public virtual Validation Validation { get; set; } = null!;
 
         public virtual ICollection<ValidationRule> InverseValidationRules { get; set; } = new HashSet<ValidationRule>();

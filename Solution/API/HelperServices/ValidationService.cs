@@ -196,7 +196,7 @@ namespace API.HelperServices
                 .GetProperties()
                 .Where(
                     property =>
-                        property.GetCustomAttribute<PropertyAttribute>()?.Name == validationRule.PropertyName ||
+                        property.GetCustomAttribute<NavigationAttribute>()?.Name == validationRule.PropertyName ||
                         property.GetCustomAttribute<ColumnAttribute>()?.Name == validationRule.PropertyName)
                 .FirstOrDefault();
 

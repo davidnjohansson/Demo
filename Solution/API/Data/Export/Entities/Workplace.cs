@@ -19,22 +19,22 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(ARBETSPLATSER.FK_ADRESSER))]
         public int AddressId { get; set; }
-        [Property(nameof(ARBETSPLATSER.FK_ADRESSER))]
+        [Navigation(nameof(ARBETSPLATSER.FK_ADRESSER))]
         public virtual Address Address { get; set; } = null!;
 
         [Column(nameof(ARBETSPLATSER.FK_KUNDER))]
         public int CustomerId { get; set; }
-        [Property(nameof(ARBETSPLATSER.FK_KUNDER))]
+        [Navigation(nameof(ARBETSPLATSER.FK_KUNDER))]
         public virtual Customer Customer { get; set; } = null!;
 
         [Column(nameof(ARBETSPLATSER.FK_POSITIONER))]
         public int? PositionId { get; set; }
-        [Property(nameof(ARBETSPLATSER.FK_POSITIONER))]
+        [Navigation(nameof(ARBETSPLATSER.FK_POSITIONER))]
         public virtual Position? Position { get; set; }
 
         [Column(nameof(ARBETSPLATSER.FK_KONTAKT))]
         public int? ContactId { get; set; }
-        [Property(nameof(ARBETSPLATSER.FK_KONTAKT))]
+        [Navigation(nameof(ARBETSPLATSER.FK_KONTAKT))]
         public virtual Contact? Contact { get; set; }
 
         public virtual ICollection<ContactWorkplace> ContactWorkplaces { get; set; } = new HashSet<ContactWorkplace>();

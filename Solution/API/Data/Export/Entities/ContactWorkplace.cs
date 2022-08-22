@@ -9,12 +9,12 @@ namespace API.Data.Export.Entities
     {
         [Column(nameof(KONTAKTER_ARBETSPLATSER.FK_KONTAKTER))]
         public int ContactId { get; set; }
-        [Property(nameof(KONTAKTER_ARBETSPLATSER.FK_KONTAKTER))]
+        [Navigation(nameof(KONTAKTER_ARBETSPLATSER.FK_KONTAKTER))]
         public virtual Contact Contact { get; set; } = null!;
 
         [Column(nameof(KONTAKTER_ARBETSPLATSER.FK_ARBETSPLATSER))]
         public int WorkplaceId { get; set; }
-        [Property(nameof(KONTAKTER_ARBETSPLATSER.FK_ARBETSPLATSER))]
+        [Navigation(nameof(KONTAKTER_ARBETSPLATSER.FK_ARBETSPLATSER))]
         public virtual Workplace Workplace { get; set; } = null!;
     }
 }

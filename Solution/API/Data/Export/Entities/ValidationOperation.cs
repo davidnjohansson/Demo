@@ -13,12 +13,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(VALIDERING_VERKSAMHETER.FK_VALIDERING))]
         public int ValidationId { get; set; }
-        [Property(nameof(VALIDERING_VERKSAMHETER.FK_VALIDERING))]
+        [Navigation(nameof(VALIDERING_VERKSAMHETER.FK_VALIDERING))]
         public virtual Validation Validation { get; set; } = null!;
 
         [Column(nameof(VALIDERING_VERKSAMHETER.FK_VERKSAMHETER))]
         public int OperationId { get; set; }
-        [Property(nameof(VALIDERING_VERKSAMHETER.FK_VERKSAMHETER))]
+        [Navigation(nameof(VALIDERING_VERKSAMHETER.FK_VERKSAMHETER))]
         public virtual Operation Operation { get; set; } = null!;
     }
 }

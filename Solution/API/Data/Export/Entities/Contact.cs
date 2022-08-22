@@ -25,12 +25,12 @@ namespace API.Data.Export.Entities
 
         [Column(nameof(KONTAKTER.FK_KUNDER))]
         public int CustomerId { get; set; }
-        [Property(nameof(KONTAKTER.FK_KUNDER))]
+        [Navigation(nameof(KONTAKTER.FK_KUNDER))]
         public virtual Customer Customer { get; set; } = null!;
 
         [Column(nameof(KONTAKTER.FK_PERSONER))]
         public int? PersonId { get; set; }
-        [Property(nameof(KONTAKTER.FK_PERSONER))]
+        [Navigation(nameof(KONTAKTER.FK_PERSONER))]
         public virtual Person? Person { get; set; }
 
         public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();

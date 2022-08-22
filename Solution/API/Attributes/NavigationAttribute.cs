@@ -1,11 +1,11 @@
 ﻿namespace API.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class PropertyAttribute : Attribute
+    public class NavigationAttribute : Attribute
     {
         public string Name { get; set; }
 
-        public PropertyAttribute(string name)
+        public NavigationAttribute(string name)
         {
             Name = "_" + name;
         }
