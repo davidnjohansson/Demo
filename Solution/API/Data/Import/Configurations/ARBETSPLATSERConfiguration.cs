@@ -33,6 +33,11 @@ namespace API.Data.Import.Configurations
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ARBETSPLATSER_ADRESSER");
 
+            entity.HasOne(d => d.FK_KONTAKTNavigation)
+                .WithMany(p => p.ARBETSPLATSER)
+                .HasForeignKey(d => d.FK_KONTAKT)
+                .HasConstraintName("FK_ARBETSPLATSER_KONTAKTER");
+
             entity.HasOne(d => d.FK_KUNDERNavigation)
                 .WithMany(p => p.ARBETSPLATSER)
                 .HasForeignKey(d => d.FK_KUNDER)

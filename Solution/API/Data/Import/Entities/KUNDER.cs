@@ -13,6 +13,7 @@ namespace API.Data.Import.Entities
             InverseFK_BETALARENavigation = new HashSet<KUNDER>();
             InverseFK_ENTREPRENADNavigation = new HashSet<KUNDER>();
             InverseFK_KONCERNNavigation = new HashSet<KUNDER>();
+            KONTAKTER = new HashSet<KONTAKTER>();
             VALIDERING_KUNDER = new HashSet<VALIDERING_KUNDER>();
         }
 
@@ -67,6 +68,7 @@ namespace API.Data.Import.Entities
         public virtual ICollection<KUNDER> InverseFK_BETALARENavigation { get; set; }
         public virtual ICollection<KUNDER> InverseFK_ENTREPRENADNavigation { get; set; }
         public virtual ICollection<KUNDER> InverseFK_KONCERNNavigation { get; set; }
+        public virtual ICollection<KONTAKTER> KONTAKTER { get; set; }
         public virtual ICollection<VALIDERING_KUNDER> VALIDERING_KUNDER { get; set; }
     }
 }

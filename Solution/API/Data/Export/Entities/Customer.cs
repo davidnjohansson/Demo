@@ -54,5 +54,7 @@ namespace API.Data.Export.Entities
         public virtual ICollection<Customer> CorporationFor { get; set; } = new HashSet<Customer>();
 
         public virtual ICollection<ValidationCustomer> ValidationCustomers { get; set; } = new HashSet<ValidationCustomer>();
+
+        public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
     }
 }

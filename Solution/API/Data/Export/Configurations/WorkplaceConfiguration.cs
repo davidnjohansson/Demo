@@ -26,6 +26,11 @@ namespace API.Data.Export.Configurations
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ARBETSPLATSER_ADRESSER");
 
+            entity.HasOne(d => d.Contact)
+                .WithMany(p => p.Workplaces)
+                .HasForeignKey(d => d.ContactId)
+                .HasConstraintName("FK_ARBETSPLATSER_KONTAKTER");
+
             entity.HasOne(d => d.Customer)
                 .WithMany(p => p.Workplaces)
                 .HasForeignKey(d => d.CustomerId)

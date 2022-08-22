@@ -31,5 +31,12 @@ namespace API.Data.Export.Entities
         public int? PositionId { get; set; }
         [Property(nameof(ARBETSPLATSER.FK_POSITIONER))]
         public virtual Position? Position { get; set; }
+
+        [Column(nameof(ARBETSPLATSER.FK_KONTAKT))]
+        public int? ContactId { get; set; }
+        [Property(nameof(ARBETSPLATSER.FK_KONTAKT))]
+        public virtual Contact? Contact { get; set; }
+
+        public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
     }
 }

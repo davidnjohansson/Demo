@@ -12,6 +12,7 @@ namespace API.Data.Import.Entities
             ARBETSPLATSER = new HashSet<ARBETSPLATSER>();
             KUNDERFK_ADRESSER_BESOKSADRESSNavigation = new HashSet<KUNDER>();
             KUNDERFK_ADRESSER_FAKTURAADRESSNavigation = new HashSet<KUNDER>();
+            PERSONER = new HashSet<PERSONER>();
         }
 
         public int PK { get; set; }
@@ -29,5 +30,6 @@ namespace API.Data.Import.Entities
         public virtual ICollection<ARBETSPLATSER> ARBETSPLATSER { get; set; }
         public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_BESOKSADRESSNavigation { get; set; }
         public virtual ICollection<KUNDER> KUNDERFK_ADRESSER_FAKTURAADRESSNavigation { get; set; }
+        public virtual ICollection<PERSONER> PERSONER { get; set; }
     }
 }

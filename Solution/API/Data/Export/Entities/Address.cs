@@ -38,5 +38,7 @@ namespace API.Data.Export.Entities
         public virtual ICollection<Customer> VisitingAddressFor { get; set; } = new HashSet<Customer>();
 
         public virtual ICollection<Customer> InvoiceAddressFor { get; set; } = new HashSet<Customer>();
+
+        public virtual ICollection<Person> Persons { get; set; } = new HashSet<Person>();
     }
 }

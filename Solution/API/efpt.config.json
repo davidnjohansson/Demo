@@ -77,6 +77,18 @@
       },
       {
          "ExcludedColumns": [
+            "FK_MEDDELANDE_MALLAR",
+            "FK_KONTAKTTYP"
+         ],
+         "Name": "[dbo].[KONTAKTER]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[KONTAKTER_ARBETSPLATSER]",
+         "ObjectType": 0
+      },
+      {
+         "ExcludedColumns": [
             "Kund",
             "Leverantor",
             "Akare",
@@ -222,6 +234,10 @@
             "TelefonNrSwish"
          ],
          "Name": "[dbo].[KUNDER]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PERSONER]",
          "ObjectType": 0
       },
       {

@@ -16,8 +16,10 @@ namespace API.Data.Export
 
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<AddressType> AddressTypes { get; set; } = null!;
+        public DbSet<Contact> Contacts { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Operation> Operations { get; set; } = null!;
+        public DbSet<Person> Persons { get; set; } = null!;
         public DbSet<Position> Positions { get; set; } = null!;
         public DbSet<Validation> Validations { get; set; } = null!;
         public DbSet<ValidationCustomer> ValidationCustomers { get; set; } = null!;
@@ -47,8 +49,10 @@ namespace API.Data.Export
 
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new AddressTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ContactConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new OperationConfiguration());
+            modelBuilder.ApplyConfiguration(new PersonConfiguration());
             modelBuilder.ApplyConfiguration(new PositionConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationConfiguration());
             modelBuilder.ApplyConfiguration(new ValidationCustomerConfiguration());
