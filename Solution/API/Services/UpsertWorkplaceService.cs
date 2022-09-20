@@ -5,31 +5,22 @@ using HotChocolate.Subscriptions;
 using Microsoft.EntityFrameworkCore;
 using T5.API.Types;
 using API.HelperServices;
+using API.Data.DTO;
 
 namespace API.Services
 {
-    public class UpsertWorkplaceInput : Input
-    {
-        public bool? Active { get; set; }
-        public string? WorkplaceName { get; set; }
-        public int? CustomerId { get; set; }
-        public string? Address1 { get; set; }
-        public string? City { get; set; }
-        public string? ZipCode { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
-    }
-
     public class UpsertWorkplaceService
     {
         private readonly DemoDbContext _db;
         private readonly ITopicEventSender _sender;
+        private readonly BusinessLogicService _businessLogicService;
         private readonly ValidationService _validationService;
 
-        public UpsertWorkplaceService(DemoDbContext db, ITopicEventSender sender, ValidationService validationService)
+        public UpsertWorkplaceService(DemoDbContext db, ITopicEventSender sender, BusinessLogicService businessLogicService, ValidationService validationService)
         {
             _db = db;
             _sender = sender;
+            _businessLogicService = businessLogicService;
             _validationService = validationService;
         }
 
@@ -216,38 +207,45 @@ namespace API.Services
 
         private async Task<MutationOutput> InsertAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
-            var position = new Position
-            {
-                Latitude = input.Latitude!.Value,
-                Longitude = input.Longitude!.Value,
-            };
+            output.ValidationErrors.AddRange(await _businessLogicService.ValidateAsync(input));
 
-            var addressType = (await _db.AddressTypes.FirstOrDefaultAsync(addressType => addressType.AddressTypeName == "Arbetsplatsadress"))!;
-
-            var address = new Address
-            {
-                Address1 = input.Address1!,
-                AddressType = addressType,
-                Position = position,
-                City = input.City,
-                ZipCode = input.ZipCode
-            };
-
-            var customer = (await _db.Customers.FirstOrDefaultAsync(customer => customer.Id == input.CustomerId))!;
+            if (output.ValidationErrors.Any()) return output;
 
             var workplace = new Workplace
             {
                 Active = input.Active!.Value,
                 WorkplaceName = input.WorkplaceName!,
-                Address = address,
-                Customer = customer
+                CustomerId = input.CustomerId!.Value
             };
 
-            _db.Workplaces.Add(workplace);
+            output.ValidationErrors.AddRange(_businessLogicService.Validate(input.UpsertAddressInput!));
+
+            if (output.ValidationErrors.Any()) return output;
+
+            workplace.Address = new Address
+            {
+                Address1 = input.UpsertAddressInput!.Address1,
+                AddressType = (await _db.AddressTypes.FirstOrDefaultAsync(addressType => addressType.AddressTypeName == "Arbetsplatsadress"))!,
+                City = input.UpsertAddressInput!.City,
+                ZipCode = input.UpsertAddressInput!.ZipCode
+            };
+
+            output.ValidationErrors.AddRange(_businessLogicService.Validate(input.UpsertAddressInput!.UpsertPositionInput!));
+
+            if (!output.ValidationErrors.Any())
+            {
+                workplace.Address.Position = new Position
+                {
+                    Latitude = input.UpsertAddressInput!.UpsertPositionInput!.Latitude!.Value,
+                    Longitude = input.UpsertAddressInput!.UpsertPositionInput!.Longitude!.Value
+                };
+            }
 
             output.ValidationErrors.AddRange(_validationService.Validate(workplace));
 
-            if (output.ValidationErrors.Any()) return output;
+            if (input.OnlyValidate == true) return output;
+
+            _db.Workplaces.Add(workplace);
 
             await _db.SaveChangesAsync();
             await _sender.SendAsync(nameof(Subscription.WorkplaceInserted), workplace);
@@ -259,35 +257,35 @@ namespace API.Services
 
         private async Task<MutationOutput> UpdateAsync(UpsertWorkplaceInput input, MutationOutput output)
         {
-            var workplace = (await _db.Workplaces.FirstOrDefaultAsync(workplace => workplace.Id == input.Id))!;
+            //var workplace = (await _db.Workplaces.FirstOrDefaultAsync(workplace => workplace.Id == input.Id))!;
 
-            var position = workplace.Address.Position ?? new Position();
-            position.Latitude = input.Latitude!.Value;
-            position.Longitude = input.Longitude!.Value;
+            //var position = workplace.Address.Position ?? new Position();
+            //position.Latitude = input.Latitude!.Value;
+            //position.Longitude = input.Longitude!.Value;
 
-            var address = workplace.Address;
-            address.Address1 = input.Address1!;
-            address.Position = position;
-            address.City = input.City!;
-            address.ZipCode = input.ZipCode!;
+            //var address = workplace.Address;
+            //address.Address1 = input.Address1!;
+            //address.Position = position;
+            //address.City = input.City!;
+            //address.ZipCode = input.ZipCode!;
 
-            var customer = (await _db.Customers.FirstOrDefaultAsync(customer => customer.Id == input.CustomerId))!;
+            //var customer = (await _db.Customers.FirstOrDefaultAsync(customer => customer.Id == input.CustomerId))!;
 
-            workplace.Active = input.Active!.Value;
-            workplace.WorkplaceName = input.WorkplaceName!;
-            workplace.Address = address;
-            workplace.Customer = customer;
+            //workplace.Active = input.Active!.Value;
+            //workplace.WorkplaceName = input.WorkplaceName!;
+            //workplace.Address = address;
+            //workplace.Customer = customer;
 
-            _db.Workplaces.Update(workplace);
+            //_db.Workplaces.Update(workplace);
 
-            output.ValidationErrors.AddRange(_validationService.Validate(workplace));
+            //output.ValidationErrors.AddRange(_validationService.Validate(workplace));
 
-            if (output.ValidationErrors.Any()) return output;
+            //if (output.ValidationErrors.Any()) return output;
 
-            await _db.SaveChangesAsync();
-            await _sender.SendAsync(nameof(Subscription.WorkplaceUpdated), workplace);
+            //await _db.SaveChangesAsync();
+            //await _sender.SendAsync(nameof(Subscription.WorkplaceUpdated), workplace);
 
-            output.Id = workplace.Id;
+            //output.Id = workplace.Id;
 
             return output;
         }

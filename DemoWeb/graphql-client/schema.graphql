@@ -56,7 +56,7 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
-type Address {
+type Address implements IEntity {
   id: Int!
   active: Boolean
   address1: String
@@ -69,6 +69,9 @@ type Address {
   workplaces: [Workplace!]!
   visitingAddressFor: [Customer!]!
   invoiceAddressFor: [Customer!]!
+  persons: [Person!]!
+  newInvoiceAddressFor: [WorkplaceOwner!]!
+  oldInvoiceAddressFor: [WorkplaceOwner!]!
 }
 
 type AddressCollectionSegment {
@@ -96,6 +99,9 @@ input AddressFilterInput {
   workplaces: ListFilterInputTypeOfWorkplaceFilterInput
   visitingAddressFor: ListFilterInputTypeOfCustomerFilterInput
   invoiceAddressFor: ListFilterInputTypeOfCustomerFilterInput
+  persons: ListFilterInputTypeOfPersonFilterInput
+  newInvoiceAddressFor: ListFilterInputTypeOfWorkplaceOwnerFilterInput
+  oldInvoiceAddressFor: ListFilterInputTypeOfWorkplaceOwnerFilterInput
 }
 
 input AddressSortInput {
@@ -110,7 +116,7 @@ input AddressSortInput {
   position: PositionSortInput
 }
 
-type AddressType {
+type AddressType implements IEntity {
   id: Int!
   addressTypeName: String
   addresses: [Address!]!
@@ -134,22 +140,6 @@ input BooleanOperationFilterInput {
   neq: Boolean
 }
 
-type Business {
-  id: Int!
-  active: Boolean
-  businessName: String
-  validationBusinesses: [ValidationBusiness!]!
-}
-
-input BusinessFilterInput {
-  and: [BusinessFilterInput!]
-  or: [BusinessFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  active: BooleanOperationFilterInput
-  businessName: StringOperationFilterInput
-  validationBusinesses: ListFilterInputTypeOfValidationBusinessFilterInput
-}
-
 """
 Information about the offset pagination.
 """
@@ -163,6 +153,21 @@ type CollectionSegmentInfo {
   Indicates whether more items exist prior the set defined by the clients arguments.
   """
   hasPreviousPage: Boolean!
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
 }
 
 input ComparableDoubleOperationFilterInput {
@@ -240,7 +245,65 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
-type Customer {
+type Contact implements IEntity {
+  id: Int!
+  contactName: String
+  department: String
+  active: Boolean
+  gDPR_Deleted: String
+  customerId: Int!
+  customer: Customer!
+  personId: Int
+  person: Person
+  workplaces: [Workplace!]!
+  contactWorkplaces: [ContactWorkplace!]!
+}
+
+input ContactFilterInput {
+  and: [ContactFilterInput!]
+  or: [ContactFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  contactName: StringOperationFilterInput
+  department: StringOperationFilterInput
+  active: BooleanOperationFilterInput
+  gDPR_Deleted: StringOperationFilterInput
+  customerId: ComparableInt32OperationFilterInput
+  customer: CustomerFilterInput
+  personId: ComparableNullableOfInt32OperationFilterInput
+  person: PersonFilterInput
+  workplaces: ListFilterInputTypeOfWorkplaceFilterInput
+  contactWorkplaces: ListFilterInputTypeOfContactWorkplaceFilterInput
+}
+
+input ContactSortInput {
+  id: SortEnumType
+  contactName: SortEnumType
+  department: SortEnumType
+  active: SortEnumType
+  gDPR_Deleted: SortEnumType
+  customerId: SortEnumType
+  customer: CustomerSortInput
+  personId: SortEnumType
+  person: PersonSortInput
+}
+
+type ContactWorkplace {
+  contactId: Int!
+  contact: Contact!
+  workplaceId: Int!
+  workplace: Workplace!
+}
+
+input ContactWorkplaceFilterInput {
+  and: [ContactWorkplaceFilterInput!]
+  or: [ContactWorkplaceFilterInput!]
+  contactId: ComparableInt32OperationFilterInput
+  contact: ContactFilterInput
+  workplaceId: ComparableInt32OperationFilterInput
+  workplace: WorkplaceFilterInput
+}
+
+type Customer implements IEntity {
   id: Int!
   active: Boolean
   customerName: String!
@@ -260,6 +323,8 @@ type Customer {
   contractorFor: [Customer!]!
   corporationFor: [Customer!]!
   validationCustomers: [ValidationCustomer!]!
+  contacts: [Contact!]!
+  workplaceOwnerFor: [WorkplaceOwner!]!
 }
 
 type CustomerCollectionSegment {
@@ -294,6 +359,8 @@ input CustomerFilterInput {
   contractorFor: ListFilterInputTypeOfCustomerFilterInput
   corporationFor: ListFilterInputTypeOfCustomerFilterInput
   validationCustomers: ListFilterInputTypeOfValidationCustomerFilterInput
+  contacts: ListFilterInputTypeOfContactFilterInput
+  workplaceOwnerFor: ListFilterInputTypeOfWorkplaceOwnerFilterInput
 }
 
 input CustomerSortInput {
@@ -318,10 +385,67 @@ The `DateTime` scalar represents an ISO-8601 compliant date time type.
 """
 scalar DateTime
 
+enum EnumValidationOperation {
+  EQUALS
+  DOES_NOT_EQUAL
+  GREATER_THAN
+  GREATER_THAN_OR_EQUAL
+  LESSER_THAN
+  LESSER_THAN_OR_EQUAL
+  MATCHES_REGEX
+  IS_NULL
+  IS_NOT_NULL
+  ANNAN_REGEL
+  ANNAN_REGEL_FLERA_ANY
+  ANNAN_REGEL_FLERA_ALL
+  CONTAINS
+  DOES_NOT_CONTAIN
+  DOES_NOT_MATCH_REGEX
+  LONGER_THAN
+  LONGER_THAN_OR_EQUAL
+  SHORTER_THAN
+  SHORTER_THAN_OR_EQUAL
+  STARTS_WITH
+  DOES_NOT_START_WITH
+  ENDS_WITH
+  DOES_NOT_END_WITH
+  COUNT
+  NOT_COUNT
+  COUNT_IS_MORE_THAN
+  COUNT_IS_MORE_THAN_OR_EQUAL
+  COUNT_IS_LESS_THAN
+  COUNT_IS_LESS_THAN_OR_EQUAL
+}
+
+input EnumValidationOperationOperationFilterInput {
+  eq: EnumValidationOperation
+  neq: EnumValidationOperation
+  in: [EnumValidationOperation!]
+  nin: [EnumValidationOperation!]
+}
+
+interface IEntity {
+  id: Int!
+}
+
 input ListFilterInputTypeOfAddressFilterInput {
   all: AddressFilterInput
   none: AddressFilterInput
   some: AddressFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfContactFilterInput {
+  all: ContactFilterInput
+  none: ContactFilterInput
+  some: ContactFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfContactWorkplaceFilterInput {
+  all: ContactWorkplaceFilterInput
+  none: ContactWorkplaceFilterInput
+  some: ContactWorkplaceFilterInput
   any: Boolean
 }
 
@@ -332,10 +456,10 @@ input ListFilterInputTypeOfCustomerFilterInput {
   any: Boolean
 }
 
-input ListFilterInputTypeOfValidationBusinessFilterInput {
-  all: ValidationBusinessFilterInput
-  none: ValidationBusinessFilterInput
-  some: ValidationBusinessFilterInput
+input ListFilterInputTypeOfPersonFilterInput {
+  all: PersonFilterInput
+  none: PersonFilterInput
+  some: PersonFilterInput
   any: Boolean
 }
 
@@ -353,6 +477,13 @@ input ListFilterInputTypeOfValidationFilterInput {
   any: Boolean
 }
 
+input ListFilterInputTypeOfValidationOperationFilterInput {
+  all: ValidationOperationFilterInput
+  none: ValidationOperationFilterInput
+  some: ValidationOperationFilterInput
+  any: Boolean
+}
+
 input ListFilterInputTypeOfValidationRuleFilterInput {
   all: ValidationRuleFilterInput
   none: ValidationRuleFilterInput
@@ -367,6 +498,13 @@ input ListFilterInputTypeOfWorkplaceFilterInput {
   any: Boolean
 }
 
+input ListFilterInputTypeOfWorkplaceOwnerFilterInput {
+  all: WorkplaceOwnerFilterInput
+  none: WorkplaceOwnerFilterInput
+  some: WorkplaceOwnerFilterInput
+  any: Boolean
+}
+
 type Mutation {
   upsertWorkplace(input: UpsertWorkplaceInput!): MutationOutput!
 }
@@ -376,7 +514,51 @@ type MutationOutput {
   validationErrors: [ValidationError!]!
 }
 
-type Position {
+type Operation implements IEntity {
+  id: Int!
+  active: Boolean
+  operationName: String
+  validationOperations: [ValidationOperation!]!
+}
+
+input OperationFilterInput {
+  and: [OperationFilterInput!]
+  or: [OperationFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  active: BooleanOperationFilterInput
+  operationName: StringOperationFilterInput
+  validationOperations: ListFilterInputTypeOfValidationOperationFilterInput
+}
+
+type Person implements IEntity {
+  id: Int!
+  socialSecurityNumber: String
+  personName: String
+  addressId: Int
+  address: Address
+  contacts: [Contact!]!
+}
+
+input PersonFilterInput {
+  and: [PersonFilterInput!]
+  or: [PersonFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  socialSecurityNumber: StringOperationFilterInput
+  personName: StringOperationFilterInput
+  addressId: ComparableNullableOfInt32OperationFilterInput
+  address: AddressFilterInput
+  contacts: ListFilterInputTypeOfContactFilterInput
+}
+
+input PersonSortInput {
+  id: SortEnumType
+  socialSecurityNumber: SortEnumType
+  personName: SortEnumType
+  addressId: SortEnumType
+  address: AddressSortInput
+}
+
+type Position implements IEntity {
   id: Int!
   latitude: Float!
   longitude: Float!
@@ -442,20 +624,32 @@ type Subscription {
   workplaceUpdated: Workplace!
 }
 
-input UpsertWorkplaceInput {
-  active: Boolean
-  workplaceName: String
-  customerId: Int
+input UpsertAddressInput {
   address1: String
   city: String
   zipCode: String
+  upsertPositionInput: UpsertPositionInput
+  id: Int
+  onlyValidate: Boolean
+}
+
+input UpsertPositionInput {
   latitude: Float
   longitude: Float
   id: Int
   onlyValidate: Boolean
 }
 
-type Validation {
+input UpsertWorkplaceInput {
+  active: Boolean
+  workplaceName: String
+  customerId: Int
+  upsertAddressInput: UpsertAddressInput
+  id: Int
+  onlyValidate: Boolean
+}
+
+type Validation implements IEntity {
   id: Int!
   name: String!
   active: Boolean!
@@ -465,28 +659,10 @@ type Validation {
   validationGroup: ValidationGroup
   validationCustomers: [ValidationCustomer!]!
   validationRules: [ValidationRule!]!
-  validationBusinesses: [ValidationBusiness!]!
+  validationOperations: [ValidationOperation!]!
 }
 
-type ValidationBusiness {
-  id: Int!
-  validationId: Int!
-  validation: Validation!
-  businessId: Int!
-  business: Business!
-}
-
-input ValidationBusinessFilterInput {
-  and: [ValidationBusinessFilterInput!]
-  or: [ValidationBusinessFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  validationId: ComparableInt32OperationFilterInput
-  validation: ValidationFilterInput
-  businessId: ComparableInt32OperationFilterInput
-  business: BusinessFilterInput
-}
-
-type ValidationCustomer {
+type ValidationCustomer implements IEntity {
   id: Int!
   validationId: Int!
   validation: Validation!
@@ -506,7 +682,8 @@ input ValidationCustomerFilterInput {
 
 type ValidationError {
   message: String!
-  property: String!
+  typeName: String!
+  propertyName: String!
 }
 
 input ValidationFilterInput {
@@ -521,10 +698,10 @@ input ValidationFilterInput {
   validationGroup: ValidationGroupFilterInput
   validationCustomers: ListFilterInputTypeOfValidationCustomerFilterInput
   validationRules: ListFilterInputTypeOfValidationRuleFilterInput
-  validationBusinesses: ListFilterInputTypeOfValidationBusinessFilterInput
+  validationOperations: ListFilterInputTypeOfValidationOperationFilterInput
 }
 
-type ValidationGroup {
+type ValidationGroup implements IEntity {
   id: Int!
   groupName: String!
   validations: [Validation!]!
@@ -538,11 +715,30 @@ input ValidationGroupFilterInput {
   validations: ListFilterInputTypeOfValidationFilterInput
 }
 
-type ValidationRule {
+type ValidationOperation implements IEntity {
+  id: Int!
+  validationId: Int!
+  validation: Validation!
+  operationId: Int!
+  operation: Operation!
+}
+
+input ValidationOperationFilterInput {
+  and: [ValidationOperationFilterInput!]
+  or: [ValidationOperationFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  validationId: ComparableInt32OperationFilterInput
+  validation: ValidationFilterInput
+  operationId: ComparableInt32OperationFilterInput
+  operation: OperationFilterInput
+}
+
+type ValidationRule implements IEntity {
   id: Int!
   entityName: String!
   propertyName: String!
-  enumOperation: Int!
+  enumOperationId: Int!
+  enumOperation: EnumValidationOperation!
   errorMessage: String
   valueNumeric: Float
   valueAlphanumeric: String
@@ -564,7 +760,8 @@ input ValidationRuleFilterInput {
   id: ComparableInt32OperationFilterInput
   entityName: StringOperationFilterInput
   propertyName: StringOperationFilterInput
-  enumOperation: ComparableInt32OperationFilterInput
+  enumOperationId: ComparableInt32OperationFilterInput
+  enumOperation: EnumValidationOperationOperationFilterInput
   errorMessage: StringOperationFilterInput
   valueNumeric: ComparableNullableOfDoubleOperationFilterInput
   valueAlphanumeric: StringOperationFilterInput
@@ -580,7 +777,7 @@ input ValidationRuleFilterInput {
   inverseValidationRules: ListFilterInputTypeOfValidationRuleFilterInput
 }
 
-type Workplace {
+type Workplace implements IEntity {
   id: Int!
   active: Boolean
   workplaceName: String!
@@ -590,6 +787,10 @@ type Workplace {
   customer: Customer!
   positionId: Int
   position: Position
+  contactId: Int
+  contact: Contact
+  contactWorkplaces: [ContactWorkplace!]!
+  workplaceOwners: [WorkplaceOwner!]!
 }
 
 type WorkplaceCollectionSegment {
@@ -614,6 +815,44 @@ input WorkplaceFilterInput {
   customer: CustomerFilterInput
   positionId: ComparableNullableOfInt32OperationFilterInput
   position: PositionFilterInput
+  contactId: ComparableNullableOfInt32OperationFilterInput
+  contact: ContactFilterInput
+  contactWorkplaces: ListFilterInputTypeOfContactWorkplaceFilterInput
+  workplaceOwners: ListFilterInputTypeOfWorkplaceOwnerFilterInput
+}
+
+type WorkplaceOwner {
+  id: Int!
+  fromDay: DateTime!
+  executedAt: DateTime
+  createdBy: String
+  createdAt: DateTime!
+  workplaceId: Int!
+  workplace: Workplace!
+  customerId: Int!
+  customer: Customer!
+  newInvoiceAddressId: Int
+  newInvoiceAddress: Address
+  oldInvoiceAddressId: Int
+  oldInvoiceAddress: Address
+}
+
+input WorkplaceOwnerFilterInput {
+  and: [WorkplaceOwnerFilterInput!]
+  or: [WorkplaceOwnerFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  fromDay: ComparableDateTimeOperationFilterInput
+  executedAt: ComparableNullableOfDateTimeOperationFilterInput
+  createdBy: StringOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  workplaceId: ComparableInt32OperationFilterInput
+  workplace: WorkplaceFilterInput
+  customerId: ComparableInt32OperationFilterInput
+  customer: CustomerFilterInput
+  newInvoiceAddressId: ComparableNullableOfInt32OperationFilterInput
+  newInvoiceAddress: AddressFilterInput
+  oldInvoiceAddressId: ComparableNullableOfInt32OperationFilterInput
+  oldInvoiceAddress: AddressFilterInput
 }
 
 input WorkplaceSortInput {
@@ -626,4 +865,6 @@ input WorkplaceSortInput {
   customer: CustomerSortInput
   positionId: SortEnumType
   position: PositionSortInput
+  contactId: SortEnumType
+  contact: ContactSortInput
 }

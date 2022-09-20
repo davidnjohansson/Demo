@@ -20,6 +20,38 @@ export type String = string
 /** The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
 export type Float = number
 
+export enum EnumValidationOperation {
+  EQUALS = 'EQUALS',
+  DOES_NOT_EQUAL = 'DOES_NOT_EQUAL',
+  GREATER_THAN = 'GREATER_THAN',
+  GREATER_THAN_OR_EQUAL = 'GREATER_THAN_OR_EQUAL',
+  LESSER_THAN = 'LESSER_THAN',
+  LESSER_THAN_OR_EQUAL = 'LESSER_THAN_OR_EQUAL',
+  MATCHES_REGEX = 'MATCHES_REGEX',
+  IS_NULL = 'IS_NULL',
+  IS_NOT_NULL = 'IS_NOT_NULL',
+  ANNAN_REGEL = 'ANNAN_REGEL',
+  ANNAN_REGEL_FLERA_ANY = 'ANNAN_REGEL_FLERA_ANY',
+  ANNAN_REGEL_FLERA_ALL = 'ANNAN_REGEL_FLERA_ALL',
+  CONTAINS = 'CONTAINS',
+  DOES_NOT_CONTAIN = 'DOES_NOT_CONTAIN',
+  DOES_NOT_MATCH_REGEX = 'DOES_NOT_MATCH_REGEX',
+  LONGER_THAN = 'LONGER_THAN',
+  LONGER_THAN_OR_EQUAL = 'LONGER_THAN_OR_EQUAL',
+  SHORTER_THAN = 'SHORTER_THAN',
+  SHORTER_THAN_OR_EQUAL = 'SHORTER_THAN_OR_EQUAL',
+  STARTS_WITH = 'STARTS_WITH',
+  DOES_NOT_START_WITH = 'DOES_NOT_START_WITH',
+  ENDS_WITH = 'ENDS_WITH',
+  DOES_NOT_END_WITH = 'DOES_NOT_END_WITH',
+  COUNT = 'COUNT',
+  NOT_COUNT = 'NOT_COUNT',
+  COUNT_IS_MORE_THAN = 'COUNT_IS_MORE_THAN',
+  COUNT_IS_MORE_THAN_OR_EQUAL = 'COUNT_IS_MORE_THAN_OR_EQUAL',
+  COUNT_IS_LESS_THAN = 'COUNT_IS_LESS_THAN',
+  COUNT_IS_LESS_THAN_OR_EQUAL = 'COUNT_IS_LESS_THAN_OR_EQUAL',
+}
+
 /** The `DateTime` scalar represents an ISO-8601 compliant date time type. */
 export type DateTime = any
 
@@ -36,7 +68,7 @@ export interface AddressCollectionSegment {
   __typename: 'AddressCollectionSegment'
 }
 
-export interface Address {
+export interface Address extends IEntity {
   id: Int
   active: Boolean | null
   address1: String | null
@@ -49,17 +81,38 @@ export interface Address {
   workplaces: Workplace[]
   visitingAddressFor: Customer[]
   invoiceAddressFor: Customer[]
+  persons: Person[]
+  newInvoiceAddressFor: WorkplaceOwner[]
+  oldInvoiceAddressFor: WorkplaceOwner[]
   __typename: 'Address'
 }
 
-export interface AddressType {
+export interface IEntity {
+  id: Int
+  __typename:
+    | 'Address'
+    | 'AddressType'
+    | 'Position'
+    | 'Workplace'
+    | 'Customer'
+    | 'ValidationCustomer'
+    | 'Validation'
+    | 'ValidationGroup'
+    | 'ValidationRule'
+    | 'ValidationOperation'
+    | 'Operation'
+    | 'Contact'
+    | 'Person'
+}
+
+export interface AddressType extends IEntity {
   id: Int
   addressTypeName: String | null
   addresses: Address[]
   __typename: 'AddressType'
 }
 
-export interface Position {
+export interface Position extends IEntity {
   id: Int
   latitude: Float
   longitude: Float
@@ -68,7 +121,7 @@ export interface Position {
   __typename: 'Position'
 }
 
-export interface Workplace {
+export interface Workplace extends IEntity {
   id: Int
   active: Boolean | null
   workplaceName: String
@@ -78,10 +131,14 @@ export interface Workplace {
   customer: Customer
   positionId: Int | null
   position: Position | null
+  contactId: Int | null
+  contact: Contact | null
+  contactWorkplaces: ContactWorkplace[]
+  workplaceOwners: WorkplaceOwner[]
   __typename: 'Workplace'
 }
 
-export interface Customer {
+export interface Customer extends IEntity {
   id: Int
   active: Boolean | null
   customerName: String
@@ -101,10 +158,12 @@ export interface Customer {
   contractorFor: Customer[]
   corporationFor: Customer[]
   validationCustomers: ValidationCustomer[]
+  contacts: Contact[]
+  workplaceOwnerFor: WorkplaceOwner[]
   __typename: 'Customer'
 }
 
-export interface ValidationCustomer {
+export interface ValidationCustomer extends IEntity {
   id: Int
   validationId: Int
   validation: Validation
@@ -113,7 +172,7 @@ export interface ValidationCustomer {
   __typename: 'ValidationCustomer'
 }
 
-export interface Validation {
+export interface Validation extends IEntity {
   id: Int
   name: String
   active: Boolean
@@ -123,22 +182,23 @@ export interface Validation {
   validationGroup: ValidationGroup | null
   validationCustomers: ValidationCustomer[]
   validationRules: ValidationRule[]
-  validationBusinesses: ValidationBusiness[]
+  validationOperations: ValidationOperation[]
   __typename: 'Validation'
 }
 
-export interface ValidationGroup {
+export interface ValidationGroup extends IEntity {
   id: Int
   groupName: String
   validations: Validation[]
   __typename: 'ValidationGroup'
 }
 
-export interface ValidationRule {
+export interface ValidationRule extends IEntity {
   id: Int
   entityName: String
   propertyName: String
-  enumOperation: Int
+  enumOperationId: Int
+  enumOperation: EnumValidationOperation
   errorMessage: String | null
   valueNumeric: Float | null
   valueAlphanumeric: String | null
@@ -155,21 +215,71 @@ export interface ValidationRule {
   __typename: 'ValidationRule'
 }
 
-export interface ValidationBusiness {
+export interface ValidationOperation extends IEntity {
   id: Int
   validationId: Int
   validation: Validation
-  businessId: Int
-  business: Business
-  __typename: 'ValidationBusiness'
+  operationId: Int
+  operation: Operation
+  __typename: 'ValidationOperation'
 }
 
-export interface Business {
+export interface Operation extends IEntity {
   id: Int
   active: Boolean | null
-  businessName: String | null
-  validationBusinesses: ValidationBusiness[]
-  __typename: 'Business'
+  operationName: String | null
+  validationOperations: ValidationOperation[]
+  __typename: 'Operation'
+}
+
+export interface Contact extends IEntity {
+  id: Int
+  contactName: String | null
+  department: String | null
+  active: Boolean | null
+  gDPR_Deleted: String | null
+  customerId: Int
+  customer: Customer
+  personId: Int | null
+  person: Person | null
+  workplaces: Workplace[]
+  contactWorkplaces: ContactWorkplace[]
+  __typename: 'Contact'
+}
+
+export interface Person extends IEntity {
+  id: Int
+  socialSecurityNumber: String | null
+  personName: String | null
+  addressId: Int | null
+  address: Address | null
+  contacts: Contact[]
+  __typename: 'Person'
+}
+
+export interface ContactWorkplace {
+  contactId: Int
+  contact: Contact
+  workplaceId: Int
+  workplace: Workplace
+  __typename: 'ContactWorkplace'
+}
+
+export interface WorkplaceOwner {
+  id: Int
+  fromDay: DateTime
+  executedAt: DateTime | null
+  createdBy: String | null
+  createdAt: DateTime
+  workplaceId: Int
+  workplace: Workplace
+  customerId: Int
+  customer: Customer
+  newInvoiceAddressId: Int | null
+  newInvoiceAddress: Address | null
+  oldInvoiceAddressId: Int | null
+  oldInvoiceAddress: Address | null
+  __typename: 'WorkplaceOwner'
 }
 
 /** Information about the offset pagination. */
@@ -218,7 +328,8 @@ export interface MutationOutput {
 
 export interface ValidationError {
   message: String
-  property: String
+  typeName: String
+  propertyName: String
   __typename: 'ValidationError'
 }
 
@@ -272,6 +383,9 @@ export interface AddressFilterInput {
   workplaces?: ListFilterInputTypeOfWorkplaceFilterInput | null
   visitingAddressFor?: ListFilterInputTypeOfCustomerFilterInput | null
   invoiceAddressFor?: ListFilterInputTypeOfCustomerFilterInput | null
+  persons?: ListFilterInputTypeOfPersonFilterInput | null
+  newInvoiceAddressFor?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
+  oldInvoiceAddressFor?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
 }
 
 export interface ComparableInt32OperationFilterInput {
@@ -383,6 +497,10 @@ export interface WorkplaceFilterInput {
   customer?: CustomerFilterInput | null
   positionId?: ComparableNullableOfInt32OperationFilterInput | null
   position?: PositionFilterInput | null
+  contactId?: ComparableNullableOfInt32OperationFilterInput | null
+  contact?: ContactFilterInput | null
+  contactWorkplaces?: ListFilterInputTypeOfContactWorkplaceFilterInput | null
+  workplaceOwners?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
 }
 
 export interface CustomerFilterInput {
@@ -407,6 +525,8 @@ export interface CustomerFilterInput {
   contractorFor?: ListFilterInputTypeOfCustomerFilterInput | null
   corporationFor?: ListFilterInputTypeOfCustomerFilterInput | null
   validationCustomers?: ListFilterInputTypeOfValidationCustomerFilterInput | null
+  contacts?: ListFilterInputTypeOfContactFilterInput | null
+  workplaceOwnerFor?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
 }
 
 export interface ListFilterInputTypeOfCustomerFilterInput {
@@ -445,7 +565,7 @@ export interface ValidationFilterInput {
   validationGroup?: ValidationGroupFilterInput | null
   validationCustomers?: ListFilterInputTypeOfValidationCustomerFilterInput | null
   validationRules?: ListFilterInputTypeOfValidationRuleFilterInput | null
-  validationBusinesses?: ListFilterInputTypeOfValidationBusinessFilterInput | null
+  validationOperations?: ListFilterInputTypeOfValidationOperationFilterInput | null
 }
 
 export interface ValidationGroupFilterInput {
@@ -476,7 +596,8 @@ export interface ValidationRuleFilterInput {
   id?: ComparableInt32OperationFilterInput | null
   entityName?: StringOperationFilterInput | null
   propertyName?: StringOperationFilterInput | null
-  enumOperation?: ComparableInt32OperationFilterInput | null
+  enumOperationId?: ComparableInt32OperationFilterInput | null
+  enumOperation?: EnumValidationOperationOperationFilterInput | null
   errorMessage?: StringOperationFilterInput | null
   valueNumeric?: ComparableNullableOfDoubleOperationFilterInput | null
   valueAlphanumeric?: StringOperationFilterInput | null
@@ -490,6 +611,13 @@ export interface ValidationRuleFilterInput {
   validationId?: ComparableInt32OperationFilterInput | null
   validation?: ValidationFilterInput | null
   inverseValidationRules?: ListFilterInputTypeOfValidationRuleFilterInput | null
+}
+
+export interface EnumValidationOperationOperationFilterInput {
+  eq?: EnumValidationOperation | null
+  neq?: EnumValidationOperation | null
+  in?: EnumValidationOperation[] | null
+  nin?: EnumValidationOperation[] | null
 }
 
 export interface ComparableNullableOfDoubleOperationFilterInput {
@@ -522,30 +650,127 @@ export interface ComparableNullableOfDateTimeOperationFilterInput {
   nlte?: DateTime | null
 }
 
-export interface ListFilterInputTypeOfValidationBusinessFilterInput {
-  all?: ValidationBusinessFilterInput | null
-  none?: ValidationBusinessFilterInput | null
-  some?: ValidationBusinessFilterInput | null
+export interface ListFilterInputTypeOfValidationOperationFilterInput {
+  all?: ValidationOperationFilterInput | null
+  none?: ValidationOperationFilterInput | null
+  some?: ValidationOperationFilterInput | null
   any?: Boolean | null
 }
 
-export interface ValidationBusinessFilterInput {
-  and?: ValidationBusinessFilterInput[] | null
-  or?: ValidationBusinessFilterInput[] | null
+export interface ValidationOperationFilterInput {
+  and?: ValidationOperationFilterInput[] | null
+  or?: ValidationOperationFilterInput[] | null
   id?: ComparableInt32OperationFilterInput | null
   validationId?: ComparableInt32OperationFilterInput | null
   validation?: ValidationFilterInput | null
-  businessId?: ComparableInt32OperationFilterInput | null
-  business?: BusinessFilterInput | null
+  operationId?: ComparableInt32OperationFilterInput | null
+  operation?: OperationFilterInput | null
 }
 
-export interface BusinessFilterInput {
-  and?: BusinessFilterInput[] | null
-  or?: BusinessFilterInput[] | null
+export interface OperationFilterInput {
+  and?: OperationFilterInput[] | null
+  or?: OperationFilterInput[] | null
   id?: ComparableInt32OperationFilterInput | null
   active?: BooleanOperationFilterInput | null
-  businessName?: StringOperationFilterInput | null
-  validationBusinesses?: ListFilterInputTypeOfValidationBusinessFilterInput | null
+  operationName?: StringOperationFilterInput | null
+  validationOperations?: ListFilterInputTypeOfValidationOperationFilterInput | null
+}
+
+export interface ListFilterInputTypeOfContactFilterInput {
+  all?: ContactFilterInput | null
+  none?: ContactFilterInput | null
+  some?: ContactFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ContactFilterInput {
+  and?: ContactFilterInput[] | null
+  or?: ContactFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  contactName?: StringOperationFilterInput | null
+  department?: StringOperationFilterInput | null
+  active?: BooleanOperationFilterInput | null
+  gDPR_Deleted?: StringOperationFilterInput | null
+  customerId?: ComparableInt32OperationFilterInput | null
+  customer?: CustomerFilterInput | null
+  personId?: ComparableNullableOfInt32OperationFilterInput | null
+  person?: PersonFilterInput | null
+  workplaces?: ListFilterInputTypeOfWorkplaceFilterInput | null
+  contactWorkplaces?: ListFilterInputTypeOfContactWorkplaceFilterInput | null
+}
+
+export interface PersonFilterInput {
+  and?: PersonFilterInput[] | null
+  or?: PersonFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  socialSecurityNumber?: StringOperationFilterInput | null
+  personName?: StringOperationFilterInput | null
+  addressId?: ComparableNullableOfInt32OperationFilterInput | null
+  address?: AddressFilterInput | null
+  contacts?: ListFilterInputTypeOfContactFilterInput | null
+}
+
+export interface ListFilterInputTypeOfContactWorkplaceFilterInput {
+  all?: ContactWorkplaceFilterInput | null
+  none?: ContactWorkplaceFilterInput | null
+  some?: ContactWorkplaceFilterInput | null
+  any?: Boolean | null
+}
+
+export interface ContactWorkplaceFilterInput {
+  and?: ContactWorkplaceFilterInput[] | null
+  or?: ContactWorkplaceFilterInput[] | null
+  contactId?: ComparableInt32OperationFilterInput | null
+  contact?: ContactFilterInput | null
+  workplaceId?: ComparableInt32OperationFilterInput | null
+  workplace?: WorkplaceFilterInput | null
+}
+
+export interface ListFilterInputTypeOfWorkplaceOwnerFilterInput {
+  all?: WorkplaceOwnerFilterInput | null
+  none?: WorkplaceOwnerFilterInput | null
+  some?: WorkplaceOwnerFilterInput | null
+  any?: Boolean | null
+}
+
+export interface WorkplaceOwnerFilterInput {
+  and?: WorkplaceOwnerFilterInput[] | null
+  or?: WorkplaceOwnerFilterInput[] | null
+  id?: ComparableInt32OperationFilterInput | null
+  fromDay?: ComparableDateTimeOperationFilterInput | null
+  executedAt?: ComparableNullableOfDateTimeOperationFilterInput | null
+  createdBy?: StringOperationFilterInput | null
+  createdAt?: ComparableDateTimeOperationFilterInput | null
+  workplaceId?: ComparableInt32OperationFilterInput | null
+  workplace?: WorkplaceFilterInput | null
+  customerId?: ComparableInt32OperationFilterInput | null
+  customer?: CustomerFilterInput | null
+  newInvoiceAddressId?: ComparableNullableOfInt32OperationFilterInput | null
+  newInvoiceAddress?: AddressFilterInput | null
+  oldInvoiceAddressId?: ComparableNullableOfInt32OperationFilterInput | null
+  oldInvoiceAddress?: AddressFilterInput | null
+}
+
+export interface ComparableDateTimeOperationFilterInput {
+  eq?: DateTime | null
+  neq?: DateTime | null
+  in?: DateTime[] | null
+  nin?: DateTime[] | null
+  gt?: DateTime | null
+  ngt?: DateTime | null
+  gte?: DateTime | null
+  ngte?: DateTime | null
+  lt?: DateTime | null
+  nlt?: DateTime | null
+  lte?: DateTime | null
+  nlte?: DateTime | null
+}
+
+export interface ListFilterInputTypeOfPersonFilterInput {
+  all?: PersonFilterInput | null
+  none?: PersonFilterInput | null
+  some?: PersonFilterInput | null
+  any?: Boolean | null
 }
 
 export interface AddressSortInput {
@@ -593,6 +818,28 @@ export interface AddressRequest {
   workplaces?: WorkplaceRequest
   visitingAddressFor?: CustomerRequest
   invoiceAddressFor?: CustomerRequest
+  persons?: PersonRequest
+  newInvoiceAddressFor?: WorkplaceOwnerRequest
+  oldInvoiceAddressFor?: WorkplaceOwnerRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface IEntityRequest {
+  id?: boolean | number
+  on_Address?: AddressRequest
+  on_AddressType?: AddressTypeRequest
+  on_Position?: PositionRequest
+  on_Workplace?: WorkplaceRequest
+  on_Customer?: CustomerRequest
+  on_ValidationCustomer?: ValidationCustomerRequest
+  on_Validation?: ValidationRequest
+  on_ValidationGroup?: ValidationGroupRequest
+  on_ValidationRule?: ValidationRuleRequest
+  on_ValidationOperation?: ValidationOperationRequest
+  on_Operation?: OperationRequest
+  on_Contact?: ContactRequest
+  on_Person?: PersonRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -625,6 +872,10 @@ export interface WorkplaceRequest {
   customer?: CustomerRequest
   positionId?: boolean | number
   position?: PositionRequest
+  contactId?: boolean | number
+  contact?: ContactRequest
+  contactWorkplaces?: ContactWorkplaceRequest
+  workplaceOwners?: WorkplaceOwnerRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -649,6 +900,8 @@ export interface CustomerRequest {
   contractorFor?: CustomerRequest
   corporationFor?: CustomerRequest
   validationCustomers?: ValidationCustomerRequest
+  contacts?: ContactRequest
+  workplaceOwnerFor?: WorkplaceOwnerRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -673,7 +926,7 @@ export interface ValidationRequest {
   validationGroup?: ValidationGroupRequest
   validationCustomers?: ValidationCustomerRequest
   validationRules?: ValidationRuleRequest
-  validationBusinesses?: ValidationBusinessRequest
+  validationOperations?: ValidationOperationRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -690,6 +943,7 @@ export interface ValidationRuleRequest {
   id?: boolean | number
   entityName?: boolean | number
   propertyName?: boolean | number
+  enumOperationId?: boolean | number
   enumOperation?: boolean | number
   errorMessage?: boolean | number
   valueNumeric?: boolean | number
@@ -708,21 +962,75 @@ export interface ValidationRuleRequest {
   __scalar?: boolean | number
 }
 
-export interface ValidationBusinessRequest {
+export interface ValidationOperationRequest {
   id?: boolean | number
   validationId?: boolean | number
   validation?: ValidationRequest
-  businessId?: boolean | number
-  business?: BusinessRequest
+  operationId?: boolean | number
+  operation?: OperationRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
 
-export interface BusinessRequest {
+export interface OperationRequest {
   id?: boolean | number
   active?: boolean | number
-  businessName?: boolean | number
-  validationBusinesses?: ValidationBusinessRequest
+  operationName?: boolean | number
+  validationOperations?: ValidationOperationRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ContactRequest {
+  id?: boolean | number
+  contactName?: boolean | number
+  department?: boolean | number
+  active?: boolean | number
+  gDPR_Deleted?: boolean | number
+  customerId?: boolean | number
+  customer?: CustomerRequest
+  personId?: boolean | number
+  person?: PersonRequest
+  workplaces?: WorkplaceRequest
+  contactWorkplaces?: ContactWorkplaceRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface PersonRequest {
+  id?: boolean | number
+  socialSecurityNumber?: boolean | number
+  personName?: boolean | number
+  addressId?: boolean | number
+  address?: AddressRequest
+  contacts?: ContactRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface ContactWorkplaceRequest {
+  contactId?: boolean | number
+  contact?: ContactRequest
+  workplaceId?: boolean | number
+  workplace?: WorkplaceRequest
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface WorkplaceOwnerRequest {
+  id?: boolean | number
+  fromDay?: boolean | number
+  executedAt?: boolean | number
+  createdBy?: boolean | number
+  createdAt?: boolean | number
+  workplaceId?: boolean | number
+  workplace?: WorkplaceRequest
+  customerId?: boolean | number
+  customer?: CustomerRequest
+  newInvoiceAddressId?: boolean | number
+  newInvoiceAddress?: AddressRequest
+  oldInvoiceAddressId?: boolean | number
+  oldInvoiceAddress?: AddressRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -782,6 +1090,28 @@ export interface WorkplaceSortInput {
   customer?: CustomerSortInput | null
   positionId?: SortEnumType | null
   position?: PositionSortInput | null
+  contactId?: SortEnumType | null
+  contact?: ContactSortInput | null
+}
+
+export interface ContactSortInput {
+  id?: SortEnumType | null
+  contactName?: SortEnumType | null
+  department?: SortEnumType | null
+  active?: SortEnumType | null
+  gDPR_Deleted?: SortEnumType | null
+  customerId?: SortEnumType | null
+  customer?: CustomerSortInput | null
+  personId?: SortEnumType | null
+  person?: PersonSortInput | null
+}
+
+export interface PersonSortInput {
+  id?: SortEnumType | null
+  socialSecurityNumber?: SortEnumType | null
+  personName?: SortEnumType | null
+  addressId?: SortEnumType | null
+  address?: AddressSortInput | null
 }
 
 export interface WorkplaceCollectionSegmentRequest {
@@ -803,9 +1133,21 @@ export interface UpsertWorkplaceInput {
   active?: Boolean | null
   workplaceName?: String | null
   customerId?: Int | null
+  upsertAddressInput?: UpsertAddressInput | null
+  id?: Int | null
+  onlyValidate?: Boolean | null
+}
+
+export interface UpsertAddressInput {
   address1?: String | null
   city?: String | null
   zipCode?: String | null
+  upsertPositionInput?: UpsertPositionInput | null
+  id?: Int | null
+  onlyValidate?: Boolean | null
+}
+
+export interface UpsertPositionInput {
   latitude?: Float | null
   longitude?: Float | null
   id?: Int | null
@@ -821,7 +1163,8 @@ export interface MutationOutputRequest {
 
 export interface ValidationErrorRequest {
   message?: boolean | number
-  property?: boolean | number
+  typeName?: boolean | number
+  propertyName?: boolean | number
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -849,6 +1192,26 @@ const Address_possibleTypes = ['Address']
 export const isAddress = (obj: { __typename: String }): obj is Address => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Address_possibleTypes.includes(obj.__typename)
+}
+
+const IEntity_possibleTypes = [
+  'Address',
+  'AddressType',
+  'Position',
+  'Workplace',
+  'Customer',
+  'ValidationCustomer',
+  'Validation',
+  'ValidationGroup',
+  'ValidationRule',
+  'ValidationOperation',
+  'Operation',
+  'Contact',
+  'Person',
+]
+export const isIEntity = (obj: { __typename: String }): obj is IEntity => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return IEntity_possibleTypes.includes(obj.__typename)
 }
 
 const AddressType_possibleTypes = ['AddressType']
@@ -899,16 +1262,40 @@ export const isValidationRule = (obj: { __typename: String }): obj is Validation
   return ValidationRule_possibleTypes.includes(obj.__typename)
 }
 
-const ValidationBusiness_possibleTypes = ['ValidationBusiness']
-export const isValidationBusiness = (obj: { __typename: String }): obj is ValidationBusiness => {
+const ValidationOperation_possibleTypes = ['ValidationOperation']
+export const isValidationOperation = (obj: { __typename: String }): obj is ValidationOperation => {
   if (!obj.__typename) throw new Error('__typename is missing')
-  return ValidationBusiness_possibleTypes.includes(obj.__typename)
+  return ValidationOperation_possibleTypes.includes(obj.__typename)
 }
 
-const Business_possibleTypes = ['Business']
-export const isBusiness = (obj: { __typename: String }): obj is Business => {
+const Operation_possibleTypes = ['Operation']
+export const isOperation = (obj: { __typename: String }): obj is Operation => {
   if (!obj.__typename) throw new Error('__typename is missing')
-  return Business_possibleTypes.includes(obj.__typename)
+  return Operation_possibleTypes.includes(obj.__typename)
+}
+
+const Contact_possibleTypes = ['Contact']
+export const isContact = (obj: { __typename: String }): obj is Contact => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Contact_possibleTypes.includes(obj.__typename)
+}
+
+const Person_possibleTypes = ['Person']
+export const isPerson = (obj: { __typename: String }): obj is Person => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Person_possibleTypes.includes(obj.__typename)
+}
+
+const ContactWorkplace_possibleTypes = ['ContactWorkplace']
+export const isContactWorkplace = (obj: { __typename: String }): obj is ContactWorkplace => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ContactWorkplace_possibleTypes.includes(obj.__typename)
+}
+
+const WorkplaceOwner_possibleTypes = ['WorkplaceOwner']
+export const isWorkplaceOwner = (obj: { __typename: String }): obj is WorkplaceOwner => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return WorkplaceOwner_possibleTypes.includes(obj.__typename)
 }
 
 const CollectionSegmentInfo_possibleTypes = ['CollectionSegmentInfo']
@@ -1139,6 +1526,13 @@ export interface AddressPromiseChain {
   workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Promise<Workplace[]> }
   visitingAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
   invoiceAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
+  persons: { execute: (request: PersonRequest, defaultValue?: Person[]) => Promise<Person[]> }
+  newInvoiceAddressFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
+  }
+  oldInvoiceAddressFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
+  }
 }
 
 export interface AddressObservableChain {
@@ -1158,6 +1552,21 @@ export interface AddressObservableChain {
   workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Observable<Workplace[]> }
   visitingAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   invoiceAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
+  persons: { execute: (request: PersonRequest, defaultValue?: Person[]) => Observable<Person[]> }
+  newInvoiceAddressFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
+  }
+  oldInvoiceAddressFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
+  }
+}
+
+export interface IEntityPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+}
+
+export interface IEntityObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
 }
 
 export interface AddressTypePromiseChain {
@@ -1200,6 +1609,16 @@ export interface WorkplacePromiseChain {
   position: PositionPromiseChain & {
     execute: (request: PositionRequest, defaultValue?: Position | null) => Promise<Position | null>
   }
+  contactId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  contact: ContactPromiseChain & {
+    execute: (request: ContactRequest, defaultValue?: Contact | null) => Promise<Contact | null>
+  }
+  contactWorkplaces: {
+    execute: (request: ContactWorkplaceRequest, defaultValue?: ContactWorkplace[]) => Promise<ContactWorkplace[]>
+  }
+  workplaceOwners: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
+  }
 }
 
 export interface WorkplaceObservableChain {
@@ -1215,6 +1634,16 @@ export interface WorkplaceObservableChain {
   positionId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   position: PositionObservableChain & {
     execute: (request: PositionRequest, defaultValue?: Position | null) => Observable<Position | null>
+  }
+  contactId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  contact: ContactObservableChain & {
+    execute: (request: ContactRequest, defaultValue?: Contact | null) => Observable<Contact | null>
+  }
+  contactWorkplaces: {
+    execute: (request: ContactWorkplaceRequest, defaultValue?: ContactWorkplace[]) => Observable<ContactWorkplace[]>
+  }
+  workplaceOwners: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
   }
 }
 
@@ -1250,6 +1679,10 @@ export interface CustomerPromiseChain {
   validationCustomers: {
     execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Promise<ValidationCustomer[]>
   }
+  contacts: { execute: (request: ContactRequest, defaultValue?: Contact[]) => Promise<Contact[]> }
+  workplaceOwnerFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
+  }
 }
 
 export interface CustomerObservableChain {
@@ -1283,6 +1716,10 @@ export interface CustomerObservableChain {
   corporationFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   validationCustomers: {
     execute: (request: ValidationCustomerRequest, defaultValue?: ValidationCustomer[]) => Observable<ValidationCustomer[]>
+  }
+  contacts: { execute: (request: ContactRequest, defaultValue?: Contact[]) => Observable<Contact[]> }
+  workplaceOwnerFor: {
+    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
   }
 }
 
@@ -1324,8 +1761,8 @@ export interface ValidationPromiseChain {
   validationRules: {
     execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Promise<ValidationRule[]>
   }
-  validationBusinesses: {
-    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Promise<ValidationBusiness[]>
+  validationOperations: {
+    execute: (request: ValidationOperationRequest, defaultValue?: ValidationOperation[]) => Promise<ValidationOperation[]>
   }
 }
 
@@ -1345,8 +1782,8 @@ export interface ValidationObservableChain {
   validationRules: {
     execute: (request: ValidationRuleRequest, defaultValue?: ValidationRule[]) => Observable<ValidationRule[]>
   }
-  validationBusinesses: {
-    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Observable<ValidationBusiness[]>
+  validationOperations: {
+    execute: (request: ValidationOperationRequest, defaultValue?: ValidationOperation[]) => Observable<ValidationOperation[]>
   }
 }
 
@@ -1366,7 +1803,10 @@ export interface ValidationRulePromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   entityName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
   propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
-  enumOperation: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  enumOperationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  enumOperation: {
+    execute: (request?: boolean | number, defaultValue?: EnumValidationOperation) => Promise<EnumValidationOperation>
+  }
   errorMessage: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
   valueNumeric: { execute: (request?: boolean | number, defaultValue?: Float | null) => Promise<Float | null> }
   valueAlphanumeric: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
@@ -1392,7 +1832,10 @@ export interface ValidationRuleObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   entityName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
   propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
-  enumOperation: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  enumOperationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  enumOperation: {
+    execute: (request?: boolean | number, defaultValue?: EnumValidationOperation) => Observable<EnumValidationOperation>
+  }
   errorMessage: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
   valueNumeric: { execute: (request?: boolean | number, defaultValue?: Float | null) => Observable<Float | null> }
   valueAlphanumeric: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
@@ -1414,43 +1857,161 @@ export interface ValidationRuleObservableChain {
   }
 }
 
-export interface ValidationBusinessPromiseChain {
+export interface ValidationOperationPromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   validation: ValidationPromiseChain & {
     execute: (request: ValidationRequest, defaultValue?: Validation) => Promise<Validation>
   }
-  businessId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
-  business: BusinessPromiseChain & { execute: (request: BusinessRequest, defaultValue?: Business) => Promise<Business> }
+  operationId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  operation: OperationPromiseChain & { execute: (request: OperationRequest, defaultValue?: Operation) => Promise<Operation> }
 }
 
-export interface ValidationBusinessObservableChain {
+export interface ValidationOperationObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   validationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   validation: ValidationObservableChain & {
     execute: (request: ValidationRequest, defaultValue?: Validation) => Observable<Validation>
   }
-  businessId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
-  business: BusinessObservableChain & {
-    execute: (request: BusinessRequest, defaultValue?: Business) => Observable<Business>
+  operationId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  operation: OperationObservableChain & {
+    execute: (request: OperationRequest, defaultValue?: Operation) => Observable<Operation>
   }
 }
 
-export interface BusinessPromiseChain {
+export interface OperationPromiseChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
-  businessName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
-  validationBusinesses: {
-    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Promise<ValidationBusiness[]>
+  operationName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  validationOperations: {
+    execute: (request: ValidationOperationRequest, defaultValue?: ValidationOperation[]) => Promise<ValidationOperation[]>
   }
 }
 
-export interface BusinessObservableChain {
+export interface OperationObservableChain {
   id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
-  businessName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
-  validationBusinesses: {
-    execute: (request: ValidationBusinessRequest, defaultValue?: ValidationBusiness[]) => Observable<ValidationBusiness[]>
+  operationName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  validationOperations: {
+    execute: (request: ValidationOperationRequest, defaultValue?: ValidationOperation[]) => Observable<ValidationOperation[]>
+  }
+}
+
+export interface ContactPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  contactName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  department: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Promise<Boolean | null> }
+  gDPR_Deleted: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
+  personId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  person: PersonPromiseChain & { execute: (request: PersonRequest, defaultValue?: Person | null) => Promise<Person | null> }
+  workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Promise<Workplace[]> }
+  contactWorkplaces: {
+    execute: (request: ContactWorkplaceRequest, defaultValue?: ContactWorkplace[]) => Promise<ContactWorkplace[]>
+  }
+}
+
+export interface ContactObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  contactName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  department: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  active: { execute: (request?: boolean | number, defaultValue?: Boolean | null) => Observable<Boolean | null> }
+  gDPR_Deleted: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  customer: CustomerObservableChain & {
+    execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
+  }
+  personId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  person: PersonObservableChain & {
+    execute: (request: PersonRequest, defaultValue?: Person | null) => Observable<Person | null>
+  }
+  workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Observable<Workplace[]> }
+  contactWorkplaces: {
+    execute: (request: ContactWorkplaceRequest, defaultValue?: ContactWorkplace[]) => Observable<ContactWorkplace[]>
+  }
+}
+
+export interface PersonPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  socialSecurityNumber: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  personName: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  addressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  address: AddressPromiseChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
+  }
+  contacts: { execute: (request: ContactRequest, defaultValue?: Contact[]) => Promise<Contact[]> }
+}
+
+export interface PersonObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  socialSecurityNumber: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  personName: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  addressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  address: AddressObservableChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
+  }
+  contacts: { execute: (request: ContactRequest, defaultValue?: Contact[]) => Observable<Contact[]> }
+}
+
+export interface ContactWorkplacePromiseChain {
+  contactId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  contact: ContactPromiseChain & { execute: (request: ContactRequest, defaultValue?: Contact) => Promise<Contact> }
+  workplaceId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  workplace: WorkplacePromiseChain & { execute: (request: WorkplaceRequest, defaultValue?: Workplace) => Promise<Workplace> }
+}
+
+export interface ContactWorkplaceObservableChain {
+  contactId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  contact: ContactObservableChain & { execute: (request: ContactRequest, defaultValue?: Contact) => Observable<Contact> }
+  workplaceId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  workplace: WorkplaceObservableChain & {
+    execute: (request: WorkplaceRequest, defaultValue?: Workplace) => Observable<Workplace>
+  }
+}
+
+export interface WorkplaceOwnerPromiseChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  fromDay: { execute: (request?: boolean | number, defaultValue?: DateTime) => Promise<DateTime> }
+  executedAt: { execute: (request?: boolean | number, defaultValue?: DateTime | null) => Promise<DateTime | null> }
+  createdBy: { execute: (request?: boolean | number, defaultValue?: String | null) => Promise<String | null> }
+  createdAt: { execute: (request?: boolean | number, defaultValue?: DateTime) => Promise<DateTime> }
+  workplaceId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  workplace: WorkplacePromiseChain & { execute: (request: WorkplaceRequest, defaultValue?: Workplace) => Promise<Workplace> }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
+  customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
+  newInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  newInvoiceAddress: AddressPromiseChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
+  }
+  oldInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  oldInvoiceAddress: AddressPromiseChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
+  }
+}
+
+export interface WorkplaceOwnerObservableChain {
+  id: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  fromDay: { execute: (request?: boolean | number, defaultValue?: DateTime) => Observable<DateTime> }
+  executedAt: { execute: (request?: boolean | number, defaultValue?: DateTime | null) => Observable<DateTime | null> }
+  createdBy: { execute: (request?: boolean | number, defaultValue?: String | null) => Observable<String | null> }
+  createdAt: { execute: (request?: boolean | number, defaultValue?: DateTime) => Observable<DateTime> }
+  workplaceId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  workplace: WorkplaceObservableChain & {
+    execute: (request: WorkplaceRequest, defaultValue?: Workplace) => Observable<Workplace>
+  }
+  customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
+  customer: CustomerObservableChain & {
+    execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
+  }
+  newInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  newInvoiceAddress: AddressObservableChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
+  }
+  oldInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  oldInvoiceAddress: AddressObservableChain & {
+    execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
   }
 }
 
@@ -1565,12 +2126,14 @@ export interface MutationOutputObservableChain {
 
 export interface ValidationErrorPromiseChain {
   message: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
-  property: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  typeName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
+  propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Promise<String> }
 }
 
 export interface ValidationErrorObservableChain {
   message: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
-  property: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  typeName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
+  propertyName: { execute: (request?: boolean | number, defaultValue?: String) => Observable<String> }
 }
 
 export interface SubscriptionPromiseChain {

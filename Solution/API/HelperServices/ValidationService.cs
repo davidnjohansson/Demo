@@ -88,7 +88,7 @@ namespace API.HelperServices
                 return new ValidationError
                 {
                     Message = $"Property {validationRule.PropertyName} kan inte hittas på entitet {validationRule.EntityName}",
-                    Property = string.Empty
+                    PropertyName = string.Empty
                 };
             }
 
@@ -97,7 +97,7 @@ namespace API.HelperServices
                 return new ValidationError
                 {
                     Message = $"Kunde inte hitta en IComparable för {prop.Name}",
-                    Property = prop.Name
+                    PropertyName = prop.Name
                 };
             }
 
@@ -134,7 +134,7 @@ namespace API.HelperServices
                     return new ValidationError
                     {
                         Message = "Property är av typ IEnumerable<IEntity> men dess värde är null, kan ej utvärdera valideringsregel",
-                        Property = prop.Name
+                        PropertyName = prop.Name
                     };
                 }
 
@@ -143,7 +143,7 @@ namespace API.HelperServices
                     return new ValidationError
                     {
                         Message = "IEnumerable<IEntity> är tom och 'Giltig vid tomt värde' är inte valt",
-                        Property = prop.Name
+                        PropertyName = prop.Name
                     };
                 }
 
@@ -240,7 +240,7 @@ namespace API.HelperServices
             return new ValidationError
             {
                 Message = "Kunde inte hitta någon valideringsoperation",
-                Property = prop.Name
+                PropertyName = prop.Name
             };
         }
 
@@ -263,7 +263,7 @@ namespace API.HelperServices
             return new ValidationError
             {
                 Message = validationRule.ErrorMessage ?? string.Empty,
-                Property = propertyInfo.Name
+                PropertyName = propertyInfo.Name
             };
         }
 

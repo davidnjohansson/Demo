@@ -43,6 +43,7 @@ builder.Services.AddDbContext<DemoDbContext>();
 
 builder.Services.AddInMemorySubscriptions();
 
+builder.Services.AddScoped<BusinessLogicService>();
 builder.Services.AddScoped<ValidationService>();
 
 builder.Services.AddScoped<UpsertWorkplaceService>();

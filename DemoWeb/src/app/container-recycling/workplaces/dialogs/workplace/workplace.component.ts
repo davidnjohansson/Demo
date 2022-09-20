@@ -268,18 +268,23 @@ export class WorkplaceComponent implements OnInit {
 						active: active.value,
 						workplaceName: workplaceName.value,
 						customerId: (customerId.value as Customer).id,
-						address1: address1.value,
-						city: city.value,
-						zipCode: zipCode.value,
-						latitude: latitude.value,
-						longitude: longitude.value
+						upsertAddressInput: {
+							address1: address1.value,
+							city: city.value,
+							zipCode: zipCode.value,
+							upsertPositionInput: {
+								latitude: latitude.value,
+								longitude: longitude.value
+							}
+						}
 					}
 				},
 				{
 					id: true,
 					validationErrors: {
 						message: true,
-						property: true
+						typeName: true,
+						propertyName: true
 					}
 				}
 			]
