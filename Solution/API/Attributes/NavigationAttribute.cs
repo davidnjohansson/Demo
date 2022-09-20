@@ -7,7 +7,7 @@
 
         public NavigationAttribute(string name)
         {
-            Name = "_" + name;
+            Name = name.StartsWith("FK") ? "_" + name : name;
         }
     }
 }

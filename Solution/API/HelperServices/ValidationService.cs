@@ -25,12 +25,14 @@ namespace API.HelperServices
         {
             var validationErrors = new List<ValidationError>();
 
-            var customerValidations = customer?.ValidationCustomers.Select(validationCustomer => validationCustomer.Validation) ?? Enumerable.Empty<Validation>();
+            var customerValidations = customer?.ValidationCustomers
+                .Select(validationCustomer => validationCustomer.Validation) ?? Enumerable.Empty<Validation>();
 
             customerValidations = customerValidations
                 .Where(validation => validation.ValidationOperations.Any() == false || validation.ValidationOperations.Any(validationBusiness => validationBusiness.Operation == operation));
 
-            var operationValidations = operation?.ValidationOperations.Select(validationOperation => validationOperation.Validation) ?? Enumerable.Empty<Validation>();
+            var operationValidations = operation?.ValidationOperations
+                .Select(validationOperation => validationOperation.Validation) ?? Enumerable.Empty<Validation>();
 
             operationValidations = operationValidations
                 .Where(validation => validation.ValidationCustomers.Any() == false || validation.ValidationCustomers.Any(validationCustomer => validationCustomer.Customer == customer));
@@ -94,14 +96,16 @@ namespace API.HelperServices
             {
                 return new ValidationError
                 {
-                    Message = $"Kunde inte hitta en IComparable",
+                    Message = $"Kunde inte hitta en IComparable för {prop.Name}",
                     Property = prop.Name
                 };
             }
 
             var propValue = prop.GetValue(entity);
             if (propValue == null && validationRule.AllowNull)
+            {
                 return null;
+            }
 
             if (propValue is string)
                 if (string.IsNullOrEmpty((string)propValue))
@@ -115,6 +119,7 @@ namespace API.HelperServices
             }
 
             IComparable? entityCompareValue = null;
+
             if (propValue is IEntity)
             {
                 if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegel)
@@ -122,44 +127,71 @@ namespace API.HelperServices
 
                 entityCompareValue = ((IEntity)propValue).Id;
             }
-            else if (propValue is IEnumerable && (propValue as IEnumerable).OfType<IEntity>().Any())
+            else if (typeof(IEnumerable<IEntity>).IsAssignableFrom(prop.PropertyType))
             {
-                if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegelFleraAny)
+                if (!(propValue is IEnumerable<IEntity> propValueAsEnumerable))
                 {
-                    foreach (var item in (IList)propValue)
-                    {
-                        if (ValidateProperty((IEntity)item, validationRule.InverseValidationRule) == null)
-                        {
-                            return null;
-                        }
-                    }
                     return new ValidationError
                     {
-                        Message = "Fråga Sebastian hur det här felet uppstår?",
+                        Message = "Property är av typ IEnumerable<IEntity> men dess värde är null, kan ej utvärdera valideringsregel",
                         Property = prop.Name
                     };
                 }
-                else if (validationRule.EnumOperation == EnumValidationOperation.AnnanRegelFleraAll)
+
+                if (propValueAsEnumerable.Any() == false && validationRule.AllowNull == false)
                 {
-                    foreach (var item in (IList)propValue)
+                    return new ValidationError
                     {
-                        if (item is IEntity)
+                        Message = "IEnumerable<IEntity> är tom och 'Giltig vid tomt värde' är inte valt",
+                        Property = prop.Name
+                    };
+                }
+
+                switch (validationRule.EnumOperation)
+                {
+                    case EnumValidationOperation.AnnanRegelFleraAny:
+                    {
+                        foreach (var item in propValueAsEnumerable)
                         {
-                            if (ValidateProperty((IEntity)item, validationRule.InverseValidationRule) is not null)
+                            if (ValidateProperty(item, validationRule.InverseValidationRule) is null)
+                                return null;
+                        }
+
+                        return GetValidationError(prop, validationRule);
+                    }
+                    case EnumValidationOperation.AnnanRegelFleraAll:
+                    {
+                        foreach (var item in propValueAsEnumerable)
+                        {
+                            if (item is IEntity)
                             {
-                                return new ValidationError
+                                if (ValidateProperty(item, validationRule.InverseValidationRule) is ValidationError validationError)
                                 {
-                                    Message = "Fråga Sebastian hur det här felet uppstår?",
-                                    Property = prop.Name
-                                };
+                                    return validationError;
+                                }
                             }
                         }
+
+                        return null;
                     }
-                    return null;
+                    case EnumValidationOperation.Count:
+                        return propValueAsEnumerable.Count() == (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                    case EnumValidationOperation.NotCount:
+                        return propValueAsEnumerable.Count() != (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                    case EnumValidationOperation.CountIsMoreThan:
+                        return propValueAsEnumerable.Count() > (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                    case EnumValidationOperation.CountIsMoreThanOrEqual:
+                        return propValueAsEnumerable.Count() >= (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                    case EnumValidationOperation.CountIsLessThan:
+                        return propValueAsEnumerable.Count() < (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                    case EnumValidationOperation.CountIsLessThanOrEqual:
+                        return propValueAsEnumerable.Count() <= (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
                 }
             }
             else
+            {
                 entityCompareValue = propValue as IComparable;
+            }
 
             switch (validationRule.EnumOperation)
             {
@@ -167,24 +199,47 @@ namespace API.HelperServices
                     return GetComparable(validationRule).CompareTo(entityCompareValue) == 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.DoesNotEqual:
                     return GetComparable(validationRule).CompareTo(entityCompareValue) != 0 ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.GreaterThan:
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) < 0 ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.GreaterThanOrEqual:
+                    return GetComparable(validationRule).CompareTo(entityCompareValue) <= 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.LesserThan:
                     return GetComparable(validationRule).CompareTo(entityCompareValue) > 0 ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.LesserThanOrEqual:
                     return GetComparable(validationRule).CompareTo(entityCompareValue) >= 0 ? null : GetValidationError(prop, validationRule);
-                case EnumValidationOperation.GreaterThan:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) < 0 ? null : GetValidationError(prop, validationRule) ;
-                case EnumValidationOperation.GreaterThanOrEqual:
-                    return GetComparable(validationRule).CompareTo(entityCompareValue) <= 0 ? null : GetValidationError(prop, validationRule) ;
-                case EnumValidationOperation.Regex:
+                case EnumValidationOperation.MatchesRegex:
                     return Regex.Match(entityCompareValue?.ToString() ?? string.Empty, validationRule.RegexPattern).Success ? null : GetValidationError(prop, validationRule);
-                case EnumValidationOperation.IsNotNull:
-                    return propValue != null ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.DoesNotMatchRegex:
+                    return !Regex.Match(entityCompareValue?.ToString() ?? string.Empty, validationRule.RegexPattern).Success ? null : GetValidationError(prop, validationRule);
                 case EnumValidationOperation.IsNull:
                     return propValue == null ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.IsNotNull:
+                    return propValue != null ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.Contains:
+                    return (entityCompareValue as string ?? string.Empty).ToLower().Contains((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.DoesNotContain:
+                    return !(entityCompareValue as string ?? string.Empty).ToLower().Contains((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.LongerThan:
+                    return (entityCompareValue as string ?? string.Empty).Length > (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.LongerThanOrEqual:
+                    return (entityCompareValue as string ?? string.Empty).Length >= (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.ShorterThan:
+                    return (entityCompareValue as string ?? string.Empty).Length < (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.ShorterThanOrEqual:
+                    return (entityCompareValue as string ?? string.Empty).Length <= (double)(GetComparable(validationRule) ?? 0) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.StartsWith:
+                    return (entityCompareValue as string ?? string.Empty).ToLower().StartsWith((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.DoesNotStartWith:
+                    return !(entityCompareValue as string ?? string.Empty).ToLower().StartsWith((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.EndsWith:
+                    return (entityCompareValue as string ?? string.Empty).ToLower().EndsWith((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
+                case EnumValidationOperation.DoesNotEndWith:
+                    return !(entityCompareValue as string ?? string.Empty).ToLower().EndsWith((GetComparable(validationRule) as string ?? string.Empty).ToLower()) ? null : GetValidationError(prop, validationRule);
             }
+
             return new ValidationError
             {
-                Message = "Fråga Sebastian hur det här felet uppstår?",
+                Message = "Kunde inte hitta någon valideringsoperation",
                 Property = prop.Name
             };
         }

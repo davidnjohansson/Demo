@@ -39,6 +39,7 @@ namespace API.Data.Export.Entities
 
         public virtual ICollection<ContactWorkplace> ContactWorkplaces { get; set; } = new HashSet<ContactWorkplace>();
 
+        [Navigation(nameof(ARBETSPLATSER.ARBETSPLATSER_AGARE))]
         public virtual ICollection<WorkplaceOwner> WorkplaceOwners { get; set; } = new HashSet<WorkplaceOwner>();
     }
 }

@@ -245,7 +245,7 @@ namespace API.Services
 
             _db.Workplaces.Add(workplace);
 
-            //output.ValidationErrors.AddRange(_validationService.Validate(workplace));
+            output.ValidationErrors.AddRange(_validationService.Validate(workplace));
 
             if (output.ValidationErrors.Any()) return output;
 
