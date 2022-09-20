@@ -112,7 +112,7 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 				(state: BreakpointState) => {
 					if (state.breakpoints[Breakpoints.XSmall]) {
 						this.displayedColumns = [
-							'workplaceNamn',
+							'workplaceName',
 							'customer.customerName',
 						];
 					} else if (state.breakpoints[Breakpoints.Small]) {
