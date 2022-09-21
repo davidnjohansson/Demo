@@ -1,5 +1,5 @@
 ﻿using API.Data.Export.Entities;
-using API.Data.Export;
+using API.Data;
 
 namespace API.GraphQL
 {

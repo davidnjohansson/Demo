@@ -1,0 +1,20 @@
+﻿using API.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace API.Data.Export.Entities
+{
+    [Table("VERKSAMHETER")]
+    public class Operation : IEntity
+    {
+        [Column("PK")]
+        public int Id { get; set; }
+
+        [Column("Aktiv")]
+        public bool? Active { get; set; }
+
+        [Column("VerksamhetNamn")]
+        public string? OperationName { get; set; }
+
+        public virtual ICollection<ValidationOperation> ValidationOperations { get; set; } = new HashSet<ValidationOperation>();
+    }
+}
