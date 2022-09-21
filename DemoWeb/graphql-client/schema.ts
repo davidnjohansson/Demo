@@ -122,7 +122,6 @@ export interface Position extends IEntity {
   latitude: Float
   longitude: Float
   addresses: Address[]
-  workplaces: Workplace[]
   __typename: 'Position'
 }
 
@@ -459,7 +458,6 @@ export interface PositionFilterInput {
   latitude?: ComparableDoubleOperationFilterInput | null
   longitude?: ComparableDoubleOperationFilterInput | null
   addresses?: ListFilterInputTypeOfAddressFilterInput | null
-  workplaces?: ListFilterInputTypeOfWorkplaceFilterInput | null
 }
 
 export interface ComparableDoubleOperationFilterInput {
@@ -857,7 +855,6 @@ export interface PositionRequest {
   latitude?: boolean | number
   longitude?: boolean | number
   addresses?: AddressRequest
-  workplaces?: WorkplaceRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -1556,7 +1553,6 @@ export interface PositionPromiseChain {
   latitude: { execute: (request?: boolean | number, defaultValue?: Float) => Promise<Float> }
   longitude: { execute: (request?: boolean | number, defaultValue?: Float) => Promise<Float> }
   addresses: { execute: (request: AddressRequest, defaultValue?: Address[]) => Promise<Address[]> }
-  workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Promise<Workplace[]> }
 }
 
 export interface PositionObservableChain {
@@ -1564,7 +1560,6 @@ export interface PositionObservableChain {
   latitude: { execute: (request?: boolean | number, defaultValue?: Float) => Observable<Float> }
   longitude: { execute: (request?: boolean | number, defaultValue?: Float) => Observable<Float> }
   addresses: { execute: (request: AddressRequest, defaultValue?: Address[]) => Observable<Address[]> }
-  workplaces: { execute: (request: WorkplaceRequest, defaultValue?: Workplace[]) => Observable<Workplace[]> }
 }
 
 export interface WorkplacePromiseChain {

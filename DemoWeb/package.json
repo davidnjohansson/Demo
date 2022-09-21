@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
     "@ngneat/until-destroy": "^9.2.1",
-    "bf-graphql-typed-client": "^1.7.4",
+    "bf-graphql-typed-client": "^1.7.6",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

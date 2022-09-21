@@ -15,7 +15,6 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { WorkplaceComponent } from './dialogs/workplace/workplace.component';
 import { MaterialModule } from 'src/shared/modules/material/material.module';
-import { SubscriptionService } from 'src/shared/services/subscription/subscription.service';
 
 @UntilDestroy()
 @Component({
@@ -62,8 +61,7 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 		private activatedRoute: ActivatedRoute,
 		public breakpoint: BreakpointService,
 		private breakpointObserver: BreakpointObserver,
-		private graphql: GraphQLService,
-		private subscriptionService: SubscriptionService,
+		private graphqlService: GraphQLService,
 		private workplaceDialog: MatDialog
 	) { }
 
@@ -83,13 +81,15 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 	}
 
 	private onWorkplaceInserted() {
-		this.subscriptionService.workplaceInserted$
+		this.graphqlService.client
+			.subscription({ workplaceInserted: { id: true } })
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(() => this.search());
 	}
 
 	private onWorkplaceUpdated() {
-		this.subscriptionService.workplaceUpdated$
+		this.graphqlService.client
+			.subscription({ workplaceUpdated: { id: true } })
 			.pipe(untilDestroyed(this), debounceTime(50))
 			.subscribe(() => this.search());
 	}
@@ -230,7 +230,7 @@ export class WorkplacesComponent implements OnInit, AfterViewInit {
 	private async search() {
 		this.searching = true;
 
-		const workplaceQuery = await this.graphql.client.query({
+		const workplaceQuery = await this.graphqlService.client.query({
 			workplaces: [
 				{
 					order: this.order,

@@ -18,7 +18,5 @@ namespace API.Data.Export.Entities
 
         [Navigation("ADRESSER__FK_POSITIONER")]
         public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
-
-        public virtual ICollection<Workplace> Workplaces { get; set; } = new HashSet<Workplace>();
     }
 }

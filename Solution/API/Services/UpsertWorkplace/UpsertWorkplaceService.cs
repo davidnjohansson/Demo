@@ -25,163 +25,163 @@ namespace API.Services.UpsertWorkplace
         {
             var output = new MutationOutput();
 
-            //foreach (var property in typeof(UpsertWorkplaceInput).GetProperties())
-            //{
-            //    if (property.Name == nameof(input.Id))
-            //    {
-            //        if (input.Id is not null)
-            //        {
-            //            var workplaceExists = await _db.Workplaces.AnyAsync(workplace => workplace.Id == input.Id);
+            foreach (var property in typeof(UpsertWorkplaceInput).GetProperties())
+            {
+                if (property.Name == nameof(input.Id))
+                {
+                    if (input.Id is not null)
+                    {
+                        var workplaceExists = await _db.Workplaces.AnyAsync(workplace => workplace.Id == input.Id);
 
-            //            if (workplaceExists is false)
-            //            {
-            //                output.ValidationErrors.Add(new ValidationError
-            //                {
-            //                    Message = "Arbetsplats kunde inte hittas",
-            //                    Property = nameof(input.Id)
-            //                });
-            //            }
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.Active))
-            //    {
-            //        if (input.Active is null)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.Active)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.WorkplaceName))
-            //    {
-            //        if (string.IsNullOrWhiteSpace(input.WorkplaceName))
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.WorkplaceName)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.CustomerId))
-            //    {
-            //        var customerExists = await _db.Customers.AnyAsync(customer => customer.Id == input.CustomerId);
+                        if (workplaceExists is false)
+                        {
+                            output.ValidationErrors.Add(new ValidationError
+                            {
+                                Message = "Arbetsplats kunde inte hittas",
+                                PropertyName = nameof(input.Id)
+                            });
+                        }
+                    }
+                }
+                else if (property.Name == nameof(input.Active))
+                {
+                    if (input.Active is null)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.Active)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.WorkplaceName))
+                {
+                    if (string.IsNullOrWhiteSpace(input.WorkplaceName))
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.WorkplaceName)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.CustomerId))
+                {
+                    var customerExists = await _db.Customers.AnyAsync(customer => customer.Id == input.CustomerId);
 
-            //        if (customerExists is false)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Kund kunde inte hittas",
-            //                Property = nameof(input.CustomerId)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.Address1))
-            //    {
-            //        if (string.IsNullOrWhiteSpace(input.Address1))
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.Address1)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.City))
-            //    {
-            //        if (string.IsNullOrWhiteSpace(input.City))
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.City)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.ZipCode))
-            //    {
-            //        if (string.IsNullOrWhiteSpace(input.ZipCode))
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.ZipCode)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.Latitude))
-            //    {
-            //        if (input.Latitude is null)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.Latitude)
-            //            });
-            //            continue;
-            //        }
+                    if (customerExists is false)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Kund kunde inte hittas",
+                            PropertyName = nameof(input.CustomerId)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.Address1))
+                {
+                    if (string.IsNullOrWhiteSpace(input.Address1))
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.Address1)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.City))
+                {
+                    if (string.IsNullOrWhiteSpace(input.City))
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.City)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.ZipCode))
+                {
+                    if (string.IsNullOrWhiteSpace(input.ZipCode))
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.ZipCode)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.Latitude))
+                {
+                    if (input.Latitude is null)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.Latitude)
+                        });
+                        continue;
+                    }
 
-            //        if (input.Latitude < -90)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Latitude får inte vara mindre än -90",
-            //                Property = nameof(input.Latitude)
-            //            });
-            //            continue;
-            //        }
+                    if (input.Latitude < -90)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Latitude får inte vara mindre än -90",
+                            PropertyName = nameof(input.Latitude)
+                        });
+                        continue;
+                    }
 
-            //        if (input.Latitude > 90)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Latitude får inte vara mer än 90",
-            //                Property = nameof(input.Latitude)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //    else if (property.Name == nameof(input.Longitude))
-            //    {
-            //        if (input.Longitude is null)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Obligatorisk",
-            //                Property = nameof(input.Longitude)
-            //            });
-            //            continue;
-            //        }
+                    if (input.Latitude > 90)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Latitude får inte vara mer än 90",
+                            PropertyName = nameof(input.Latitude)
+                        });
+                        continue;
+                    }
+                }
+                else if (property.Name == nameof(input.Longitude))
+                {
+                    if (input.Longitude is null)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Obligatorisk",
+                            PropertyName = nameof(input.Longitude)
+                        });
+                        continue;
+                    }
 
-            //        if (input.Longitude < -180)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Longitude får inte vara mindre än -90",
-            //                Property = nameof(input.Longitude)
-            //            });
-            //            continue;
-            //        }
+                    if (input.Longitude < -180)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Longitude får inte vara mindre än -90",
+                            PropertyName = nameof(input.Longitude)
+                        });
+                        continue;
+                    }
 
-            //        if (input.Longitude > 180)
-            //        {
-            //            output.ValidationErrors.Add(new ValidationError
-            //            {
-            //                Message = "Longitude får inte vara mer än 90",
-            //                Property = nameof(input.Longitude)
-            //            });
-            //            continue;
-            //        }
-            //    }
-            //}
+                    if (input.Longitude > 180)
+                    {
+                        output.ValidationErrors.Add(new ValidationError
+                        {
+                            Message = "Longitude får inte vara mer än 90",
+                            PropertyName = nameof(input.Longitude)
+                        });
+                        continue;
+                    }
+                }
+            }
 
             return output;
         }

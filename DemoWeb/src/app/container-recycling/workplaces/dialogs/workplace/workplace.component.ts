@@ -287,7 +287,7 @@ export class WorkplaceComponent implements OnInit {
 		});
 
 		this.graphqlService.validate(result.data, this.workplaceFormGroup);
-
+		
 		if (result.data?.upsertWorkplace.id) {
 			this.workplaceId = result.data.upsertWorkplace.id;
 			this.getWorkplace();

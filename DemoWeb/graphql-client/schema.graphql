@@ -573,7 +573,6 @@ type Position implements IEntity {
   latitude: Float!
   longitude: Float!
   addresses: [Address!]!
-  workplaces: [Workplace!]!
 }
 
 type PositionCollectionSegment {
@@ -593,7 +592,6 @@ input PositionFilterInput {
   latitude: ComparableDoubleOperationFilterInput
   longitude: ComparableDoubleOperationFilterInput
   addresses: ListFilterInputTypeOfAddressFilterInput
-  workplaces: ListFilterInputTypeOfWorkplaceFilterInput
 }
 
 input PositionSortInput {
