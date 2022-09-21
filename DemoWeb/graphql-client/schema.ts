@@ -20,6 +20,13 @@ export type String = string
 /** The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
 export type Float = number
 
+export enum EnumValidationStep {
+  SAVE = 'SAVE',
+  AUTO_PRICE = 'AUTO_PRICE',
+  READY_FOR_INVOICING = 'READY_FOR_INVOICING',
+  PROPERTY_EVALUATION = 'PROPERTY_EVALUATION',
+}
+
 export enum EnumValidationOperation {
   EQUALS = 'EQUALS',
   DOES_NOT_EQUAL = 'DOES_NOT_EQUAL',
@@ -82,8 +89,6 @@ export interface Address extends IEntity {
   visitingAddressFor: Customer[]
   invoiceAddressFor: Customer[]
   persons: Person[]
-  newInvoiceAddressFor: WorkplaceOwner[]
-  oldInvoiceAddressFor: WorkplaceOwner[]
   __typename: 'Address'
 }
 
@@ -129,8 +134,6 @@ export interface Workplace extends IEntity {
   address: Address
   customerId: Int
   customer: Customer
-  positionId: Int | null
-  position: Position | null
   contactId: Int | null
   contact: Contact | null
   contactWorkplaces: ContactWorkplace[]
@@ -178,6 +181,8 @@ export interface Validation extends IEntity {
   active: Boolean
   general: Boolean
   onlyWarning: Boolean
+  enumValidationStepId: Int | null
+  enumValidationStep: EnumValidationStep
   validationGroupId: Int | null
   validationGroup: ValidationGroup | null
   validationCustomers: ValidationCustomer[]
@@ -275,10 +280,6 @@ export interface WorkplaceOwner {
   workplace: Workplace
   customerId: Int
   customer: Customer
-  newInvoiceAddressId: Int | null
-  newInvoiceAddress: Address | null
-  oldInvoiceAddressId: Int | null
-  oldInvoiceAddress: Address | null
   __typename: 'WorkplaceOwner'
 }
 
@@ -384,8 +385,6 @@ export interface AddressFilterInput {
   visitingAddressFor?: ListFilterInputTypeOfCustomerFilterInput | null
   invoiceAddressFor?: ListFilterInputTypeOfCustomerFilterInput | null
   persons?: ListFilterInputTypeOfPersonFilterInput | null
-  newInvoiceAddressFor?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
-  oldInvoiceAddressFor?: ListFilterInputTypeOfWorkplaceOwnerFilterInput | null
 }
 
 export interface ComparableInt32OperationFilterInput {
@@ -495,8 +494,6 @@ export interface WorkplaceFilterInput {
   address?: AddressFilterInput | null
   customerId?: ComparableInt32OperationFilterInput | null
   customer?: CustomerFilterInput | null
-  positionId?: ComparableNullableOfInt32OperationFilterInput | null
-  position?: PositionFilterInput | null
   contactId?: ComparableNullableOfInt32OperationFilterInput | null
   contact?: ContactFilterInput | null
   contactWorkplaces?: ListFilterInputTypeOfContactWorkplaceFilterInput | null
@@ -561,11 +558,20 @@ export interface ValidationFilterInput {
   active?: BooleanOperationFilterInput | null
   general?: BooleanOperationFilterInput | null
   onlyWarning?: BooleanOperationFilterInput | null
+  enumValidationStepId?: ComparableNullableOfInt32OperationFilterInput | null
+  enumValidationStep?: EnumValidationStepOperationFilterInput | null
   validationGroupId?: ComparableNullableOfInt32OperationFilterInput | null
   validationGroup?: ValidationGroupFilterInput | null
   validationCustomers?: ListFilterInputTypeOfValidationCustomerFilterInput | null
   validationRules?: ListFilterInputTypeOfValidationRuleFilterInput | null
   validationOperations?: ListFilterInputTypeOfValidationOperationFilterInput | null
+}
+
+export interface EnumValidationStepOperationFilterInput {
+  eq?: EnumValidationStep | null
+  neq?: EnumValidationStep | null
+  in?: EnumValidationStep[] | null
+  nin?: EnumValidationStep[] | null
 }
 
 export interface ValidationGroupFilterInput {
@@ -745,10 +751,6 @@ export interface WorkplaceOwnerFilterInput {
   workplace?: WorkplaceFilterInput | null
   customerId?: ComparableInt32OperationFilterInput | null
   customer?: CustomerFilterInput | null
-  newInvoiceAddressId?: ComparableNullableOfInt32OperationFilterInput | null
-  newInvoiceAddress?: AddressFilterInput | null
-  oldInvoiceAddressId?: ComparableNullableOfInt32OperationFilterInput | null
-  oldInvoiceAddress?: AddressFilterInput | null
 }
 
 export interface ComparableDateTimeOperationFilterInput {
@@ -819,8 +821,6 @@ export interface AddressRequest {
   visitingAddressFor?: CustomerRequest
   invoiceAddressFor?: CustomerRequest
   persons?: PersonRequest
-  newInvoiceAddressFor?: WorkplaceOwnerRequest
-  oldInvoiceAddressFor?: WorkplaceOwnerRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -870,8 +870,6 @@ export interface WorkplaceRequest {
   address?: AddressRequest
   customerId?: boolean | number
   customer?: CustomerRequest
-  positionId?: boolean | number
-  position?: PositionRequest
   contactId?: boolean | number
   contact?: ContactRequest
   contactWorkplaces?: ContactWorkplaceRequest
@@ -922,6 +920,8 @@ export interface ValidationRequest {
   active?: boolean | number
   general?: boolean | number
   onlyWarning?: boolean | number
+  enumValidationStepId?: boolean | number
+  enumValidationStep?: boolean | number
   validationGroupId?: boolean | number
   validationGroup?: ValidationGroupRequest
   validationCustomers?: ValidationCustomerRequest
@@ -1027,10 +1027,6 @@ export interface WorkplaceOwnerRequest {
   workplace?: WorkplaceRequest
   customerId?: boolean | number
   customer?: CustomerRequest
-  newInvoiceAddressId?: boolean | number
-  newInvoiceAddress?: AddressRequest
-  oldInvoiceAddressId?: boolean | number
-  oldInvoiceAddress?: AddressRequest
   __typename?: boolean | number
   __scalar?: boolean | number
 }
@@ -1088,8 +1084,6 @@ export interface WorkplaceSortInput {
   address?: AddressSortInput | null
   customerId?: SortEnumType | null
   customer?: CustomerSortInput | null
-  positionId?: SortEnumType | null
-  position?: PositionSortInput | null
   contactId?: SortEnumType | null
   contact?: ContactSortInput | null
 }
@@ -1515,12 +1509,6 @@ export interface AddressPromiseChain {
   visitingAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
   invoiceAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Promise<Customer[]> }
   persons: { execute: (request: PersonRequest, defaultValue?: Person[]) => Promise<Person[]> }
-  newInvoiceAddressFor: {
-    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
-  }
-  oldInvoiceAddressFor: {
-    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Promise<WorkplaceOwner[]>
-  }
 }
 
 export interface AddressObservableChain {
@@ -1541,12 +1529,6 @@ export interface AddressObservableChain {
   visitingAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   invoiceAddressFor: { execute: (request: CustomerRequest, defaultValue?: Customer[]) => Observable<Customer[]> }
   persons: { execute: (request: PersonRequest, defaultValue?: Person[]) => Observable<Person[]> }
-  newInvoiceAddressFor: {
-    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
-  }
-  oldInvoiceAddressFor: {
-    execute: (request: WorkplaceOwnerRequest, defaultValue?: WorkplaceOwner[]) => Observable<WorkplaceOwner[]>
-  }
 }
 
 export interface IEntityPromiseChain {
@@ -1593,10 +1575,6 @@ export interface WorkplacePromiseChain {
   address: AddressPromiseChain & { execute: (request: AddressRequest, defaultValue?: Address) => Promise<Address> }
   customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
-  positionId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
-  position: PositionPromiseChain & {
-    execute: (request: PositionRequest, defaultValue?: Position | null) => Promise<Position | null>
-  }
   contactId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   contact: ContactPromiseChain & {
     execute: (request: ContactRequest, defaultValue?: Contact | null) => Promise<Contact | null>
@@ -1618,10 +1596,6 @@ export interface WorkplaceObservableChain {
   customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   customer: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
-  }
-  positionId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
-  position: PositionObservableChain & {
-    execute: (request: PositionRequest, defaultValue?: Position | null) => Observable<Position | null>
   }
   contactId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   contact: ContactObservableChain & {
@@ -1739,6 +1713,10 @@ export interface ValidationPromiseChain {
   active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
   general: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
   onlyWarning: { execute: (request?: boolean | number, defaultValue?: Boolean) => Promise<Boolean> }
+  enumValidationStepId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
+  enumValidationStep: {
+    execute: (request?: boolean | number, defaultValue?: EnumValidationStep) => Promise<EnumValidationStep>
+  }
   validationGroupId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
   validationGroup: ValidationGroupPromiseChain & {
     execute: (request: ValidationGroupRequest, defaultValue?: ValidationGroup | null) => Promise<ValidationGroup | null>
@@ -1760,6 +1738,10 @@ export interface ValidationObservableChain {
   active: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
   general: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
   onlyWarning: { execute: (request?: boolean | number, defaultValue?: Boolean) => Observable<Boolean> }
+  enumValidationStepId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
+  enumValidationStep: {
+    execute: (request?: boolean | number, defaultValue?: EnumValidationStep) => Observable<EnumValidationStep>
+  }
   validationGroupId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
   validationGroup: ValidationGroupObservableChain & {
     execute: (request: ValidationGroupRequest, defaultValue?: ValidationGroup | null) => Observable<ValidationGroup | null>
@@ -1969,14 +1951,6 @@ export interface WorkplaceOwnerPromiseChain {
   workplace: WorkplacePromiseChain & { execute: (request: WorkplaceRequest, defaultValue?: Workplace) => Promise<Workplace> }
   customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int> }
   customer: CustomerPromiseChain & { execute: (request: CustomerRequest, defaultValue?: Customer) => Promise<Customer> }
-  newInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
-  newInvoiceAddress: AddressPromiseChain & {
-    execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
-  }
-  oldInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Promise<Int | null> }
-  oldInvoiceAddress: AddressPromiseChain & {
-    execute: (request: AddressRequest, defaultValue?: Address | null) => Promise<Address | null>
-  }
 }
 
 export interface WorkplaceOwnerObservableChain {
@@ -1992,14 +1966,6 @@ export interface WorkplaceOwnerObservableChain {
   customerId: { execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int> }
   customer: CustomerObservableChain & {
     execute: (request: CustomerRequest, defaultValue?: Customer) => Observable<Customer>
-  }
-  newInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
-  newInvoiceAddress: AddressObservableChain & {
-    execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
-  }
-  oldInvoiceAddressId: { execute: (request?: boolean | number, defaultValue?: Int | null) => Observable<Int | null> }
-  oldInvoiceAddress: AddressObservableChain & {
-    execute: (request: AddressRequest, defaultValue?: Address | null) => Observable<Address | null>
   }
 }
 

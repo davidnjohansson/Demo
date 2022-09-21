@@ -70,8 +70,6 @@ type Address implements IEntity {
   visitingAddressFor: [Customer!]!
   invoiceAddressFor: [Customer!]!
   persons: [Person!]!
-  newInvoiceAddressFor: [WorkplaceOwner!]!
-  oldInvoiceAddressFor: [WorkplaceOwner!]!
 }
 
 type AddressCollectionSegment {
@@ -100,8 +98,6 @@ input AddressFilterInput {
   visitingAddressFor: ListFilterInputTypeOfCustomerFilterInput
   invoiceAddressFor: ListFilterInputTypeOfCustomerFilterInput
   persons: ListFilterInputTypeOfPersonFilterInput
-  newInvoiceAddressFor: ListFilterInputTypeOfWorkplaceOwnerFilterInput
-  oldInvoiceAddressFor: ListFilterInputTypeOfWorkplaceOwnerFilterInput
 }
 
 input AddressSortInput {
@@ -424,6 +420,20 @@ input EnumValidationOperationOperationFilterInput {
   nin: [EnumValidationOperation!]
 }
 
+enum EnumValidationStep {
+  SAVE
+  AUTO_PRICE
+  READY_FOR_INVOICING
+  PROPERTY_EVALUATION
+}
+
+input EnumValidationStepOperationFilterInput {
+  eq: EnumValidationStep
+  neq: EnumValidationStep
+  in: [EnumValidationStep!]
+  nin: [EnumValidationStep!]
+}
+
 interface IEntity {
   id: Int!
 }
@@ -643,6 +653,8 @@ type Validation implements IEntity {
   active: Boolean!
   general: Boolean!
   onlyWarning: Boolean!
+  enumValidationStepId: Int
+  enumValidationStep: EnumValidationStep!
   validationGroupId: Int
   validationGroup: ValidationGroup
   validationCustomers: [ValidationCustomer!]!
@@ -682,6 +694,8 @@ input ValidationFilterInput {
   active: BooleanOperationFilterInput
   general: BooleanOperationFilterInput
   onlyWarning: BooleanOperationFilterInput
+  enumValidationStepId: ComparableNullableOfInt32OperationFilterInput
+  enumValidationStep: EnumValidationStepOperationFilterInput
   validationGroupId: ComparableNullableOfInt32OperationFilterInput
   validationGroup: ValidationGroupFilterInput
   validationCustomers: ListFilterInputTypeOfValidationCustomerFilterInput
@@ -773,8 +787,6 @@ type Workplace implements IEntity {
   address: Address!
   customerId: Int!
   customer: Customer!
-  positionId: Int
-  position: Position
   contactId: Int
   contact: Contact
   contactWorkplaces: [ContactWorkplace!]!
@@ -801,8 +813,6 @@ input WorkplaceFilterInput {
   address: AddressFilterInput
   customerId: ComparableInt32OperationFilterInput
   customer: CustomerFilterInput
-  positionId: ComparableNullableOfInt32OperationFilterInput
-  position: PositionFilterInput
   contactId: ComparableNullableOfInt32OperationFilterInput
   contact: ContactFilterInput
   contactWorkplaces: ListFilterInputTypeOfContactWorkplaceFilterInput
@@ -819,10 +829,6 @@ type WorkplaceOwner {
   workplace: Workplace!
   customerId: Int!
   customer: Customer!
-  newInvoiceAddressId: Int
-  newInvoiceAddress: Address
-  oldInvoiceAddressId: Int
-  oldInvoiceAddress: Address
 }
 
 input WorkplaceOwnerFilterInput {
@@ -837,10 +843,6 @@ input WorkplaceOwnerFilterInput {
   workplace: WorkplaceFilterInput
   customerId: ComparableInt32OperationFilterInput
   customer: CustomerFilterInput
-  newInvoiceAddressId: ComparableNullableOfInt32OperationFilterInput
-  newInvoiceAddress: AddressFilterInput
-  oldInvoiceAddressId: ComparableNullableOfInt32OperationFilterInput
-  oldInvoiceAddress: AddressFilterInput
 }
 
 input WorkplaceSortInput {
@@ -851,8 +853,6 @@ input WorkplaceSortInput {
   address: AddressSortInput
   customerId: SortEnumType
   customer: CustomerSortInput
-  positionId: SortEnumType
-  position: PositionSortInput
   contactId: SortEnumType
   contact: ContactSortInput
 }
