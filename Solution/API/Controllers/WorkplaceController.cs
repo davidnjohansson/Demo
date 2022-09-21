@@ -1,5 +1,4 @@
-﻿using API.Data.DTO;
-using API.Services;
+﻿using API.Services.UpsertWorkplace;
 using Microsoft.AspNetCore.Mvc;
 using T5.API.Types;
 
@@ -12,9 +11,9 @@ namespace API.Controllers
         [HttpPost(nameof(WorkplaceController.UpsertWorkplace))]
         public async Task<ActionResult<MutationOutput>> UpsertWorkplace([FromServices] UpsertWorkplaceService service, UpsertWorkplaceInput input)
         {
-            //var output = await service.ValidateAsync(input);
+            var output = await service.ValidateAsync(input);
 
-            //if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
+            if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
 
             return await service.ExecuteAsync(input);
         }

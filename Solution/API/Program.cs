@@ -2,7 +2,7 @@ using API.Data.Export;
 using API.GraphQL;
 using API.HelperServices;
 using API.Interfaces;
-using API.Services;
+using API.Services.UpsertWorkplace;
 using API.Types;
 using HotChocolate.Types.Pagination;
 using System.Text.Json;
@@ -43,7 +43,6 @@ builder.Services.AddDbContext<DemoDbContext>();
 
 builder.Services.AddInMemorySubscriptions();
 
-builder.Services.AddScoped<BusinessLogicService>();
 builder.Services.AddScoped<ValidationService>();
 
 builder.Services.AddScoped<UpsertWorkplaceService>();

@@ -1,5 +1,4 @@
-﻿using API.Data.DTO;
-using API.Services;
+﻿using API.Services.UpsertWorkplace;
 using T5.API.Types;
 
 namespace API.GraphQL
@@ -8,9 +7,9 @@ namespace API.GraphQL
     {
         public async Task<MutationOutput> UpsertWorkplace([Service] UpsertWorkplaceService service, UpsertWorkplaceInput input)
         {
-            //var output = await service.ValidateAsync(input);
+            var output = await service.ValidateAsync(input);
 
-            //if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
+            if (input.OnlyValidate == true || output.ValidationErrors.Any()) return output;
 
             return await service.ExecuteAsync(input);
         }

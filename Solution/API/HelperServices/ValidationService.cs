@@ -263,7 +263,8 @@ namespace API.HelperServices
             return new ValidationError
             {
                 Message = validationRule.ErrorMessage ?? string.Empty,
-                PropertyName = propertyInfo.Name
+                PropertyName = propertyInfo.Name,
+                TypeName = propertyInfo.DeclaringType?.Name ?? string.Empty,
             };
         }
 

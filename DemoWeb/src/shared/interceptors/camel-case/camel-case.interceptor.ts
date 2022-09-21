@@ -1,5 +1,6 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ValidationError } from 'graphql-client/schema';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -25,9 +26,9 @@ export class CamelCaseInterceptor implements HttpInterceptor {
 	private camelCase(body: any) {
 		for (let key in body.data) {
 			if (body.data[key]?.validationErrors?.length) {
-				for (let validationError of body.data[key].validationErrors) {
-					if (validationError.property) {
-						validationError.property = this.camelCaseString(validationError.property);
+				for (let validationError of (body.data[key].validationErrors as ValidationError[])) {
+					if (validationError.propertyName) {
+						validationError.propertyName = this.camelCaseString(validationError.propertyName);
 					}
 				}
 			}

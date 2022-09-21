@@ -624,27 +624,15 @@ type Subscription {
   workplaceUpdated: Workplace!
 }
 
-input UpsertAddressInput {
-  address1: String
-  city: String
-  zipCode: String
-  upsertPositionInput: UpsertPositionInput
-  id: Int
-  onlyValidate: Boolean
-}
-
-input UpsertPositionInput {
-  latitude: Float
-  longitude: Float
-  id: Int
-  onlyValidate: Boolean
-}
-
 input UpsertWorkplaceInput {
   active: Boolean
   workplaceName: String
   customerId: Int
-  upsertAddressInput: UpsertAddressInput
+  address1: String
+  city: String
+  zipCode: String
+  latitude: Float
+  longitude: Float
   id: Int
   onlyValidate: Boolean
 }

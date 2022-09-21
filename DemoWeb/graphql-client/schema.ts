@@ -1133,21 +1133,9 @@ export interface UpsertWorkplaceInput {
   active?: Boolean | null
   workplaceName?: String | null
   customerId?: Int | null
-  upsertAddressInput?: UpsertAddressInput | null
-  id?: Int | null
-  onlyValidate?: Boolean | null
-}
-
-export interface UpsertAddressInput {
   address1?: String | null
   city?: String | null
   zipCode?: String | null
-  upsertPositionInput?: UpsertPositionInput | null
-  id?: Int | null
-  onlyValidate?: Boolean | null
-}
-
-export interface UpsertPositionInput {
   latitude?: Float | null
   longitude?: Float | null
   id?: Int | null
